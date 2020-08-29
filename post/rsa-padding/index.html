@@ -85,7 +85,7 @@ if (!doNotTrack) {
 <p>PKCS1规定了RSA填充标准，简单描述如下：</p>
 <pre><code>00 02 &lt; at least 8 random non-null-bytes &gt; 00 &lt; message &gt;
 &lt;--           total length: keylength bits            --&gt;
-</code></pre><p>消息块的前2个字节内容是<code>0x00，0x02</code>，随后跟上至少8个随机生成的非空字节，接着一个〇字节<code>0x00</code>，最后是真正的消息内容。整个消息块的长度等于密钥长度，例如<code>2048</code>比特。</p>
+</code></pre><p>消息块的前2个字节内容是<code>0x00，0x02</code>，随后跟上至少8个随机生成的非〇字节，接着一个〇字节<code>0x00</code>，最后是真正的消息内容。整个消息块的长度等于密钥长度，例如<code>2048</code>比特。</p>
 <p>填充有两个主要的好处：其一是算法不再是确定的，同样的消息经填充加密以后的密文也不一样；其二是不同消息加密以后的密文不具有同态性。</p>
 <h2 id="数学分析">数学分析</h2>
 
