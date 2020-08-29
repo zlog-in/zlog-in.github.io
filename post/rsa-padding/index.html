@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en-us">
+ 
+
+
+
+
+
+    
+
+  
+<meta charset="utf-8" />
+
+  <title>RSA填充攻击 - Zlog</title>
+
+
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="stylesheet" href="/css/latex.css" />
+<link rel="stylesheet" href="/css/main.css" />
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<meta name="generator" content="Hugo 0.74.2" />
+ 
+  
+  <body>
+
+
+
+
+
+
+<header>  
+  <nav class="navbar">
+  <div class="nav">
+    
+
+    <ul class="nav-links">
+      
+    </ul>
+  </div>
+</nav>
+  <div class="intro-header">
+    <div class="container">
+      <div class="post-heading">
+        
+          <h1>RSA填充攻击</h1>
+          
+        
+
+      </div>
+    </div>
+  </div>
+   
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-173221601-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+ 
+
+
+
+
+</header>
+<div id="content">
+  <div class="container" role="main">
+    <article class="article" class="blog-post">
+      <div class="postmeta">
+        <span class="meta-post">
+  <i class="fa fa-calendar-alt"></i>Aug 29, 2020
+  
+</span>
+      </div>
+      <br>
+      
+    <p>在实际应用的RSA算法里面，消息都必须经过填充以后才会被加密，以拒绝同态攻击。在RFC8017的<a href="https://tools.ietf.org/html/rfc8017#section-7.2.1">7.2.1</a>节，详细介绍了RSA的加密过程。本文稍微简化了加密流程，以求更能直观解释填充攻击的原理。想要了解RSA算法更多细节的同学，请参阅RFC8017文档。</p>
+<h2 id="pkcs1填充">PKCS1填充</h2>
+<p>PKCS1规定了RSA填充标准，简单描述如下：</p>
+<pre><code>00 02 &lt; at least 8 random non-null-bytes &gt; 00 &lt; message &gt;
+&lt;--           total length: keylength bits            --&gt;
+</code></pre><p>消息块的前2个字节内容是<code>0x00，0x02</code>，随后跟上至少8个随机生成的非〇字节，接着一个〇字节<code>0x00</code>，最后是真正的消息内容。整个消息块的长度等于密钥长度，例如<code>2048</code>比特。</p>
+<p>填充有两个主要的好处：其一是算法不再是确定的，同样的消息经填充加密以后的密文也不一样；其二是不同消息加密以后的密文不具有同态性。</p>
+<h2 id="数学分析">数学分析</h2>
+
+填充以后的消息块并非毫无规律，现在我们来仔细分析一下。假设公钥是\((N,e)\)，密钥长度\(k = |N|\)。如此可以断定，除去前2个字节，剩下的消息块\(m\)取值范围(明文空间)是
+$$2B \leq m \leq 3B-1，$$
+
+其中\(B = 2^{k-16}\),\(k-16\)是剩下的消息块长度。严格来说，\(m\)并不是消息，因为它包括至少8个随机字节和一个〇字节。在本文分析中，它们统一被视作消息的一部分。当我们求出\(m\)以后，找出头部第一个〇字节，然后剔除它及其前面所有内容即获得真正的消息。
+
+<h2 id="攻击准备">攻击准备</h2>
+<p>在这场游戏中，攻击者拥有一位<code>Oracle</code>。它的作用是解密攻击者提交的密文，然后判断明文的填充是否合法，即是否满足PKCS1标准。如填充合法，返回<code>1</code>，否则<code>0</code>。现在，攻击者已知密文\(c\)和公钥\((N,e)\)。假设在明文空间里面存在另外一条消息\(m_1 = m \cdot s_1 -r_1 \cdot N\)，它满足
+$$ 2B \leq m \cdot s_1 - r_1 \cdot N \leq 3B -1$$
+$$ \Leftrightarrow 2B + r_1 \cdot N \leq m \cdot s_1 \leq 3B -1 + r \cdot N$$
+$$ \Leftrightarrow  \frac{2B + r \cdot N}{s_1} \leq m \leq \frac{3B -1 + r \cdot N}{s_1} $$
+
+如此便确定了一个可能的\(m\)范围，尽管现在里面还存在两个未知数。同样地也可以确定\(r\)范围：
+$$ 2B \leq m \cdot s_1 - r \cdot N \leq 3B -1   $$
+$$ \Leftrightarrow m \cdot s_1 -(3B -1) \leq r \cdot N \leq m \cdot s_1 - 2B$$
+$$ \Leftrightarrow \frac{m \cdot s_1 -(3B -1)}{N} \leq r \leq \frac{m \cdot s_1 - 2B}{N}$$
+
+因为\( m \in [2B,3B-1]\)，于是找到\(r\)更准确的范围
+$$ \frac{2B \cdot s_1 -(3B -1)}{N} \leq r \leq \frac{(3B-1) \cdot s_1 - 2B}{N} \leq \frac{3B \cdot s_1}{N}$$
+
+毫无疑问，在\(r和s\)都是正整数，所以不妨令\(s_1 \geq \frac{N}{3B}\)。运气好的时候我们能够找到一个足够小的\(s_1\)，使得\(r\)的取值范围里只有一个整数。此时，我们能够确定一个消息\(m\)的区间。当\(r\)存在若干个整数值，相应地\(m\)的也有同等数量的区间。在接下来的讨论中，我们只考虑存在一个整数\(r\)的情况。怎么做呢？
+
+先观察一下加密\(m_1\)得到的密文\(c_1\)
+$$ c_1 = m_1^e \mod N = (m \cdot s_1 - r \cdot N)^e \mod N = c \cdot s_1^e \mod N $$
+
+可以发现\(c_1\)等于已知的密文乘以\(s_1\)的密文。让我们从\(s_1 = \frac{N}{3B}\)开始，先用公钥\((N,e)\)加密\(s_1\)，然后构造出\(c_1\)并提交给<code>Oracle</code>。如果返回值是<code>0</code>，说明构造出来的密文解密以后得到一个填充非法的明文，也就意味着\(s_1\)取值有误。接下来每次令\(s_1 = s_1 + 1\)，然后重复前述操作，直到<code>Oracle</code>返回<code>1</code>。此时，我们就找到了正确的\(s_1\)，然后代入\(r\)的区间
+$$ \frac{2B \cdot s_1 -(3B -1)}{N} \leq r \leq \frac{(3B-1) \cdot s_1 - 2B}{N} \leq \frac{3B \cdot s_1}{N}$$
+
+运气好的话，此时区间的左右边界恰好相等，只存在一位\(r\)。此时，由\(s_1\)和\(r_1\)确定的消息区间也只有一个，
+$$ \frac{2B + r_1 \cdot N}{s_1} \leq m \leq \frac{3B -1 + r_1 \cdot N}{s_1}$$
+</p>
+<h2 id="开始迭代">开始迭代</h2>
+<p>
+
+在找到了第一个确定的\(m\)区间以后，接下来的任务就是不停地迭代缩小区间范围，直到最后左右相等。我们先定义\(m\)区间的更新规则
+$$  m_a = \frac{2B + r_i \cdot N}{s_i} \leq m \leq \frac{3B -1 + r_i \cdot N}{s_i} = m_b$$
+
+区间的长度\(m_b-m_a = \frac{B}{s_i}\)，考虑到\(N\)是2048位的大数，分母中的1可以省略不计。如果\(s\)加倍，则消息区间长度缩短一半，可以大大加速寻找\(m\)的过程。
+
+<p>
+然后定义\(r\)更新规则：\(r_i = \frac{2(m_b \cdot s_{i-1} - B)}{N}\)。接着定义\(s\)区间的更新规则
+$$ s_a = \frac{2B + r_i \cdot N}{m_b} \leq s_i \leq \frac{3B -1 + r_i \cdot N}{m_a} = s_b$$
+
+将更新以后的\(r\)代入，便能得到新的\(s\)区间，其中左侧\(s_a = 2 s_{i-1}\)，意味着\(s_i \geq 2s_{i-1}\)。
+<p>
+现在来详细说明一下迭代过程：在准备工作里我们找到了一组\((s_1,r_1)\)，并确定了\(m\)的第一个区间\([m_a,m_b]\)。然后令\(r_2 = \frac{2(m_b \cdot s_1 - B)}{N}\)，这样利用\([m_a,m_b]和r_2\)，可以得到\(s\)的新区间
+$$ s_a = \frac{2B + r_2 \cdot N}{m_b} \leq s_2 \leq \frac{3B -1 + r_2 \cdot N}{m_a} = s_b$$
+
+然后在区间\([s_a,s_b]\)里面寻找\(s_2\)，从左侧\(s_a\)开始构造新的密文\(c_2\)并提交给<code>Oracle</code>。如果遍历了整个区间，<code>Oracle</code>返回值总是<code>0</code>，意味着在该区间内没有\(s_2\)可以构造合法的密文，于是消息区间\([m_a,m_b]\)没有得到进一步缩短， 然后令\(r_2 = r_2 + 1\)，更新\([s_a,s_b]\)，在下一轮迭代继续寻找\(s_2\)。</p>
+<p>如果<code>Oracle</code>最终返回了<code>1</code>，此时我们便寻找到了\(m\)的第二个区间，也就更新了\([m_a,m_b]\)。接着利用\([m_a,m_b]\)和\(s_2\)，计算得到\(r_3\)，然后更新\([s_a,s_b]\)，继续下一轮迭代。
+
+<p>
+直到我们最终确定\(m_a = m_b = m\)，攻击完成。
+</p>
+</p>
+<h2 id="结束语">结束语</h2>
+<p>攻击的螺旋迭代过程不大好理解，尤其是(r,s,m)三者关系的互相缠绕，更新的先后顺序很容易弄混乱。</p>
+
+
+      
+    </article>
+    
+  </div>
+
+        </div><footer>
+  <div class="container">
+    <p class="credits copyright">
+      <p class="credits theme-by">
+        <br>
+        <a href="/about">Zhan</a>
+        &copy;
+        2020
+
+      </p>
+  </div>
+</footer></body>
+</html>
