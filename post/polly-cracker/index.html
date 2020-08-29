@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en-us">
+ 
+
+
+
+
+
+    
+
+  
+<meta charset="utf-8" />
+
+  <title>Polly Cracker加密系统 - Zlog</title>
+
+
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="stylesheet" href="/css/latex.css" />
+<link rel="stylesheet" href="/css/main.css" />
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<meta name="generator" content="Hugo 0.74.2" />
+ 
+  
+  <body>
+
+
+
+
+
+
+<header>  
+  <nav class="navbar">
+  <div class="nav">
+    
+
+    <ul class="nav-links">
+      
+    </ul>
+  </div>
+</nav>
+  <div class="intro-header">
+    <div class="container">
+      <div class="post-heading">
+        
+          <h1>Polly Cracker加密系统</h1>
+          
+        
+
+      </div>
+    </div>
+  </div>
+   
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-173221601-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+ 
+
+
+
+
+</header>
+<div id="content">
+  <div class="container" role="main">
+    <article class="article" class="blog-post">
+      <div class="postmeta">
+        <span class="meta-post">
+  <i class="fa fa-calendar-alt"></i>Jul 22, 2020
+  
+</span>
+      </div>
+      <br>
+      
+    <p>现代加密系统的安全性建立在计算数学难题之上，比如RSA基于质因数分解，DH基于DLog计算。本文介绍的加密系统Polly Cracker则是基于组合多项式求解。为了更好地理解Polly Cracker的原理，首先我们熟悉一下需要用到的数学知识。</p>
+<h2 id="域环与多项式">域、环与多项式</h2>
+<h3 id="域">域</h3>
+
+<p>
+域\(\mathbb{F}\)其实是一个集合，以及为集合里面的元素所定义的两个操作：加法(+)和乘法(·)。集合里面存在两个特殊的元素0和1。如果元素\(a+b=0\)，则称\(a和b\)对于加法是互逆的，如果\(a \cdot b=1\)，则称\(a和b\)对于乘法是互逆的。在一个域里面所有元素都存在一个加法逆元素，除0以外其它元素都存在一个乘法逆元素。
+</p>
+
+<p>
+用数学语言写出来就是下面的表达方式：
+$$\forall a \in \mathbb{F},\ \exists b \in \mathbb{F} \implies a+b=0 $$
+$$\forall a \in \mathbb{F} \land a \neq 0,\ \exists b \in \mathbb{F} \implies a·b=1$$
+</p>
+<p>
+比如说，有理数集合\(\mathbb{Q}\)就是一个域。任意元素\(a\)，都存在\(-a\)是它的加法逆元素，也存在\(\frac{1}{a}\)是它的乘法逆元素。
+</p>
+<p>
+有限域\(\mathbb{F}_q\)则是只含有\(q\)个元素的集合，对元素的加法和乘法操作的结果需要再进行模运算。例如，\(a+b\ mod\ q,\ a \cdot b\ mod\ q\)。
+</p>
+
+<h3 id="环">环</h3>
+<p>环是比域定义要稍微宽松一点的集合，环里面的元素不必须有乘法逆元素。显而易见，每一个域都是特殊的环。</p>
+<h3 id="多项式">多项式</h3>
+
+<p>
+多项式是指多个包含变量的单项之和的表达式，例如一个单变量多项式可以表示为如下的式子
+$$p(x) = a_0 + a_1x + \dots + a_{n-1}x^{n-1} + a_nx^n。$$
+
+如果存在两个多项式分别为
+$$p_1(x) = a_0 + a_1x + \dots + a_{n-1}x^{n-1} + a_nx^n，$$
+和
+$$p_2(x) = b_0 + b_1x + \dots + b_{n-1}x^{n-1} + b_nx^n。$$
+
+我们可以计算两项式子相加和相乘的结果，得到
+$$p_1(x) + p_2(x) = \sum_{i=0}^{n} (a_i + b_i) x^i，$$
+和
+$$p_1(x) \cdot p_2(x) = \sum_{i=0}^{2n} (\sum_{j+k=i} a_j \cdot b_k) x^i。$$
+
+我们假设存在一个变量集合\(X = \{ x_1,\dots,x_n \} \in \mathbb{F}_q^n\)，
+此集合中的变量组合成的多项式可以写作
+$$ p(X) = \sum c_{d_1,\dots,d_n} x_1^{d_1} \dots x_n^{d_n}。$$
+
+为了更简洁地表示，我们可以采用向量 \(d = (d_1,\dots, d_n)\)来标记变量的幂
+$$ p(X) = \sum c_d X^d。 $$
+</p>
+<p>
+现在，我们来定义一下多项式的解。在初等数学里面我们学过，一元二次方程存在一个解的表达式，但对于更高次元并不存在这样的公式解。这也是Polly Cracker加密系统的安全性所成立的基础，攻击者很难求出多项式的解，从而得到明文。假如点\(\sigma = (\sigma_1,\dots,\sigma_n)\)满足下面的式子
+$$p(\sigma) = \sum c_{d_1,\dots,d_n} \sigma_1^{d_1} \dots \sigma_n^{d_n} = 0,$$
+则我们称\(\sigma\)是该多项式的解或者根。 
+</p>
+
+<h3 id="多项式环">多项式环</h3>
+
+<p>
+如果我们限制一个多项式里面每一个项的系数和每一个变量可以取值的范围，那么我们就获得了具有某种运算性质的多项式。例如，如果多项式的系数\(c \in \mathbb{F}_q\)和变量\(x_i \in X\)，那么我们可以认为该多项式\(p \in \mathbb{F}_q[X]\)。我们称\(\mathbb{F}_q[X]\)为多项式环，它是所有满足上述条件的多项式的集合。
+</p>
+
+<p>
+至此，我们已经了解了Polly Cracker加密系统所运用的数学基础。接下来我们再看一看，究竟它是怎样进行加密和解密的。
+</p>
+
+<h2 id="工作原理">工作原理</h2>
+<h3 id="密钥生成">密钥生成</h3>
+
+<p>
+Polly Cracker也是非对称加密系统，非对称加密系统从数学上证明了只通过公钥得不到私钥，或者无法利用现有的算力在可接受的时间范围内计算得到私钥，比如说需要一万年才能获得运算结果。
+</p>
+<p>
+现在Alice决定使用Polly Cracker作为自己的安全通信的工具。它生成属于Alice的公钥和密钥，并将公钥公开。想要给Alice发送消息的Bob会用Alice的公钥加密明文，得到密文。Alice收到密文以后再用自己的私钥解密，然后阅读消息。
+</p>
+<p>
+首先，她会构造若干个多项式\(p_1,\dots,p_s \in \mathbb{F}_q[X]\)，这些多项式拥有一个共同的解\(\sigma\)满足
+$$ p_1(\sigma) = \dots = p_s(\sigma) = 0。$$
+然后，多项式\(p_1, \dots, p_s\)作为\(\textbf{公钥}\)向外公开，\(\textbf{私钥}\)\(\sigma\)只由Alice保管。
+</p>
+
+<h3 id="加密与解密">加密与解密</h3>
+
+<p>
+现在，如果Bob想写一封信向Alice表达爱意，又不希望他人尤其是Alice的父母亲知道信的内容，他会使用Alice的公钥来加密这封信。假设信的内容\(m \in \mathbb{F}_q\)，Bob根据公钥里面的每一个多项式\(p_j\) 再选择一个多项式\(h_j \in \mathbb{F}_q[X]\)，然后计算
+$$ c = m + \sum_{j=1}^s p_j h_j$$
+得到密文，并发送给Alice。
+</p>
+
+<p>
+Alice收到这封信以后，使用自己的密钥解密得到明文，也就是用点\((\sigma_1,\dots,\sigma_n)\)带入多项式\(p_j h_j\)里面的变量\(x_1,\dots,x_n\), 因为\(p_j(\sigma) = 0\)，所以最后只剩下常数项\(m\)
+$$ c(\sigma) = m + \sum_{j=1}^s p_j(\sigma)h_j(\sigma) = m。$$
+</p>
+<p>
+现在，我们的Alice已经知晓了Bob的爱意。至于她的心思如何，现在我们还不知道。两个人的故事还没有结束，请读者稍待。
+</p>
+
+<h2 id="结束语">结束语</h2>
+<figure>
+    <img src="https://www.mrzz.cc/image/koblitz_fellows.jpg"/> <figcaption>
+            <h4>Koblitz and Fellows</h4>
+        </figcaption>
+</figure>
+
+<p>Polly Cracker是由美国数学家 Koblitz 和 Fellows 在1993年提出来，想要了解更详细的代数知识和关于Polly Cracker更进一步的讨论，可以阅读Koblitz的书籍<!-- raw HTML omitted -->《密码学代数》<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup><!-- raw HTML omitted -->。Cracking problem是书中定义的一种游戏：给定一个函数，以及它的定义域和值域，通过函数的值猜到输入的过程称作cracking
+$$ INPUT: f: P \longrightarrow C,\ y \in C$$
+$$ OUTPUT: x \in P \ such\ that\ f(x) = y $$
+Polly一词则是取自多项式polynomial的拟人名称。</p>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p>Algebraic Aspects of Cryptography. Springer-Verlag, 1998. ISBN 978–3540634461 <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+
+
+      
+    </article>
+    
+  </div>
+
+        </div><footer>
+  <div class="container">
+    <p class="credits copyright">
+      <p class="credits theme-by">
+        <br>
+        <a href="/about">Zhan</a>
+        &copy;
+        2020
+
+      </p>
+  </div>
+</footer></body>
+</html>

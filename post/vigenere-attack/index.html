@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en-us">
+ 
+
+
+
+
+
+    
+
+  
+<meta charset="utf-8" />
+
+  <title>Vigenere密码破解 - Zlog</title>
+
+
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="stylesheet" href="/css/latex.css" />
+<link rel="stylesheet" href="/css/main.css" />
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<meta name="generator" content="Hugo 0.74.2" />
+ 
+  
+  <body>
+
+
+
+
+
+
+<header>  
+  <nav class="navbar">
+  <div class="nav">
+    
+
+    <ul class="nav-links">
+      
+    </ul>
+  </div>
+</nav>
+  <div class="intro-header">
+    <div class="container">
+      <div class="post-heading">
+        
+          <h1>Vigenere密码破解</h1>
+          
+        
+
+      </div>
+    </div>
+  </div>
+   
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-173221601-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+ 
+
+
+
+
+</header>
+<div id="content">
+  <div class="container" role="main">
+    <article class="article" class="blog-post">
+      <div class="postmeta">
+        <span class="meta-post">
+  <i class="fa fa-calendar-alt"></i>Jul 21, 2020
+  
+</span>
+      </div>
+      <br>
+      
+    <p>在介绍Vigenere密码之前，先介绍一个更为简单的密码系统：凯撒密码(Caeser Cipher)。据称，当年凯撒曾用这种方法和手下的将领进行通信，传达指挥命令。凯撒密码是一种替换加密技术，即明文中所有字母都在字母表上向后或者向前偏移一个固定的距离，被替换成密文。当这个距离是3的时候，即称作凯撒密码。</p>
+<h2 id="凯撒密码">凯撒密码</h2>
+<p>凯撒密码的加密、解密可以通过取模的加减法进行计算。首先将字母用数字替代 A = 0,B = 1, &hellip;, Z = 25。
+当偏移量为n的时候加密方法是 $$ c =  m + n \mod 26，$$
+解密方法是$$ m = c - n \mod 26。$$
+当n = 3时，我们得到</p>
+<pre><code>明文字母表： ABCDEFGHIJKLMNOPQRSTUVWXYZ
+密文字母表： DEFGHIJKLMNOPQRSTUVWXYZABC
+</code></pre><p>使用时，加密者查找明文字母表中需要加密的消息中的每一个字母所在位置，并且写下密文字母表中对应的字母。需要解密的人则根据事先已知的密钥反过来操作，得到原来的明文。例如：</p>
+<pre><code>明文：  THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG
+密文：  WKH TXLFN EURZQ IRA MXPSV RYHU WKH ODCB GRJ
+</code></pre><p>通过上面的描述可以知道，凯撒密码里最关键的信息是事先约定好的偏移量n，也被称作密钥。同时也很容易发现，凯撒密码有些缺陷，因为密钥空间太小很容易被暴力破解。另外一个缺陷就是替换过后的字母唯一，即A替换以后的密文只能是某一个字母，比如D。通过大量统计，人们发现了英语文本里面每个字母出现的频率接近某个固定的概率，比如E是出现频率最高的一个字母。只要攻击者拿到大量的密文，然后统计其中出现次数最多的字母，即可认为其对应的明文是E，从而解出密钥。</p>
+<h2 id="vigenere密码">Vigenere密码</h2>
+<figure>
+    <img src="https://www.mrzz.cc/image/vigenere_square.png"/> 
+</figure>
+
+<p>上图被称作Vigenere Square，展示了所有可能的凯撒密码。在凯撒密码中，一次加密只会用到一个密钥，导致相同密文对应的明文总相同。所以，有人根据凯撒密码发明了Vigenere密码：不同位置的明文用不同的密钥进行加密，因此相同字母由于使用不同的密钥而被替换成不同的密文， 不同字母也可能因为使用不同的密钥而被替换成相同的密文。在下面的例子里我们选择<code>LEMON</code>作为密钥的话，观察明文中的<code>T</code>和密文中的<code>R</code>可以验证前述说法。</p>
+<pre><code>明文：  ATTACK AT DAWN
+密钥：  LEMONL EM ONLE
+密文：  LXFOPV EF RNHR
+</code></pre><p>这样，直接统计密文中的字符频率便失去了作用。那么这种情况该怎么办呢？其实用心思考一下可以发现，破解Vigenere密码的关键是<strong>密钥的长度</strong>。因为相隔一个密钥长度的明文都使用同一个密钥进行加密，只要攻击者找到了密钥的长度，那么剩下的工作便是分别破解若干个密文的子序列，也就是破解凯撒密码。现在，我们的问题是如何获得密钥的长度呢？答案是：猜。</p>
+<h3 id="自相关系数">自相关系数</h3>
+<p>假设密钥的长度是d，文本的长度为<code>l</code>。我们可以认为d可能的取值范围是[1,l]，但基于习惯的考虑，我们可以将d缩小在合适的数值之内，比如200。接下来介绍一种自相关系数，来帮助我们猜出d。
+$$ AutoCor(d) = \sum_{i=0}^{l-d} &lt;a_i, a_{i+d}&gt; $$</p>
+<p>
+
+\(a_i\)和\(a_{i+d}\)是相距d的两个字母，如果它们相同，则<\(a_i, a_{i+d}\)>为0，否则为1。我们尝试计算从d=1到d=200的自相关系数，然后在二维座标系里绘制出(d,AutoCor(d))的点图。然后根据图中极小值出现的位置，判断出d的取值。
+
+下面是计算每一个自相关系数的代码片段
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">double</span> <span style="color:#a6e22e">AutoCorrelation</span> (<span style="color:#66d9ef">int</span> d)
+{
+  <span style="color:#66d9ef">int</span> autoCor <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+  <span style="color:#66d9ef">for</span> (size_t i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; i <span style="color:#f92672">&lt;=</span> (TextLength<span style="color:#f92672">-</span>d); i<span style="color:#f92672">++</span>)
+  {
+      <span style="color:#66d9ef">if</span>(TextArray[i] <span style="color:#f92672">!=</span> TextArray[i<span style="color:#f92672">+</span>d]){         
+        autoCor <span style="color:#f92672">=</span> autoCor <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>;
+      }
+  }
+  <span style="color:#66d9ef">return</span> autoCor;
+}</code></pre></div></p>
+<p>应该很多人好奇，为什么这样的计算就可以得到d？现在我们再来认真回顾一下Vigenere密码加密的过程：通过重复使用密钥，我们得到了一个和明文序列一样长度的密钥序列，在这个序列里面，每隔d个距离便是相同的子密钥单元，比如上面例子当中每隔5个距离又出现的<code>L, E, M, O, N</code>。加密过程如下所示
+$$ c_i = m_i + k_{i \mod d} \mod 26。$$</p>
+<p>我们可以想象这样的一个情况，假如相邻d个距离的明文恰好也一样，那么二者替换过后的密文也相同。而这种情况出现的概率不出意外应该远远小于二者不同的情况，也就是说当d的取值恰为密钥长度或者是密钥长度倍数的时候，统计出来AutoCor(d)的值要显著小于其它情况。根据出现的第一个极小值，我们可以推测出密钥长度。那么，接下来的工作比较简单了，就是分别解出每一个子密钥。</p>
+<h3 id="字母频率">字母频率</h3>
+<p>在数学家没有找到日常英语文本里面字母的分布频率之前，求解凯撒密码可以通过暴力穷举，因为密钥空间只有26个元素。后来统计学家通过大量的文本统计发现了字母的分布频率，例如下表P</p>
+<table>
+<thead>
+<tr>
+<th>字母</th>
+<th>频率</th>
+<th>字母</th>
+<th>频率</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A</td>
+<td>0.0710223</td>
+<td>N</td>
+<td>0.0727285</td>
+</tr>
+<tr>
+<td>B</td>
+<td>0.015561</td>
+<td>O</td>
+<td>0.0644209</td>
+</tr>
+<tr>
+<td>C</td>
+<td>0.0413852</td>
+<td>P</td>
+<td>0.0228467</td>
+</tr>
+<tr>
+<td>D</td>
+<td>0.0355562</td>
+<td>Q</td>
+<td>0.000794285</td>
+</tr>
+<tr>
+<td>E</td>
+<td>0.129048</td>
+<td>R</td>
+<td>0.0737015</td>
+</tr>
+<tr>
+<td>F</td>
+<td>0.0228184</td>
+<td>S</td>
+<td>0.0726779</td>
+</tr>
+<tr>
+<td>G</td>
+<td>0.0152493</td>
+<td>T</td>
+<td>0.0940115</td>
+</tr>
+<tr>
+<td>H</td>
+<td>0.0378366</td>
+<td>U</td>
+<td>0.0327715</td>
+</tr>
+<tr>
+<td>I</td>
+<td>0.0714692</td>
+<td>V</td>
+<td>0.0109555</td>
+</tr>
+<tr>
+<td>J</td>
+<td>0.00103988</td>
+<td>W</td>
+<td>0.017412</td>
+</tr>
+<tr>
+<td>K</td>
+<td>0.00637232</td>
+<td>X</td>
+<td>0.00448079</td>
+</tr>
+<tr>
+<td>L</td>
+<td>0.0453804</td>
+<td>Y</td>
+<td>0.0149802</td>
+</tr>
+<tr>
+<td>M</td>
+<td>0.0244326</td>
+<td>Z</td>
+<td>0.0010467</td>
+</tr>
+</tbody>
+</table>
+<p>需要说明的是，这张表格并不唯一。不同领域的话术有所区别，其所使用的高频单词也不尽相同，又及各人也会有专属自己的文字习惯，所以频率统计表应该针对不同的场景做选择性的文本统计，以期望求得最准确的字母频率。</p>
+
+现在我们知道了频率分布情况和密钥长度，接下来就着手求解每一个子密钥了。根据\(c_i = m_i + k_{i \mod d} \mod 26\)我们可以将原密文分成d个密文子序列
+$$ m_0, m_{0+d}, \dots, m_{0+nd}，$$
+$$ m_1, m_{1+d}, \dots, m_{1+nd}，$$
+$$ \cdot \cdot \cdot $$
+$$ m_i, m_{i+d}, \dots, m_{i+nd}。$$
+
+其中\( i \in \{0, \dots, d-1\} \land i+nd < l\)。
+
+<p>
+然后，针对每一个子序列\(M_i\)进行频率统计，求得在该密文子序列里面每一种字母出现的频率得到表H。如果每一个密文子序列足够的长，我们可以认为表H里面的频率分布应当对应加密前的明文字母分布，例如在表H里面出现次数最多的字母所对应的明文是E。那么这个过程仅仅只是对比查表吗？当然不是，我们可以借助程序自动计算来代替这个过程。怎么做呢？
+
+现在我们有两张频率分布表P和H，观察它们的直方图，例如表P
+<figure>
+    <img src="https://www.mrzz.cc/image/letter_frequency.png"/> 
+</figure>
+</p>
+<p>
+
+不难理解，表P向右偏移k个距离就是表H，即\( P[i] \approx H[i + k \mod 26] \)，k即是当前序列所对应的子密钥。然后我们计算 
+
+$$ C(k) = \sum_{i=0}^{25} (P[i] - H[i + k \mod 26])^2， k \in \{ 0,\dots,25 \}，$$
+
+当C(k)值为最小的时候，也就是说原表P偏移以后和表H的差异最小，我们认为其k就是对应的子密钥。重复对每一个子序列进行表H的统计和C(k)的计算，我们将恢复出完整的密钥。
+
+
+下面是计算子密钥的代码片段</p>
+<p><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#66d9ef">int</span> subkey;
+<span style="color:#66d9ef">int</span> NUMCHARS <span style="color:#f92672">=</span> <span style="color:#ae81ff">26</span>;
+<span style="color:#66d9ef">double</span> min <span style="color:#f92672">=</span> <span style="color:#ae81ff">65535</span>;
+<span style="color:#66d9ef">for</span> (size_t k <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; k <span style="color:#f92672">&lt;</span> NUMCHARS; k<span style="color:#f92672">++</span>)
+    {    
+        C_k <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.0</span>;
+        <span style="color:#66d9ef">for</span> (size_t i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; i <span style="color:#f92672">&lt;</span> NUMCHARS; i<span style="color:#f92672">++</span>)
+        {
+          C_k <span style="color:#f92672">=</span> C_k <span style="color:#f92672">+</span> (P[i] <span style="color:#f92672">-</span> H[(i<span style="color:#f92672">+</span>k)<span style="color:#f92672">%</span>NUMCHARS])<span style="color:#f92672">*</span>(P[i] <span style="color:#f92672">-</span> H[(i<span style="color:#f92672">+</span>k)<span style="color:#f92672">%</span>NUMCHARS]);
+        }
+        <span style="color:#66d9ef">if</span> (C_k <span style="color:#f92672">&lt;</span> min)
+        {
+          min <span style="color:#f92672">=</span> C_k;       
+          subkey <span style="color:#f92672">=</span> k;        
+        }
+    }</code></pre></div>
+至此，我们完成了对Vigenere密码的攻击。古典密码学时代最后的余晖已落下，后面我会介绍现代密码学的研究方法和一些常见的对称与非对称加密系统。</p>
+
+
+      
+    </article>
+    
+  </div>
+
+        </div><footer>
+  <div class="container">
+    <p class="credits copyright">
+      <p class="credits theme-by">
+        <br>
+        <a href="/about">Zhan</a>
+        &copy;
+        2020
+
+      </p>
+  </div>
+</footer></body>
+</html>

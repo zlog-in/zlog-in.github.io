@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Zlog</title>
+    <link>/</link>
+    <description>Recent content on Zlog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Tue, 25 Aug 2020 22:25:43 +0200</lastBuildDate>
+    
+	<atom:link href="/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>大数幂运算</title>
+      <link>/post/exponential-large-number/</link>
+      <pubDate>Tue, 25 Aug 2020 22:25:43 +0200</pubDate>
+      
+      <guid>/post/exponential-large-number/</guid>
+      <description>幂运算(Exponentiation)又称指数运算，写作\(c= m^e \)，即\(c\)等于\(e\)个\(m\)相乘。当\(m\)或者\(e\)的数值不大的时候，可以通过重复的乘法运算来获得\(c\)。当\(m\)和\(e\)都是一个大数的时候，比如说512位长。尽管有了计算机，显然对\(m\)重复\(e\)次乘法运算的效率不高。那么该怎样快速进行大数幂运算呢？</description>
+    </item>
+    
+    <item>
+      <title>Polly Cracker破解</title>
+      <link>/post/polly-cracker-attack/</link>
+      <pubDate>Wed, 05 Aug 2020 13:35:37 +0200</pubDate>
+      
+      <guid>/post/polly-cracker-attack/</guid>
+      <description>在前文我们介绍了非对称加密系统Polly Cracker，就像naive RSA一样，它也不是一个安全的加密系统。例如，在已知一对明文密文(m, c),我们可以构造出来一个新的明文密文对(m+m&#39;, c+m&#39;)，因为\((c + m&#39;)(\sigma) = c(\sigma) + m&#39; = m + m&#39;\)。但本文将要讨论的问题要比这个严重的多：攻击者可以通过构造特殊的密文，直接解出来Polly Cracker的密钥。</description>
+    </item>
+    
+    <item>
+      <title>Polly Cracker加密系统</title>
+      <link>/post/polly-cracker/</link>
+      <pubDate>Wed, 22 Jul 2020 21:24:29 +0200</pubDate>
+      
+      <guid>/post/polly-cracker/</guid>
+      <description>&lt;p&gt;现代加密系统的安全性建立在计算数学难题之上，比如RSA基于质因数分解，DH基于DLog计算。本文介绍的加密系统Polly Cracker则是基于组合多项式求解。为了更好地理解Polly Cracker的原理，首先我们熟悉一下需要用到的数学知识。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Vigenere密码破解</title>
+      <link>/post/vigenere-attack/</link>
+      <pubDate>Tue, 21 Jul 2020 11:23:56 +0200</pubDate>
+      
+      <guid>/post/vigenere-attack/</guid>
+      <description>&lt;p&gt;在介绍Vigenere密码之前，先介绍一个更为简单的密码系统：凯撒密码(Caeser Cipher)。据称，当年凯撒曾用这种方法和手下的将领进行通信，传达指挥命令。凯撒密码是一种替换加密技术，即明文中所有字母都在字母表上向后或者向前偏移一个固定的距离，被替换成密文。当这个距离是3的时候，即称作凯撒密码。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>About</title>
+      <link>/about/</link>
+      <pubDate>Thu, 28 Feb 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/about/</guid>
+      <description>Written in Go, Hugo is an open source static site generator available under the Apache Licence 2.0. Hugo supports TOML, YAML and JSON data file types, Markdown and HTML content files and uses shortcodes to add rich content. Other notable features are taxonomies, multilingual mode, image processing, custom output formats, HTML/CSS/JS minification and support for Sass SCSS workflows.
+Hugo makes use of a variety of open source projects including:
+ https://github.</description>
+    </item>
+    
+  </channel>
+</rss>

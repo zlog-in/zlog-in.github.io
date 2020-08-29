@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en-us">
+ 
+
+
+
+
+
+    
+
+  
+<meta charset="utf-8" />
+
+  <title>大数幂运算 - Zlog</title>
+
+
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="stylesheet" href="/css/latex.css" />
+<link rel="stylesheet" href="/css/main.css" />
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<meta name="generator" content="Hugo 0.74.2" />
+ 
+  
+  <body>
+
+
+
+
+
+
+<header>  
+  <nav class="navbar">
+  <div class="nav">
+    
+
+    <ul class="nav-links">
+      
+    </ul>
+  </div>
+</nav>
+  <div class="intro-header">
+    <div class="container">
+      <div class="post-heading">
+        
+          <h1>大数幂运算</h1>
+          
+        
+
+      </div>
+    </div>
+  </div>
+   
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-173221601-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+ 
+
+
+
+
+</header>
+<div id="content">
+  <div class="container" role="main">
+    <article class="article" class="blog-post">
+      <div class="postmeta">
+        <span class="meta-post">
+  <i class="fa fa-calendar-alt"></i>Aug 25, 2020
+  
+</span>
+      </div>
+      <br>
+      
+    幂运算(Exponentiation)又称指数运算，写作\(c= m^e \)，即\(c\)等于\(e\)个\(m\)相乘。当\(m\)或者\(e\)的数值不大的时候，可以通过重复的乘法运算来获得\(c\)。当\(m\)和\(e\)都是一个大数的时候，比如说512位长。尽管有了计算机，显然对\(m\)重复\(e\)次乘法运算的效率不高。那么该怎样快速进行大数幂运算呢？
+
+<h2 id="平方乘">平方乘</h2>
+
+为了找到快速计算\(c= m^e\)的方法，首先我们检查一下\(m\)和\(e\)的特点。在计算机存储或者计算数字的时候，它们都是以二进制的形式存在。例如\(m^{5}\)在计算机看来应该是
+$$ m^{5} = m^{101}。$$
+
+先简单描述一个新的算法来求 \(c = m^5 \)：令 \(c = 1\)，然后从101的最高位开始，先求其平方\(c = c^2 \)，如果该位的值为1，则令\(c = c \cdot m\)，否则开始下一位。现在\(c = m^5 \)的运算过程如下
+
+$$ c = m^{101} = ((1^2 \cdot m)^2)^2 \cdot m。$$
+
+通过观察二进制指数，可以发现并不是\(e\)里面每一个比特都参与乘法运算，只有为1的比特才会引起一次乘法运算。对比原来的5次乘法，新的算法只需要2次平方(1的平方不算)和2次乘法。
+
+当\(e=25\)时，优化效果更加明显
+$$ m^{25} = m^{11001} = ((((1 \cdot m)^2 \cdot m)^2)^2)^2 \cdot m，$$
+
+原本需要25次乘法运算，现在通过4次平方和3次乘法即可得到结果。这个算法被称作Square&Multiply Alogrithm，译作平方乘算法。在RSA加密系统中，密文\(c = m^e \mod N\)。通常，此时\(m, e 和N\)都是大数，高效运算对于RSA的应用有着重要意义。
+
+<p>让我们以RSA为例，用伪代码更精确地描述一下原算法。</p>
+
+Input: Base \(m\), modulus \(N\), exponent \( e = \sum_{i=0}^l e_i2^i, \ e_l = 1\) <br>
+
+Output: \( c = m^e \mod N\)
+
+<ol>
+<li>\( c = m\)</li>
+<li>FOR  \(i = l-1\) DOWN TO \(0\) DO:
+<ul>
+<li>2.1 \( c = c^2 \mod N\)</li>
+<li>2.2 IF \(e_i = 1\)  THEN:
+<ul>
+<li>2.2.1 \(c = c \cdot m \mod N\) </li>
+</ul>
+</li>
+</ul>
+</li>
+<li>RETURN \(c\)</li>
+</ol>
+<p>现在来研究一下平方乘算法需要的计算步骤。先看下表</p>
+<table>
+<thead>
+<tr>
+<th>操作</th>
+<th>次数</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SQR</td>
+<td>\(l\)</td>
+</tr>
+<tr>
+<td>MUL</td>
+<td>HW(e)-1</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+注意一下，里面的\(l\)不是指数的长度，而是其长度减1。HW代表的是Hamming Weight，HW(\(e\))的值为在\(e\)里面存在的1的数量。在算法的第一步只是赋值操作，并没有平方也没有乘法操作，所以最终SQR的次数为\(l\)，MUL次数为HW(\(e\))-1。
+</p>
+<p>
+还以\( c = m^{25} = m^{11001}\)为例，仔细看一下算法的运行过程。
+</p>
+
+<table>
+<thead>
+<tr>
+<th>迭代</th>
+<th>指数</th>
+<th>结果</th>
+<th>操作</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>1</td>
+<td>\( c = m \)</td>
+<td></td>
+</tr>
+<tr>
+<td>1a</td>
+<td>1</td>
+<td>\(c = c^2 \)</td>
+<td>SQR</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>11</td>
+<td>\( c = c \cdot m \)</td>
+<td>MUL</td>
+</tr>
+<tr>
+<td>2a</td>
+<td>11</td>
+<td>\( c = c^2 \)</td>
+<td>SQR</td>
+</tr>
+<tr>
+<td>2b</td>
+<td>110</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>3a</td>
+<td>1100</td>
+<td>\( c = c^2  \)</td>
+<td>SQR</td>
+</tr>
+<tr>
+<td>3b</td>
+<td>1100</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>4a</td>
+<td>11001</td>
+<td>\( c = c^2 \)</td>
+<td>SQR</td>
+</tr>
+<tr>
+<td>4b</td>
+<td>11001</td>
+<td>\( c = c \cdot m \)</td>
+<td>MUL</td>
+</tr>
+</tbody>
+</table>
+<p>在表中步骤a代表是一次平方操作，步骤b代表当指数的该位值为1时候进行的一次乘法操作。</p>
+<h2 id="k比特幂运算">k比特幂运算</h2>
+
+在上述的算法里面，一次迭代只向右推进一位比特，速度还不够快。现在假设\(k\)个比特是一个整体，也就是将原来的二进制指数转换成\(b=2^k\)进制数，即\(e=(E_tE_{t-1} \cdots E_1E_0)_b\)。这样就可以迭代一次推进\(k\)个比特。然后不是乘以\(m\)，而是\(m^{E_i}\), \(E_i \in \{0,1,\cdots,2^k-1\}\)。通过事先计算出所有的\(m^{E_i}\)，并存在表格LUT里面，当进行乘法操作的时候，直接根据当时的指数\(E_i\)，查表得出\(m^{E_i}\)然后相乘，可以进一步加快速度。
+<p>k比特算法的伪代码如下</p>
+
+Input: Base \(m\), modulus \(N\), Exponent \(e = (E_tE_{t-1} \cdots E_1E_0)_b\), where \(b = 2^k\) for some \(k > 1\), \(E_i \in \{0, 1, \cdots, 2^k -1\}\) <br>
+Output: \(c = m^e \mod N\)
+
+<ol>
+<li>Precomputation
+<ul>
+<li>1.1  \(m_0 = 1\)</li>
+<li>1.2 FOR \(i\) FROM \(1\) TO \((2^k -1)\) DO:
+<ul>
+<li>1.2.1 \(m_i = m_{i-1} \cdot m \mod N\)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>\(c = m^{E_t}\)</li>
+<li>FOR \(i\) FROM \(t-1\) DOWN TO \(0\) DO:
+<ul>
+<li>3.1 \(c = c^{2^k} \mod N\)</li>
+<li>3.2 \(c = c \cdot m^{E_i} \mod N\)</li>
+</ul>
+</li>
+<li>RETURN \(c\)</li>
+</ol>
+<p>同样，我们也用表格来展示迭代的过程。</p>
+<table>
+<thead>
+<tr>
+<th>迭代</th>
+<th>结果</th>
+<th>操作</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>\(m^{E_t} \)</td>
+<td>TLU</td>
+</tr>
+<tr>
+<td>1a</td>
+<td>\( (m^{E_t})^{2^k} = m^{(E_t0)_b} \)</td>
+<td>k·SQR</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>\(m^{(E_t0)_b} \cdot m^{E_{t-1}} = m^{(E_tE_{t-1})_b} \)</td>
+<td>TLU&amp;MUL</td>
+</tr>
+<tr>
+<td>2a</td>
+<td>\((m^{(E_tE_{t-1})_b})^{2^k} = m^{(E_tE_{t-1}0)_b}  \)</td>
+<td>k·SQR</td>
+</tr>
+<tr>
+<td>2b</td>
+<td>\(m^{(E_tE_{t-1}0)_b} \cdot m^{E_{t-2}} = m^{(E_tE_{t-1}E_{t-2})_b}\)</td>
+<td>TLU&amp;MUL</td>
+</tr>
+<tr>
+<td> \(\vdots\) </td>
+<td> \(\vdots\) </td>
+<td> \(\vdots\) </td>
+</tr>
+<tr>
+<td>ta</td>
+<td>\((m^{(E_t \cdots E_0)_b})^{2^k} = m^{(E_t \cdots E_1 0)_b}  \)</td>
+<td>k·SQR</td>
+</tr>
+<tr>
+<td>tb</td>
+<td>\(m^{(E_t \cdots E_1 0)_b} \cdot m^{E_0} = m^{(E_t \cdots E_1 E_0)_b}\)</td>
+<td>TLU&amp;MUL</td>
+</tr>
+</tbody>
+</table>
+
+可以发现，所谓\(k\)次平方操作也就是在\(b\)进制下一次移位操作，然后再乘以\(m^{E_i}\)。也就理解了，其实1个比特二进制和\(k\)个比特\(b\)进制其实原理一样，只是后者一次操作的位数更多而已，当然时间效率也就更高一些。
+
+<h2 id="更小的表格">更小的表格</h2>
+
+
+在\(b\)进制的情况下面，我们再仔细看一下指数里面的\(E_i\)。如前所述，任何数字在计算机里面都是以二进制存储。我们可以将其表示为
+$$ E_i = (\overset{k-h_i}{\overline{e_{k-1} e_{k-2} \cdots e_{h_i}}} \ \underset{h_i}{\underline{0 \cdots 0}})_2$$
+
+其中\(0 \leq h_i \leq k-1\)，它代表在\(E_i\)里面值为1的最低位，\(e_{h_i} = 1\)。我们定义 \( u_i = e_{k-1} e_{k-2} \cdots e_{h_i} \)，于是把\(E_i\)分成了两部分，全为0的低位，长度是\(h_i\)，值为\(u_i\)的高位，长度是\(k-h_i\)。当\(E_i = 0\)时，则令\(u_i = h_i = 0 \)。于是，
+
+$$ E_i = u_i \cdot 2^{h_i}。$$
+<p>
+因为\(u_i < 2^k\)，所以\(m^{u_i}\)存在于表LUT中。同时\(u_i\)总是奇数，因此并不需要查找表中的偶数项。在预先计算的步骤，只需要存储奇数项索引和值即可，因此关于表格的运算量减少了一半。
+</p>
+<p>
+也许有同学会在这里感到奇怪，难道就不需要偶数项指数了吗？回想一下最开始1比特的情况：0位不会引起乘法运算，只有1位才会，但是每一位比特都会引起一次平方运算。现在再来回过头，看一下\(k\)比特情况：我们把指数\(E_i\)分成了奇数的高位，与值为0的低位。高位比特的值为\(u_i\)，它会引起一次乘以\(m^{u_i}\)的操作，同时也有\(k-h_i\)次平方操作。低位比特只会引起\(h_i\)次平方操作。
+</p>
+
+<p>现在我们修改算法，它的伪代码如下</p>
+
+Input: Base \(m\), modulus \(N\), Exponent \(e = (E_tE_{t-1} \cdots E_1E_0)_b\), where \(b = 2^k\) for some \(k > 1, E_i =  u_i \cdot 2^{h_i}\)<br>
+Output: \(c = m^e \mod N\)
+
+<ol>
+<li>Precomputation
+<ul>
+<li>1.1  \(m_0 = 1, m_1 = m, m_2 = m^2 \mod N\)</li>
+<li>1.2  FOR \(i\) FROM \(1\) to \((2^{k-1} - 1)\) DO:
+<ul>
+<li>1.2.1  \(m_{2i+1} = m_{2i-1} \cdot m_2\)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li> \(c = 1\)</li>
+<li> FOR \(i\) FROM \(t\) DOWN TO \(0\) DO:
+<ul>
+<li>3.1  \(c = c^{2^{k-h_i}} \mod N\)</li>
+<li>3.2  \(c = c \cdot m_{u_i} \mod N\)</li>
+<li>3.3  \(c = c^{2^{h_i}} \mod N\)</li>
+</ul>
+</li>
+</ol>
+<p>表格可以更加直观地展示算法运行过程</p>
+<table>
+<thead>
+<tr>
+<th>迭代</th>
+<th>结果</th>
+<th>操作</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>3.1</td>
+<td> \((c^{(E_t \cdots E_{i+1})_b})^{2^{k - h_i}} = c ^{(E_t \cdots E_{i+1})_b(\overset{k-h_i}{\overline{0 \cdots 0}})_2} \)</td>
+<td> \((k − h_i ) \cdot \)SQR</td>
+</tr>
+<tr>
+<td>3.2</td>
+<td> \((c ^{(E_t \cdots E_{i+1})_b(0 \cdots 0)_2}) \cdot m^{u_i} = c^{(E_t \cdots E_{i+1})_b(u_i)_2}\)</td>
+<td>TLU&amp;MUL</td>
+</tr>
+<tr>
+<td>3.3</td>
+<td> \((c^{(E_t \cdots E_{i+1})_b(u_i)_2})^{2^{h_i}} =c^{(E_t \cdots E_{i+1})_b(\underset{ = E_i}{\underline{u_i \overset{h_i}{\overline{0 \cdots 0}}} )_2}}\) </td>
+<td> \( h_i \cdot \)SQR</td>
+</tr>
+</tbody>
+</table>
+
+我们发现，即使在\(k\)个比特之内，也不是每一位都会导致乘法运算。同样的就是在高位的奇数\(u_i\)里面，也会存在0位，那么该怎么进一步优化呢？答案是使用滑动窗口技术。
+
+<h2 id="滑动窗口">滑动窗口</h2>
+<p>所谓滑动窗口指的是，每次向右移动的距离并不固定，窗口的大小根据窗口内的比特信息而变化。滑动窗口技术是最高效的大数幂运算。现在来看一下究竟它是怎样工作的。</p>
+<p>
+首先我们给窗口定义一个最大长度用来限制其范围: \(w \leq k\)。然后规定窗口的滑动规则：窗口向右滑动过程中，遇见0位直接跳过，直到遇到1，这是窗口开始的位置，然后继续向右寻找窗口的最后一位。在不超过最大长度的情况下，窗口最后一位比特也是1。在算法运行过程中，窗首和窗尾都是在不停地滑动，直到其遇到一个首尾均为1的最长序列。如下例所示，\(k = 4\)
+
+$$ \cdots \underset{w_i}{\boxed{1101}} \ \underset{w_{i+1}}{\boxed{101}} \ 000 \ \underset{w_{i+2}}{\boxed{1001}} \cdots$$</p>
+<p>有了滑动窗口的辅助，算法对指数的操作粒度变得更细，但又不至于逐位比特计算，平衡了时间和空间的效率。</p>
+<p>同样地，最后用伪代码描述一下大数幂运算最高效的算法</p>
+
+Input: Base \(m\), modulus \(N\), Exponent \(e = (e_le_{l-1} \cdots e_1e_0)_2\), with \(e_l = 1\) and \(k \geq 1\)<br>
+Output: \(c = m^e \mod N\)
+
+<ol>
+<li>Precomputation
+<ul>
+<li>1.1  \(m_0 = 1, m_1 = m, m_2 = m^2 \mod N\)</li>
+<li>1.2  FOR \(i\) FROM \(1\) to \((2^{k-1} - 1)\) DO:
+<ul>
+<li>1.2.1  \(m_{2i+1} = m_{2i-1} \cdot m_2 \mod N \)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li> \(c = 1, i = l\)</li>
+<li>WHILE \(i \geq 0\) DO:
+<ul>
+<li>3.1 IF \(e_i = 0\) THEN DO:
+<ul>
+<li>3.1.1 \(c = c^2 \mod N \)</li>
+<li>3.1.2 \(i = i-1 \)</li>
+</ul>
+</li>
+<li>3.2 ELSE find the longest bitstring \(e_ie_{i-1} \cdots e_j\) such that \(i-j+1 \leq k\) and \(e_j = 1\) and DO:
+<ul>
+<li>3.2.1 \(c = c^{2^{i-j+1}} \cdot m_{(e_ie_{i-1} \cdots e_j)_2}\mod N\) </li>
+<li>3.2.2 \(i = j -1\)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>RETURN \(c\)</li>
+</ol>
+<h2 id="结束语">结束语</h2>
+<p>笔者在做密码学实践课作业的时候，老师要求实现一个大数幂运算算法。在C语言有一个厍叫做<code>GMPLib</code>，即<code>gmp.h</code>头文件。里面的函数可以操作任意精度的数值，而且速度非常得快。其中一个名叫<code>mpz_powm()</code>的函数，就可以实现快速幂运算。笔者的工作其实就是自己实现了这样一个函数的算法，代码在<a href="https://github.com/mrzz00/large-exponetiation/blob/master/exp.c">这里</a>可以参阅。这篇介绍详细介绍大数幂运算的小文，撰写难度令我几度停手，写 \(\LaTeX \) 确实废指  🤘</p>
+<p>特别希望此文能够帮助到一些后来者。</p>
+
+
+      
+    </article>
+    
+  </div>
+
+        </div><footer>
+  <div class="container">
+    <p class="credits copyright">
+      <p class="credits theme-by">
+        <br>
+        <a href="/about">Zhan</a>
+        &copy;
+        2020
+
+      </p>
+  </div>
+</footer></body>
+</html>
