@@ -133,14 +133,13 @@ $$ m_i = Dec_k(c_i )\oplus c_{i-1}。$$</p>
 padding_len = padding + 1
 </code></pre>填充长度也相应增长一个字节。知道了中间值，然后利用原始的密文，便能直接计算明文\(m_2 = c_1 \oplus t_2\)。
 <pre><code>m_[L-padding_len-1] == c_1[L-padding_len-1] ^ t_2[L-padding_len-1]
-padding_len = padding + 1
 </code></pre><p>如此这般不断修改填充部分的内容，增加填充长度，通过<code>Orackle</code>求出中间值，然后再和原始密文异或，最终能够恢复整个明文\(m_1,m_2\)。攻击者，胜。</p>
 <h2 id="结束语">结束语</h2>
 <p>此攻击的思路就是利用已知的填充内容和不停修改上一段密文，直到构造出一个合法的填充，求出当前密文(例如\(c_2\))对应的中间值，然后此中间值再和原始密文异或便得到明文。</p>
 <p>上述攻击完成以后，攻击者就获得了一对明文密文\((M,C)\)。利用\((M,C)\)和<code>Oracle</code>攻击者甚至还能给任意一个明文\(M'\)构造一个合法的密文\(C'\)。思路类似，有兴趣的同学可以思考一下这是如何做到的？给一个小小的提示，以后有机会希望能够再写篇小文详细说明一番。
 $$ IV&rsquo; = IV \oplus m_1 \oplus m&rsquo;_1,\ c&rsquo;_1 = c_1 $$
 $$ m&rsquo;_1 = Dec_k(c&rsquo;_1) \oplus IV&rsquo; = Dec_k(c_1) \oplus IV \oplus m_1 \oplus m&rsquo;_1$$</p>
-<p>在笔者的<a href="https://github.com/mrzz00/tinycode/blob/master/cbc_padding.c">代码</a>里面，也实现了第一种和第二种攻击，欢迎查阅。</p>
+<p>在笔者的<a href="https://github.com/mrzz00/tinycode/blob/master/cbc_padding.c">代码</a>里面，也实现了第一种和第二种攻击，欢迎查阅 :octocat:</p>
 
 
       
