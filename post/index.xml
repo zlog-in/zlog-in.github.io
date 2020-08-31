@@ -17,7 +17,7 @@
       <pubDate>Sat, 29 Aug 2020 20:53:58 +0200</pubDate>
       
       <guid>/post/cbc-padding/</guid>
-      <description>&lt;p&gt;CBC(Cipher Block Chaining)是一种块加密，所谓块，就是一段固定长度的数据。明文，也就是待加密的数据，被分割成若干个块，然后分别加密每一个块，如果最后一个块未被填满，则需要额外的数据填充其中，然后加密。在本文首先介绍CBC加密系统的工作流程，然后就其采用的填充标准&lt;a href=&#34;https://tools.ietf.org/html/rfc2315#section-10.3&#34;&gt;PKCS#7&lt;/a&gt;详细说明一种攻击方法。&lt;/p&gt;</description>
+      <description>&lt;p&gt;CBC(Cipher Block Chaining)是一种块加密，所谓块，就是一段固定长度的数据。明文，也就是待加密的数据，被分割成若干个块，然后分别加密每一个块。如果最后一个块未被填满，则需要额外的数据填充其中，然后加密。在本文首先介绍CBC加密系统的工作流程，然后就其采用的填充标准&lt;a href=&#34;https://tools.ietf.org/html/rfc2315#section-10.3&#34;&gt;PKCS#7&lt;/a&gt;详细说明一种攻击方法。&lt;/p&gt;</description>
     </item>
     
     <item>
