@@ -129,8 +129,8 @@ $$ m_i = Dec_k(c_i )\oplus c_{i-1}。$$</p>
 <pre><code>c_1[L-padding_len:L] = [04,04,04] ^ t_2[L-padding_len:L]
 </code></pre><p>
 此时提交\(c_1\)被修改以后的密文给<code>Oracle</code>解密，基本上结果是<code>0</code>。因为此时明文的最后三个字节的填充内容变成了<code>04 04 04</code>，所以<code>Oracle</code>会继续往前检查一下字节，看是否为<code>04</code>。而从这里开始，就是消息的真正内容。而攻击者接下来要做就是，继续修改\(c_1\)里面这一字节的内容，然后提交<code>Oracle</code>解密，直到返回值为1。此时攻击者就知道了中间值对应位置的内容</p>
-<pre><code>t_[L-padding_len-1] = c_1[L-padding_len-1] ^ 04
-padding_len = padding + 1
+<pre><code>padding_len = padding + 1
+t_[L-padding_len-1] = c_1[L-padding_len-1] ^ 04
 </code></pre>填充长度也相应增长一个字节。知道了中间值，然后利用原始的密文，便能直接计算明文\(m_2 = c_1 \oplus t_2\)。
 <pre><code>m_[L-padding_len-1] = c_1[L-padding_len-1] ^ t_2[L-padding_len-1]
 </code></pre><p>如此这般不断修改填充部分的内容，增加填充长度，通过<code>Orackle</code>求出中间值，然后再和原始密文异或，最终能够恢复整个明文\(m_1,m_2\)。攻击者，胜。</p>
