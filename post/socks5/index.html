@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en-us">
+ 
+
+
+
+
+
+    
+
+  
+<meta charset="utf-8" />
+
+  <title>SOCKS5协议 - Zlog</title>
+
+
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="stylesheet" href="/css/latex.css" />
+<link rel="stylesheet" href="/css/main.css" />
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<meta name="generator" content="Hugo 0.74.2" />
+ 
+  
+  <body>
+
+
+
+
+
+
+<header>  
+  <nav class="navbar">
+  <div class="nav">
+    
+
+    <ul class="nav-links">
+      
+    </ul>
+  </div>
+</nav>
+  <div class="intro-header">
+    <div class="container">
+      <div class="post-heading">
+        
+          <h1>SOCKS5协议</h1>
+          
+        
+
+      </div>
+    </div>
+  </div>
+
+
+</header>
+<div id="content">
+  <div class="container" role="main">
+    <article class="article" class="blog-post">
+      <div class="postmeta">
+        <span class="meta-post">
+  <i class="fa fa-calendar-alt"></i>Sep 8, 2020
+  
+</span>
+      </div>
+      <br>
+      
+    <p>最近看了一下<a href="https://tools.ietf.org/html/rfc1928"><code>SOCKS5</code></a>协议，一个小巧方便的代理协议，这里是一些笔记。</p>
+<h2 id="建立连接">建立连接</h2>
+<p>SOCKS代理由客户端主动发起，它发送一个如下报文至代理服务器，用以协商验证方式</p>
+<pre><code>               +----+----------+----------+
+               |VER | NMETHODS | METHODS  |
+               +----+----------+----------+
+               | 1  |    1     | 1 to 255 |
+               +----+----------+----------+
+</code></pre>
+<ul>
+<li><code>VER</code> ： SOCKS版本，默认为<code>0x05</code>，长度为1个字节</li>
+<li><code>NMETHODS</code>：协议支持的<code>METHODS</code>数量，长度为1个字节，其大小为<code>METHODS</code>字段的长度</li>
+<li><code>METHODS</code>： 客户端支持的验证方式，可以有多种，目前定义了
+<ul>
+<li><code>0x00</code>：NO AUTHENTICATION REQUIRED</li>
+<li><code>0x01</code>：GSSAPI</li>
+<li><code>0x02</code>：USERNAME/PASSWORD</li>
+<li><code>0x03</code>: to X'7F&rsquo; IANA ASSIGNED</li>
+<li><code>0x80</code>: to X&rsquo;FE&rsquo; RESERVED FOR PRIVATE METHODS</li>
+<li><code>0xFF</code>: NO ACCEPTABLE METHODS</li>
+</ul>
+</li>
+</ul>
+<h2 id="连接响应">连接响应</h2>
+<p>代理服务器收到请求报文以后，返回一个数据包告诉客户端验证方式</p>
+<pre><code>                    +----+--------+
+                    |VER | METHOD |
+                    +----+--------+
+                    | 1  |   1    |
+                    +----+--------+
+</code></pre>
+<p>TinyProxy采用<code>0x01</code>：NO AUTHENTICATION REQUIRED，即无须验证。</p>
+<h2 id="和目标建立连接">和目标建立连接</h2>
+<p>与代理服务器建立连接以后，原本发给目标的数据报统统转发至代理服务器，由其继续转发至目标。</p>
+<pre><code>    +----+-----+-------+------+----------+----------+
+    |VER | CMD |  RSV  | ATYP | DST.ADDR | DST.PORT |
+    +----+-----+-------+------+----------+----------+
+    | 1  |  1  | X'00' |  1   | Variable |    2     |
+    +----+-----+-------+------+----------+----------+
+</code></pre>
+<ul>
+<li><code>CMD</code>：客户端请求类型，<code>CONNECT=0x01, BIND =0x02, UDP ASSOCIATE=0x03</code></li>
+<li><code>ATYP</code>：目标服务器地址类型，<code>IPv4=0x01, DOMAINNAME=0x03, IPv6=0x04</code></li>
+<li><code>DST.ADDR</code>：目标服务器地址，长度不定，视<code>ATYP</code>而定</li>
+<li><code>DST.PORT </code>：目标服务器端口</li>
+</ul>
+<h2 id="连接状态响应">连接状态响应</h2>
+<p>代理服务器收到数据包以后，与目标服务器建立连接，并转发数据。并且向代理客户端返回一个数据包，告知其与目标服务器的通信情况。代理服务器收到目标服务器的数据以后，转发至代理客户端。</p>
+<pre><code>    +----+-----+-------+------+----------+----------+
+    |VER | REP |  RSV  | ATYP | BND.ADDR | BND.PORT |
+    +----+-----+-------+------+----------+----------+
+    | 1  |  1  | X'00' |  1   | Variable |    2     |
+    +----+-----+-------+------+----------+----------+
+</code></pre>
+<ul>
+<li><code>REP</code>：连接状态响应码，常见如下
+<ul>
+<li><code>0x00</code> succeeded</li>
+<li><code>0x01</code> general SOCKS server failure</li>
+<li><code>0x02</code> connection not allowed by ruleset</li>
+<li><code>0x03</code> Network unreachable</li>
+<li><code>0x04</code> Host unreachable</li>
+<li><code>0x05</code> Connection refused</li>
+<li><code>0x06</code> TTL expired</li>
+<li><code>0x07</code> Command not supported</li>
+<li><code>0x08</code> Address type not supported</li>
+</ul>
+</li>
+<li><code>BND.ADDR</code>：代理服务器绑定的地址</li>
+<li><code>BND.PORT</code>：代理服务器绑定的端口</li>
+</ul>
+
+
+      
+    </article>
+    
+  </div>
+
+        </div><footer>
+  <div class="container">
+    <p class="credits copyright">
+      <p class="credits theme-by">
+        <br>
+        <a href="/about">Zhan</a>
+        &copy;
+        2020
+
+      </p>
+  </div>
+</footer></body>
+</html>
