@@ -77,7 +77,7 @@
 
 <p>$$ L_{i+1} = R_i $$
 $$ R_{i+1} = L_i \oplus F(R_i, K_i)$$
-其中\(i = 0, 1, \dots， n\)。</p>
+其中\(i = 0, 1, \dots，n\)。</p>
 <p>Feistel结构的优点是，加密函数F并不要求一定可逆。因为解密过程同加密一样，使用相同的结构，唯一区别就是子密钥的使用顺序<strong>完全相反</strong>，如上图右侧所示。可以这样做是因为一个特殊的运算<code>XOR</code>，它满足这样的性质\(a \oplus b = c \rightarrow a \oplus c = b, b \oplus c = a \)。所以我们有
 $$ R_i = L_{i+1} $$
 $$ L_i = R_{i+1} \oplus F(L_{i+1}, K_i)$$
