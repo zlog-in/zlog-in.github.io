@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en-us">
+ 
+
+
+
+
+
+    
+
+  
+<meta charset="utf-8" />
+
+  <title>线性分析 Feal4 - Zlog</title>
+
+
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="stylesheet" href="/css/latex.css" />
+<link rel="stylesheet" href="/css/main.css" />
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<meta name="generator" content="Hugo 0.74.2" />
+ 
+  
+  <body>
+
+
+
+
+
+
+<header>  
+  <nav class="navbar">
+  <div class="nav">
+    
+
+    <ul class="nav-links">
+      
+    </ul>
+  </div>
+</nav>
+  <div class="intro-header">
+    <div class="container">
+      <div class="post-heading">
+        
+          <h1>线性分析 Feal4</h1>
+          
+        
+
+      </div>
+    </div>
+  </div>
+
+
+</header>
+<div id="content">
+  <div class="container" role="main">
+    <article class="article" class="blog-post">
+      <div class="postmeta">
+        <span class="meta-post">
+  <i class="fa fa-calendar-alt"></i>Oct 1, 2020
+  
+</span>
+      </div>
+      <br>
+      
+    <p>FEAL4(Fast data Encryption Algorithm)由日本密码学家清水明宏和宫口庄司于1987年在日本电信电话株式会社(NTT)任职期间提出，作为一个针对DES的替代加密方案。相比较DES被设计成硬件电路的思路，FEAL4可有纯软件实现，得益于较少的加密轮数(4轮)，其软件执行速度相当快。本文首先介绍FEAL4以及DES所使用的Feistel加密结构，根据FEAL4所使用的F函数，分析F输入及输出之间的线性关系。然后解释，如何利用该线性关系配合较少的明文密文对，攻击者可以快速破解密钥。</p>
+<h2 id="feistel-network">Feistel Network</h2>
+<p>一切还需要从DES(Data Encryption Standard)讲起。二十世纪七〇年代，蓝色巨人IBM在NSA(后来被Snowden暴光棱镜计划的大名鼎鼎国安局)的资助下，提出了一套数据加密标准方案，简称DES。由于其密钥长度被设计成仅有56位，此方案一开始就被众多密码学家质疑其安全性。一九九八年EFF(电子前哨基金会)使用价值两万五千美元的并行计算机在大约九天的时间即能暴力破解DES，获得密钥。本节的重点并不是DES，而是DES采用的Feistel结构。</p>
+<p>Feistel Network得名于德裔密码学家Horst Feistel，七十年代在美国为IBM工作，DES方案采用了他和Don Coppersmith设计的加密结构。其示意图如下</p>
+<p>加密或者解密由若干轮相同的计算过程组成，密钥(K = K_0, K_1, \dots, K_n)。首先待加密的数据被分成左右等长的两段，(L_0和R_0)。然后经由第一轮加密函数F和第一个子密钥(K_0)，获得F函数的输出(F(K_0,R_0))。对此后每一轮，计算
+$$ L_{i+1} = R_i $$
+$$ R_{i+1} = L_i \oplus F(R_i, K_i)$$
+其中(i = 0, 1, \dots， n)。</p>
+<p>Feistel结构的优点是，加密函数F并不要求一定可逆。因为解密过程同加密一样，使用相同的结构，唯一区别就是子密钥的使用顺序<strong>完全相反</strong>，如上图右侧所示。可以这样做是因为一个特殊的运算<code>XOR</code>，它满足这样的性质(a \oplus b = c \rightarrow a \oplus c = b, b \oplus c = a )。所以我们有
+$$ R_i = L_{i+1} $$
+$$ L_i = R_{i+1} \oplus F(L_{i+1}, K_i)$$
+其中(i = n, n-1, \dots, 0)。</p>
+<h2 id="feal4">FEAL4</h2>
+<p>在</p>
+
+
+      
+    </article>
+    
+  </div>
+
+        </div><footer>
+  <div class="container">
+    <p class="credits copyright">
+      <p class="credits theme-by">
+        <br>
+        <a href="/about">Zhan</a>
+        &copy;
+        2020
+
+      </p>
+  </div>
+</footer></body>
+</html>
