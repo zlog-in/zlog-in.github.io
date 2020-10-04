@@ -73,7 +73,7 @@
   </div>
   <div class="post-entry">
     
-      <p><p>FEAL4(Fast data Encryption Algorithm)由日本密码学家清水明宏和宫口庄司于1987年在日本电信电话株式会社(NTT)任职期间提出，作为一个针对DES的替代加密方案。相比较DES被设计成硬件电路的思路，FEAL4可有纯软件实现，得益于较少的加密轮数(4轮)，其执行速度相当快。本文首先介绍FEAL4以及DES所使用的Feistel加密结构，根据FEAL4所使用的F函数，分析F输入及输出之间的线性关系。然后解释，如何利用该线性关系配合较少的明文密文对，攻击者可以快速破解密钥。</p></p>
+      <p><p>FEAL4(Fast data Encryption Algorithm)由日本密码学家清水明宏和宫口庄司于1987年在日本电信电话株式会社(NTT)任职期间提出，作为一个针对DES的替代加密方案。相比较DES被设计成硬件电路的思路，FEAL4可由纯软件实现，得益于较少的加密轮数(4轮)，其执行速度相当快。本文首先介绍FEAL4以及DES所使用的Feistel加密结构，根据FEAL4所使用的F函数，分析F输入及输出之间的线性关系。然后解释，如何利用该线性关系配合较少的明文密文对，攻击者可以快速破解密钥。</p></p>
         <a href="/post/feal4/" class="post-read-more">Read More</a>
     
   </div>
@@ -163,7 +163,7 @@
   </div>
   <div class="post-entry">
     
-      <p>在前文我们介绍了非对称加密系统Polly Cracker，就像naive RSA一样，它也不是一个安全的加密系统。例如，在已知一对明文密文(m, c),我们可以构造出来一个新的明文密文对(m+m', c+m')，因为\((c + m')(\sigma) = c(\sigma) + m' = m + m'\)。但本文将要讨论的问题要比这个严重的多：攻击者可以通过构造特殊的密文，直接解出来Polly Cracker的密钥。</p>
+      <p>在前文我们介绍了非对称加密系统Polly Cracker，就像naive RSA一样，它也不是一个安全的加密系统。例如，在已知一对明文密文\((m, c)\),我们可以构造出来一个新的明文密文对\((m+m', c+m')\)，因为\((c + m')(\sigma) = c(\sigma) + m' = m + m'\)。但本文将要讨论的问题要比这个严重的多：攻击者可以通过构造特殊的密文，直接解出来Polly Cracker的密钥。</p>
         <a href="/post/polly-cracker-attack/" class="post-read-more">Read More</a>
     
   </div>
