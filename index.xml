@@ -6,10 +6,19 @@
     <description>Recent content on Zlog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 08 Sep 2020 12:56:50 +0200</lastBuildDate>
+    <lastBuildDate>Thu, 01 Oct 2020 21:03:03 +0200</lastBuildDate>
     
 	<atom:link href="/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>线性分析 FEAL4</title>
+      <link>/post/feal4/</link>
+      <pubDate>Thu, 01 Oct 2020 21:03:03 +0200</pubDate>
+      
+      <guid>/post/feal4/</guid>
+      <description>&lt;p&gt;FEAL4(Fast data Encryption Algorithm)由日本密码学家清水明宏和宫口庄司于1987年在日本电信电话株式会社(NTT)任职期间提出，作为一个针对DES的替代加密方案。相比较DES被设计成硬件电路的思路，FEAL4可有纯软件实现，得益于较少的加密轮数(4轮)，其执行速度相当快。本文首先介绍FEAL4以及DES所使用的Feistel加密结构，根据FEAL4所使用的F函数，分析F输入及输出之间的线性关系。然后解释，如何利用该线性关系配合较少的明文密文对，攻击者可以快速破解密钥。&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>SOCKS5协议</title>
