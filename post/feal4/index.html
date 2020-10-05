@@ -90,7 +90,7 @@ $$ L_i = R_{i+1} \oplus F(L_{i+1}, K_i)$$
 
 
 FEAL4仅有4轮加密过程，待加密的明文长度为64位，被分成\(m_l,m_r\)各32位的俩部分，密钥总长度位64位，每一轮子密钥\(K_i\)长度为16位。在每一轮加密过程中，F函数得到一个右侧32位待加密数据\(B_i = R_i\)和一个16位子密钥\(K_i\)，经过计算之后输出32位结果\(F_i = F(R_i, K_i)\)，再与左侧待加密数据异或得到下一轮右侧待加密的数据\(R_{i+1} = L_i \oplus F_i \)。
-<p>对FEAL4的线性分析的关键在F函数，在清水明宏和宫口庄司合著的论文里面，我们可以得到F函数的结构如图所示</p>
+<p>对FEAL4的线性分析的关键在F函数，在清水明宏和宫口庄司合著的<!-- raw HTML omitted -->论文<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup><!-- raw HTML omitted -->里面，我们可以得到F函数的结构如图所示</p>
 <figure>
     <img src="https://www.mrzz.cc/image/f_function.png"/> 
 </figure>
@@ -196,7 +196,15 @@ $$ L_2 == R_1 $$
 如此，攻击者便完整获得了加密密钥。
 <h2 id="结束语">结束语</h2>
 <p>
-笔者在对称加密这门课上学习了FEAL4的线性分析原理，并在实践课实现了此攻击方法。限于实验要求，最多只能使用25对明文密文，因此会出现不止一个\(K_3，K_0\)的情况。为了找到密钥，计算\(K_1,K_2\)时需要尝试所有的\(K_3,K_0\)的可能组合。<a href="https://github.com/mrzz00/tinycode/blob/master/feal4_attack.c">这里</a>是笔者实现攻击部分的代码，欢迎查看。<!-- raw HTML omitted --></p>
+笔者在对称加密这门课上学习了FEAL4的线性分析原理，并在实践课实现了此攻击方法。限于实验要求，最多只能使用25对明文密文，因此会出现不止一个\(K_3，K_0\)的情况。为了找到密钥，计算\(K_1,K_2\)时需要尝试所有的\(K_3,K_0\)的可能组合。<a href="https://github.com/mrzz00/tinycode/blob/master/feal4_attack.c">这里</a>是笔者实现攻击部分的代码，欢迎查看。</p>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p>FEAL-Fast Data Encipherment Algorithm. Akihiro Shimizu and Shoji Miyaguchi, 1988 NTT <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
 
 
       
