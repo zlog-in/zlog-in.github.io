@@ -62,7 +62,7 @@
       <pubDate>Wed, 05 Aug 2020 13:35:37 +0200</pubDate>
       
       <guid>/post/polly-cracker-attack/</guid>
-      <description>在前文我们介绍了非对称加密系统Polly Cracker，就像naive RSA一样，它也不是一个安全的加密系统。例如，在已知一对明文密文\((m, c)\),我们可以构造出来一个新的明文密文对\((m+m&#39;, c+m&#39;)\)，因为\((c + m&#39;)(\sigma) = c(\sigma) + m&#39; = m + m&#39;\)。但本文将要讨论的问题要比这个严重的多：攻击者可以通过构造特殊的密文，直接解出来Polly Cracker的密钥。</description>
+      <description>在前文介绍了非对称加密系统Polly Cracker，就像naive RSA一样，它也不是一个安全的加密系统。例如，在已知一对明文密文\((m, c)\),攻击者可以构造出来一个新的明文密文对\((m+m&#39;, c+m&#39;)\)，因为\((c + m&#39;)(\sigma) = c(\sigma) + m&#39; = m + m&#39;\)。但本文将要讨论的问题要比这个严重的多：攻击者可以通过构造特殊的密文，直接解出来Polly Cracker的密钥。</description>
     </item>
     
     <item>
@@ -82,7 +82,7 @@
       <pubDate>Wed, 22 Jul 2020 21:24:29 +0200</pubDate>
       
       <guid>/post/polly-cracker/</guid>
-      <description>&lt;p&gt;现代加密系统的安全性建立在计算数学难题之上，比如RSA基于质因数分解，DH基于DLog计算。本文介绍的加密系统Polly Cracker则是基于组合多项式求解。为了更好地理解Polly Cracker的原理，首先我们熟悉一下需要用到的数学知识。&lt;/p&gt;</description>
+      <description>&lt;p&gt;现代加密系统的安全性建立在计算数学难题之上，比如RSA基于质因数分解，DH基于DLog计算。本文介绍的加密系统Polly Cracker则是基于组合多项式求解。为了更好地理解Polly Cracker的原理，首先来熟悉一下需要用到的数学知识。&lt;/p&gt;</description>
     </item>
     
     <item>
