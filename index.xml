@@ -6,10 +6,19 @@
     <description>Recent content on Zlog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 01 Oct 2020 21:03:03 +0200</lastBuildDate>
+    <lastBuildDate>Tue, 06 Oct 2020 11:49:35 +0200</lastBuildDate>
     
 	<atom:link href="/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>CBC之伪造密文</title>
+      <link>/post/cbc-cipher/</link>
+      <pubDate>Tue, 06 Oct 2020 11:49:35 +0200</pubDate>
+      
+      <guid>/post/cbc-cipher/</guid>
+      <description>&lt;p&gt;在之前的&lt;a href=&#34;https://www.mrzz.cc/post/cbc-padding/&#34;&gt;小文&lt;/a&gt;里面详细介绍了如何利用&lt;code&gt;Oracle&lt;/code&gt;实现对CBC的填充攻击，从而解出来明文内容。此篇小小文将解释如何利用这一对明文密文&lt;code&gt;(m,c)&lt;/code&gt;，在不知道密钥的情况下，构造一个对合法的明文密钥&lt;code&gt;(M,C)&lt;/code&gt;。这样，攻击者便能在通信双方未能察觉之下修改通信内容，以达到自己的目的。跟前文一样，此文还是以二个消息块为例。有了前文的基础，此文直接进入主题。对CBC不了解或者不够熟悉的读者，请先翻阅前文。&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>线性分析 FEAL4</title>
