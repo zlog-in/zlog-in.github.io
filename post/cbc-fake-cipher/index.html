@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en-us">
+ 
+
+
+
+
+
+    
+
+  
+<meta charset="utf-8" />
+
+  <title>CBC之伪造密文 - Zlog</title>
+
+
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="stylesheet" href="/css/latex.css" />
+<link rel="stylesheet" href="/css/main.css" />
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<meta name="generator" content="Hugo 0.74.2" />
+ 
+  
+  <body>
+
+
+
+
+
+
+<header>  
+  <nav class="navbar">
+  <div class="nav">
+    
+
+    <ul class="nav-links">
+      
+    </ul>
+  </div>
+</nav>
+  <div class="intro-header">
+    <div class="container">
+      <div class="post-heading">
+        
+          <h1>CBC之伪造密文</h1>
+          
+        
+
+      </div>
+    </div>
+  </div>
+
+
+</header>
+<div id="content">
+  <div class="container" role="main">
+    <article class="article" class="blog-post">
+      <div class="postmeta">
+        <span class="meta-post">
+  <i class="fa fa-calendar-alt"></i>Oct 6, 2020
+  
+</span>
+      </div>
+      <br>
+      
+    <p>在之前的<a href="https://www.mrzz.cc/post/cbc-padding/">小文</a>里面详细介绍了如何利用<code>Oracle</code>实现对CBC的填充攻击，从而解出来明文内容。此篇小小文将解释如何利用这一对明文密文<code>(m,c)</code>，在不知道密钥的情况下，构造一个对合法的明文密钥<code>(M,C)</code>。这样，攻击者便能在通信双方未能察觉之下修改通信内容，以达到自己的目的。跟前文一样，此文还是以二个消息块为例。有了前文的基础，此文直接进入主题。对CBC不了解或者不够熟悉的读者，请先翻阅前文。</p>
+<h2 id="消息区块二">消息区块二</h2>
+<p>为了方便理解，先放一张解密过程的简略示意图。</p>
+<figure>
+    <img src="https://www.mrzz.cc/image/simple_cbc_dec.jpg"/> 
+</figure>
+
+<p>如前所述，攻击者此时已经获得一对<code>(m,c)</code>，其中<code>m=(m1,m2), c = (c1，c2)</code>。现在攻击者希望给自己的消息<code>M=(M1,M2)</code>构造一个合法的密文<code>C=(IV,C1,C2)</code>，同样他需要来自<code>Oracle</code>的帮忙。</p>
+<p>首先，对于消息区块<code>M2</code>，攻击者可以直接使用<code>c2</code>作为其密文<code>C2 = c2</code>。为了使解密过程合法，攻击者需要找到一个<code>T2</code>满足
+$$ T2 = Dec_k(c2)$$</p>
+<p>而<code>T2</code>又同时满足
+$$ T2 = C1 \oplus M2$$</p>
+<p>其中<code>M2</code>是攻击者想要传递的虚假消息，不能更改。所以只剩下<code>C1</code>可以动手
+$$ C1 = Dec_k(c2) \oplus M2$$</p>
+<p><code>c2</code>源自攻击者已经获得的<code>(m,c)</code>，所以
+$$ Dec_k(c2) = c1 \oplus m2$$</p>
+<p>于是
+$$ C1 = c1 \oplus m2 \oplus M2$$</p>
+<p>此时，对于第二个区块满足
+$$ M2 = Dec_k(C2) \oplus C1 = Dec_k(c2) \oplus c1 \oplus m2 \oplus M2 = M2$$</p>
+<p>即，解密过程合法。</p>
+<h2 id="消息区块一">消息区块一</h2>
+<p>当攻击者的区块二的明文和密文构造成功以后，区块一<code>C1</code>随即也被固定。对于第一个区块，有
+$$ M1 = Dec_k(C1) \oplus IV$$</p>
+<p>此时，攻击者能够自由选择内容的只剩下初始化向量<code>IV</code>，即攻击者必须找到一个<code>IV</code>满足上式。不难理解，只要求出\(Dec_k(C1)\)值，即<code>T1</code>，攻击者便得到
+$$ IV = T1 \oplus M1$$</p>
+<h2 id="初始向量">初始向量</h2>
+<p>CBC密文里<code>IV</code>的作用在于与消息区块一加密过后的结果<code>T1</code>进行<code>XOR</code>运算，能够自由选择<code>IV</code>内容，给了攻击者确定<code>T1</code>的机会。同样需要借助<code>Oracle</code>，攻击者提交<code>(IV,C1)</code>给<code>Oracle</code>，并根据反馈信息逐个字节修改<code>IV</code>直到得到一个合法的填充。具体过程如下：</p>
+<p>先初始化<code>IV = NULL</code>，长度为<code>L</code>，填充长度<code>padding_len = 1</code>。然后从最末尾的字节开始修改，其取值范围是<code>[0,255]</code>，攻击者尝试这256种可能，即<code>IV = 000...00x</code>，<code>x = 0,...255</code>。提交<code>(IV, C1)</code>至<code>Oracle</code>，当返回值为<code>1</code>时，由填充规则可知</p>
+<pre><code>T1[L-1] ^ x == 1
+</code></pre><p>于是攻击者发现<code>T1</code>最后一个字节的值为<code>T1[L-1] = x ^ 1</code>。然后填充长度<code>+1</code>，<strong>并修改<code>IV</code>的最后一个字节</strong></p>
+<pre><code>IV[L-1] = T1[L-1] ^ 2
+</code></pre><p>接着尝试<code>IV</code>倒数第二个字节，并提交<code>Oracle</code>直到返回<code>1</code>。此时，</p>
+<pre><code>T1[L-2] ^ x == 2 
+</code></pre><p>如此，便又获得了<code>T[L-2] = x ^ 2</code>。填充长度<code>+1</code>，并修改</p>
+<pre><code>IV[L-2，L-1 ] = T1[L-2,L-2] ^ [3,3]
+</code></pre><p>重复上述操作尝试获得<code>T1[L-3]</code>。如此持续下去，直到确定<code>T[0]</code>，这样攻击者便完整获得了<code>T1</code>。于是
+$$ IV = T1 \oplus M1 $$
+满足
+$$ M1 = Dec_k(C1) \oplus IV = T1 \oplus T1 \oplus M1 = M1$$</p>
+<p>解密过程合法。</p>
+<p>上述算法的代码片段如下所示，其中<code>C[0:L] = IV</code>， <code>C[L,2*L-1] = C1</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">  <span style="color:#66d9ef">char</span> oracle_rep;
+  <span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">char</span> padding_len <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>;
+  <span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">char</span> x;
+  <span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">char</span> T1[L];
+  <span style="color:#66d9ef">while</span> (padding_len <span style="color:#f92672">&lt;=</span> L)
+  {
+    x <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+    <span style="color:#66d9ef">while</span> (x <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">256</span>)
+    {
+      C[L <span style="color:#f92672">-</span> padding_len] <span style="color:#f92672">=</span> x;
+      oracle_rep <span style="color:#f92672">=</span> padding_oracle(C);
+      <span style="color:#66d9ef">if</span> (oracle_rep <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span>)
+      {
+        T1[L<span style="color:#f92672">-</span>padding_len] <span style="color:#f92672">=</span> x <span style="color:#f92672">^</span> padding_len;
+        padding_len<span style="color:#f92672">++</span>;
+        <span style="color:#66d9ef">if</span> (padding_len <span style="color:#f92672">&gt;</span> L) <span style="color:#66d9ef">break</span>;
+        <span style="color:#66d9ef">for</span> (size_t i <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>; i <span style="color:#f92672">&lt;</span> padding_len; i<span style="color:#f92672">++</span>) 
+        {
+            C[L<span style="color:#f92672">-</span>i] <span style="color:#f92672">=</span> T1[L <span style="color:#f92672">-</span> i] <span style="color:#f92672">^</span> padding_len; 
+        }
+        <span style="color:#66d9ef">break</span>;
+      }
+      x<span style="color:#f92672">++</span>; 
+    }
+  }   </code></pre></div>
+<p>这样，从已知的一对明密文<code>(m,c)</code>，其中<code>m=(m1,m2), c=(c1,c2)</code>
+攻击者便构造了一对合法的明文密文<code>(M,C)</code>，满足</p>
+<p>$$ C2 = c2$$
+$$ C1 = c1 \oplus m2 \oplus M2$$
+$$ IV = T1 \oplus M1 $$
+$$ T1 = Dec_k(C1)$$</p>
+
+
+      
+    </article>
+    
+  </div>
+
+        </div><footer>
+  <div class="container">
+    <p class="credits copyright">
+      <p class="credits theme-by">
+        <br>
+        <a href="/about">Zhan</a>
+        &copy;
+        2020
+
+      </p>
+  </div>
+</footer></body>
+</html>
