@@ -83,7 +83,7 @@ $$ Dec_k(c2) = c1 \oplus m2$$</p>
 <p>于是
 $$ C1 = c1 \oplus m2 \oplus M2$$</p>
 <p>此时，对于第二个区块满足
-$$ M2 = Dec_k(C2) \oplus C1 = Dec_k(c2) \oplus c1 \oplus m2 \oplus M2 = M2$$</p>
+$$ Dec_k(C2) \oplus C1 = Dec_k(c2) \oplus c1 \oplus m2 \oplus M2 = M2$$</p>
 <p>即，解密过程合法。</p>
 <h2 id="消息区块一">消息区块一</h2>
 <p>当攻击者的区块二的明文和密文构造成功以后，区块一<code>C1</code>随即也被固定。对于第一个区块，有
@@ -103,7 +103,7 @@ $$ IV = T1 \oplus M1$$</p>
 </code></pre><p>重复上述操作尝试获得<code>T1[L-3]</code>。如此持续下去，直到确定<code>T[0]</code>，这样攻击者便完整获得了<code>T1</code>。于是
 $$ IV = T1 \oplus M1 $$
 满足
-$$ M1 = Dec_k(C1) \oplus IV = T1 \oplus T1 \oplus M1 = M1$$</p>
+$$ Dec_k(C1) \oplus IV = T1 \oplus T1 \oplus M1 = M1$$</p>
 <p>解密过程合法。</p>
 <p>上述算法的代码片段如下所示，其中<code>C[0:L-1] = IV</code>， <code>C[L,2*L-1] = C1</code></p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">  <span style="color:#66d9ef">char</span> oracle_rep;
