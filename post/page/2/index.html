@@ -74,7 +74,7 @@
   <div class="post-entry">
     
       <p><p>在实际应用的RSA算法里面，消息都必须经过填充以后才会被加密，以拒绝同态攻击。在RFC8017的<a href="https://tools.ietf.org/html/rfc8017#section-7.2.1">7.2.1</a>节，详细介绍了RSA的加密过程。本文稍微简化了加密流程，以求更能直观解释填充攻击的原理。想要了解RSA算法更多细节的同学，请参阅RFC8017文档。</p></p>
-        <a href="/post/rsa-padding/" class="post-read-more">Read More</a>
+  
     
   </div>
 </article>
@@ -92,7 +92,7 @@
   <div class="post-entry">
     
       <p>在前文介绍了非对称加密系统Polly Cracker，就像naive RSA一样，它也不是一个安全的加密系统。例如，在已知一对明文密文\((m, c)\),攻击者可以构造出来一个新的明文密文对\((m+m', c+m')\)，因为\((c + m')(\sigma) = c(\sigma) + m' = m + m'\)。但本文将要讨论的问题要比这个严重的多：攻击者可以通过构造特殊的密文，直接解出来Polly Cracker的密钥。</p>
-        <a href="/post/polly-cracker-attack/" class="post-read-more">Read More</a>
+  
     
   </div>
 </article>
@@ -110,7 +110,7 @@
   <div class="post-entry">
     
       <p><p>现代加密系统的安全性建立在计算数学难题之上，比如RSA基于质因数分解，DH基于DLog计算。本文介绍的加密系统Polly Cracker则是基于组合多项式求解。为了更好地理解Polly Cracker的原理，首先来熟悉一下需要用到的数学知识。</p></p>
-        <a href="/post/polly-cracker/" class="post-read-more">Read More</a>
+  
     
   </div>
 </article>
@@ -128,7 +128,7 @@
   <div class="post-entry">
     
       <p><p>在介绍Vigenere密码之前，先介绍一个更为简单的密码系统：凯撒密码(Caeser Cipher)。据称，当年凯撒曾用这种方法和手下的将领进行通信，传达指挥命令。凯撒密码是一种替换加密技术，即明文中所有字母都在字母表上向后或者向前偏移一个固定的距离，被替换成密文。当这个距离是3的时候，即称作凯撒密码。</p></p>
-        <a href="/post/vigenere-attack/" class="post-read-more">Read More</a>
+  
     
   </div>
 </article>
