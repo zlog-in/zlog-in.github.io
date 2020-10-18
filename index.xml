@@ -75,6 +75,15 @@
     </item>
     
     <item>
+      <title>Polly Cracker加密系统</title>
+      <link>/post/polly-cracker/</link>
+      <pubDate>Fri, 31 Jul 2020 21:24:29 +0200</pubDate>
+      
+      <guid>/post/polly-cracker/</guid>
+      <description>&lt;p&gt;现代加密系统的安全性建立在计算数学难题之上，比如RSA基于质因数分解，DH基于DLog计算。本文介绍的加密系统Polly Cracker则是基于组合多项式求解。为了更好地理解Polly Cracker的原理，首先来熟悉一下需要用到的数学知识。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
       <title>About</title>
       <link>/about/</link>
       <pubDate>Tue, 28 Jul 2020 00:00:00 +0000</pubDate>
@@ -83,15 +92,6 @@
       <description>我叫占(zhān)文，正在德国念书，信息安全方向的硕士。对密码学、数据安全和隐私保护感兴趣。正在努力。
 下面是一些我的联系方式，希望能认识你。
  GitHub Twitter E-Mail  </description>
-    </item>
-    
-    <item>
-      <title>Polly Cracker加密系统</title>
-      <link>/post/polly-cracker/</link>
-      <pubDate>Wed, 22 Jul 2020 21:24:29 +0200</pubDate>
-      
-      <guid>/post/polly-cracker/</guid>
-      <description>&lt;p&gt;现代加密系统的安全性建立在计算数学难题之上，比如RSA基于质因数分解，DH基于DLog计算。本文介绍的加密系统Polly Cracker则是基于组合多项式求解。为了更好地理解Polly Cracker的原理，首先来熟悉一下需要用到的数学知识。&lt;/p&gt;</description>
     </item>
     
     <item>
