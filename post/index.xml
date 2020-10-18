@@ -86,7 +86,7 @@
     <item>
       <title>Vigenere密码破解</title>
       <link>/post/vigenere-attack/</link>
-      <pubDate>Tue, 21 Jul 2020 11:23:56 +0200</pubDate>
+      <pubDate>Sat, 11 Jul 2020 11:23:56 +0200</pubDate>
       
       <guid>/post/vigenere-attack/</guid>
       <description>&lt;p&gt;在介绍Vigenere密码之前，先介绍一个更为简单的密码系统：凯撒密码(Caeser Cipher)。据称，当年凯撒曾用这种方法和手下的将领进行通信，传达指挥命令。凯撒密码是一种替换加密技术，即明文中所有字母都在字母表上向后或者向前偏移一个固定的距离，被替换成密文。当这个距离是3的时候，即称作凯撒密码。&lt;/p&gt;</description>
