@@ -6,10 +6,21 @@
     <description>Recent content in Posts on Zlog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 06 Oct 2020 11:49:35 +0200</lastBuildDate>
+    <lastBuildDate>Sun, 18 Oct 2020 21:24:07 +0200</lastBuildDate>
     
 	<atom:link href="/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>现代密码系统的安全概念与形式</title>
+      <link>/post/formal-security/</link>
+      <pubDate>Sun, 18 Oct 2020 21:24:07 +0200</pubDate>
+      
+      <guid>/post/formal-security/</guid>
+      <description>&lt;p&gt;在不久之前，密码学还不能被称作一门学科，顶多是一种手艺。在古典密码学时代，密码系统的安全仅仅取决于设计者和攻击者的创造力和技巧，人们并不能证明一种密码系统的安全性究竟几何？也没有对密码系统的诸多元件有清晰而明确的定义，更遑论理论研究和系统性学习。&lt;/p&gt;
+&lt;p&gt;正如凯撒密码应用于高卢战争，密码学真正成为一门系统而逻辑严密的学科，也源自二战时，交战双方终于意识到通信的安全性对于战局的决定性影响力。德国佬的Enigma机器曾使盟军头痛不已，直到图灵和波兰数学家的合作才终于破译德军的军事情报信息。由战争带来的对于安全通信的需求，在战后的冷战时代未曾消减，密码学的理论研究终于大放异彩。今天，几乎所有关于密码理论的基本概念都源自那个令人不安的时代。&lt;/p&gt;
+&lt;p&gt;本篇小文将介绍现在密码系统的几种安全模型，及其相互关系。&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>CBC之伪造密文</title>

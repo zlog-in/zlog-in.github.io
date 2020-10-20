@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en-us">
+ 
+
+
+
+
+
+    
+
+  
+<meta charset="utf-8" />
+
+  <title>现代密码系统的安全概念与形式 - Zlog</title>
+
+
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="stylesheet" href="/css/latex.css" />
+<link rel="stylesheet" href="/css/main.css" />
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<meta name="generator" content="Hugo 0.74.2" />
+ 
+  
+  <body>
+
+
+
+
+
+
+<header>  
+  <nav class="navbar">
+  <div class="nav">
+    
+
+    <ul class="nav-links">
+      
+    </ul>
+  </div>
+</nav>
+  <div class="intro-header">
+    <div class="container">
+      <div class="post-heading">
+        
+          <h1>现代密码系统的安全概念与形式</h1>
+          
+        
+
+      </div>
+    </div>
+  </div>
+
+
+</header>
+<div id="content">
+  <div class="container" role="main">
+    <article class="article" class="blog-post">
+      <div class="postmeta">
+        <span class="meta-post">
+  <i class="fa fa-calendar-alt"></i>Oct 18, 2020
+  
+</span>
+      </div>
+      <br>
+      
+    <p>在不久之前，密码学还不能被称作一门学科，顶多是一种手艺。在古典密码学时代，密码系统的安全仅仅取决于设计者和攻击者的创造力和技巧，人们并不能证明一种密码系统的安全性究竟几何？也没有对密码系统的诸多元件有清晰而明确的定义，更遑论理论研究和系统性学习。</p>
+<p>正如凯撒密码应用于高卢战争，密码学真正成为一门系统而逻辑严密的学科，也源自二战时，交战双方终于意识到通信的安全性对于战局的决定性影响力。德国佬的Enigma机器曾使盟军头痛不已，直到图灵和波兰数学家的合作才终于破译德军的军事情报信息。由战争带来的对于安全通信的需求，在战后的冷战时代未曾消减，密码学的理论研究终于大放异彩。今天，几乎所有关于密码理论的基本概念都源自那个令人不安的时代。</p>
+<p>本篇小文将介绍现在密码系统的几种安全模型，及其相互关系。</p>
+<h2 id="三种攻击类型">三种攻击类型</h2>
+<p>俏皮的密码学家们，把密码系统的设计与破解想象成一场智力的游戏。在这个游戏场景中，密码系统的设计者被称作<strong>挑战者</strong>，他将带着自己设计的密码机制去挑战系统的破坏者，也即<strong>攻击者</strong>。无论是攻击者还是挑战者胜利，都会使密码系统的设计越来越完善和安全。这是一场没有结束的竞赛。</p>
+<p>密码学家定义了三种不同的攻击类型，它们是</p>
+<ol>
+<li>CPA(Chosen-Plaintext Attacks)：选择明文攻击，在这个攻击模型里面，攻击者拥有一个<code>Oracle</code>，它只能用来加密攻击者提交的明文，并返回结果；</li>
+<li>CCA1(Chosen-Ciphertext Attacks)：1型选择密文攻击，此时攻击拥有一个即能加密也能解密的<code>Oracle</code>，并返回结果给攻击者，但是攻击者只能<strong>一次性提交所有</strong>的明文或者密文给<code>Oracle</code>处理；</li>
+<li>CCA2(adaptive Chosen-Ciphertext Attacks)：2型选择密文攻击，攻击者拥有如1型相同能力的<code>Oracle</code>，不同的是攻击者可以<strong>逐次提交</strong>想要加密或者解密的内容，然后根据返回的结果，构造下一个明文或者密文并提交给<code>Oracle</code>。</li>
+</ol>
+<p>以上描述的三种攻击类型，区分了现实中攻击者所能支配的资源。例如，二战中英军曾获取到了德国人的Enigma机器，却不知道密钥，他们只能使用机器去加密输入的内容，然后观察结果以期望求得密钥簿，所谓选择明文攻击(CPA)。</p>
+<h2 id="三种安全目标">三种安全目标</h2>
+<p>其实所谓“安全”的定义并没有一个严格又明晰的说法，但是密码学家还是尽可能给出了一些具有确定标准的安全概念。通过理论研究，密码学家描述了一个安全的密码系统应该具有的三种性质：</p>
+<ol>
+<li>IND(Indistinguishablity)：不可区分性。攻击者发送两个明文<code>m0, m1</code>给挑战者，经过加密以后返回一个密文<code>c</code>。如果攻击者无法判断密文<code>c</code>是属于<code>m0</code>还是<code>m1</code>，即攻击者判断正确的概率小于等于<code>0.5</code>，则挑战者胜。称挑战者设计的密码系统具有不可区分的性质IND；</li>
+</ol>
+<pre><code>A                  C
+|      m0,m1       |
+|  --------------&gt; |
+|        c         |c=Enc(k,mb)
+| &lt;--------------  |
+|        b'        |
+|  --------------&gt; |b=b' ?
+</code></pre><ol start="2">
+<li>ROR(Real or Random)：不可辨别随机性。攻击者从明文空间<code>S</code>里选择一条明文<code>m</code>，并将二者发送给挑战者。挑战者随机在<code>S</code>中再抽选一条明文<code>x</code>，决定加密<code>m</code>或者<code>x</code>，将加密结果<code>c</code>返回给攻击者。如果攻击者无法判断挑战者加密的是<code>m</code>还是<code>x</code>，则挑战者胜利。称该密码系统具有不可辨别随机型。</li>
+</ol>
+<pre><code>A                  C
+|       m,S        |
+|  --------------&gt; |
+|        c         |c=Enc(k,m) if b=0       
+| &lt;--------------  |c=Enc(k,x) if b=1   x &lt;== S
+|        b'        |
+|  --------------&gt; |b=b' ?
+</code></pre><ol start="3">
+<li>NM(Non-Malleability)：不可延展性。攻击者直接将明文空间<code>S</code>告知挑战者，挑战者从中选择两条明文<code>x0,x1</code>，加密<code>x0</code>并将结果<code>y</code>返回给攻击者。攻击者修改<code>y</code>为<code>y'</code>，定义一种二元关系<code>R</code>，例如<code>不相等</code>，挑战者对<code>y'</code>进行解密计算得到结果<code>x'</code>。如果<code>x0</code>与<code>x‘</code>满足关系<code>R</code>的概率小于获等于<code>x1</code>与<code>x‘</code>满足关系<code>R</code>的概率，例如<code>P(x0 != x') &lt; P(x1 != x')</code>，则挑战者胜利。称该系统具有不可延展性。</li>
+</ol>
+<pre><code>     A                  C
+     |        S         |
+     |  --------------&gt; |
+     |        y         |x0,x1 &lt;== S
+     | &lt;--------------  |y=Enc(k,x0)
+     |       R, y'      |
+y'!=y|  --------------&gt; |x'=Dec(k,y') ==&gt; P(R(x0,x')) &gt; P(R(x1,x')) ?
+</code></pre>
+
+
+      
+    </article>
+    
+  </div>
+
+        </div><footer>
+  <div class="container">
+    <p class="credits copyright">
+      <p class="credits theme-by">
+        <br>
+        <a href="/about">Zhan</a>
+        &copy;
+        2020
+
+        <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" ><img alt="Creative Commons Licence" style="margin: auto;" src="https://i.creativecommons.org/l/by-nc/4.0/88x31.png" /></a>
+
+      </p>
+  </div>
+</footer></body>
+</html>
