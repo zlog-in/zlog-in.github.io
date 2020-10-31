@@ -62,78 +62,6 @@
 
       
         <article class="post-preview">
-  <a href="/post/socks5/">
-      <h2 class="post-title">SOCKS5协议</h2>
-  </a>
-  <div class="postmeta">
-    <span class="meta-post">
-  <i class="fa fa-calendar-alt"></i>Sep 8, 2020
-  
-</span>
-  </div>
-  <div class="post-entry">
-    
-      <p><p>最近看了一下<a href="https://tools.ietf.org/html/rfc1928"><code>SOCKS5</code></a>协议，一个小巧方便的代理协议，这里是一些笔记。</p></p>
-      
-    
-  </div>
-</article>
-      
-        <article class="post-preview">
-  <a href="/post/exponential-large-number/">
-      <h2 class="post-title">大数幂运算</h2>
-  </a>
-  <div class="postmeta">
-    <span class="meta-post">
-  <i class="fa fa-calendar-alt"></i>Aug 25, 2020
-  
-</span>
-  </div>
-  <div class="post-entry">
-    
-      <p>幂运算(Exponentiation)又称指数运算，写作\(c= m^e \)，即\(c\)等于\(e\)个\(m\)相乘。当\(m\)或者\(e\)的数值不大的时候，可以通过重复的乘法运算来获得\(c\)。当\(m\)和\(e\)都是一个大数的时候，比如说512位长。尽管有了计算机，显然对\(m\)重复\(e\)次乘法运算的效率不高。那么该怎样快速进行大数幂运算呢？</p>
-      
-    
-  </div>
-</article>
-      
-        <article class="post-preview">
-  <a href="/post/rsa-padding/">
-      <h2 class="post-title">RSA填充攻击</h2>
-  </a>
-  <div class="postmeta">
-    <span class="meta-post">
-  <i class="fa fa-calendar-alt"></i>Aug 20, 2020
-  
-</span>
-  </div>
-  <div class="post-entry">
-    
-      <p><p>在实际应用的RSA算法里面，消息都必须经过填充以后才会被加密，以拒绝同态攻击。在RFC8017的<a href="https://tools.ietf.org/html/rfc8017#section-7.2.1">7.2.1</a>节，详细介绍了RSA的加密过程。本文稍微简化了加密流程，以求更能直观解释填充攻击的原理。想要了解RSA算法更多细节的同学，请参阅RFC8017文档。</p></p>
-      
-    
-  </div>
-</article>
-      
-        <article class="post-preview">
-  <a href="/post/polly-cracker-attack/">
-      <h2 class="post-title">Polly Cracker破解</h2>
-  </a>
-  <div class="postmeta">
-    <span class="meta-post">
-  <i class="fa fa-calendar-alt"></i>Aug 5, 2020
-  
-</span>
-  </div>
-  <div class="post-entry">
-    
-      <p>在前文介绍了非对称加密系统Polly Cracker，就像naive RSA一样，它也不是一个安全的加密系统。例如，在已知一对明文密文\((m, c)\),攻击者可以构造出来一个新的明文密文对\((m+m', c+m')\)，因为\((c + m')(\sigma) = c(\sigma) + m' = m + m'\)。但本文将要讨论的问题要比这个严重的多：攻击者可以通过构造特殊的密文，直接解出来Polly Cracker的密钥。</p>
-      
-    
-  </div>
-</article>
-      
-        <article class="post-preview">
   <a href="/post/polly-cracker/">
       <h2 class="post-title">Polly Cracker加密系统</h2>
   </a>
@@ -151,6 +79,24 @@
   </div>
 </article>
       
+        <article class="post-preview">
+  <a href="/post/vigenere-attack/">
+      <h2 class="post-title">Vigenere密码破解</h2>
+  </a>
+  <div class="postmeta">
+    <span class="meta-post">
+  <i class="fa fa-calendar-alt"></i>Jul 11, 2020
+  
+</span>
+  </div>
+  <div class="post-entry">
+    
+      <p><p>在介绍Vigenere密码之前，先介绍一个更为简单的密码系统：凯撒密码(Caeser Cipher)。据称，当年凯撒曾用这种方法和手下的将领进行通信，传达指挥命令。凯撒密码是一种替换加密技术，即明文中所有字母都在字母表上向后或者向前偏移一个固定的距离，被替换成密文。当这个距离是3的时候，即称作凯撒密码。</p></p>
+      
+    
+  </div>
+</article>
+      
       </div>
     
     <ul class="pager">
@@ -159,10 +105,6 @@
           <a href="/post/page/1/">&larr; Newer</a>
         </li>
       
-      
-        <li class="next">
-          <a href="/post/page/3/">Older &rarr;</a>
-        </li>
       
     </ul>
   
