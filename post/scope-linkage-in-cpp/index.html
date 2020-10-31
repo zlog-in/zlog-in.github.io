@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en-us">
+ 
+
+
+
+
+
+    
+
+  
+<meta charset="utf-8" />
+
+  <title>CPP之作用域与链接性 - Zlog</title>
+
+
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="stylesheet" href="/css/latex.css" />
+<link rel="stylesheet" href="/css/main.css" />
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<meta name="generator" content="Hugo 0.74.2" />
+ 
+  
+  <body>
+
+
+
+
+
+
+<header>  
+  <nav class="navbar">
+  <div class="nav">
+    
+
+    <ul class="nav-links">
+      
+    </ul>
+  </div>
+</nav>
+  <div class="intro-header">
+    <div class="container">
+      <div class="post-heading">
+        
+          <h1>CPP之作用域与链接性</h1>
+          
+        
+
+      </div>
+    </div>
+  </div>
+
+
+</header>
+<div id="content">
+  <div class="container" role="main">
+    <article class="article" class="blog-post">
+      <div class="postmeta">
+        <span class="meta-post">
+  <i class="fa fa-calendar-alt"></i>Oct 29, 2020
+  
+</span>
+      </div>
+      <br>
+      
+    <p>这是一篇关于<code>C++</code>变量的作用域与链接性的笔记，整理了各种相关概念以备疏忘。</p>
+<h2 id="存储持续性">存储持续性</h2>
+<p>按照变量在内存的生存周期，可以将变量分成三种类型</p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>自动存储</td>
+<td>在函数中声明的变量(含函数参数)，它们在函数被执行时被创建，执行结束后其内存被释放。<code>C++</code>有二种自动变量。</td>
+</tr>
+<tr>
+<td>静态存储</td>
+<td>在函数外声明，或者函数内使用<code>static</code>声明的变量，它们在程序运行过程中一直存在。<code>C++</code>有三种静态变量。</td>
+</tr>
+<tr>
+<td>动态存储</td>
+<td>使用<code>new</code>声明的变量，其获得的内存持续存在于堆区，直到使用<code>delete</code>释放其内存或者程序运行结束。</td>
+</tr>
+</tbody>
+</table>
+<h2 id="作用域与链接性">作用域与链接性</h2>
+<p>作用域描述了名称(变量名，或者函数名)的有效范围。例如，在函数中声明的变量，只能在该函数中被使用，而无法在其它函数中被使用。</p>
+<p>变量的作用域有多种。全局作用域的变量在函数之外被声明，其作用域自声明位置至文件结尾；局部作用域的变量在代码块(例如，函数或者<code>for</code>循环)中被声明，其作用域自声明位置自代码块结束，自动变量的作用域为局部。静态变量的作用域取决于其声明的位置。</p>
+<p>函数的作用域是整个类或者整个名称空间，即全局。如果其作用域是局部，意味着它的名称仅对自己可见，因此无法被其它函数调用，这样的函数是无法运行的。所以编译器禁止在代码块内部定义函数。</p>
+<p>链接性描述了名称如何在不同单元间被共享使用。具有外部链接性的名称可在文件之间共享，内部链接性的名称只在本文件内部使用。自动变量【<strong>无</strong>】链接性，因为它们不能被共享。</p>
+<p>通常，在函数内声明的函数参数和变量为自动的、局部的、无链接性。</p>
+
+
+      
+    </article>
+    
+  </div>
+
+        </div><footer>
+  <div class="container">
+    <p class="credits copyright">
+      <p class="credits theme-by">
+        <br>
+        <a href="/about">Zhan</a>
+        &copy;
+        2020
+
+        <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" ><img alt="Creative Commons Licence" style="margin: auto;" src="https://i.creativecommons.org/l/by-nc/4.0/88x31.png" /></a>
+
+      </p>
+  </div>
+</footer></body>
+</html>

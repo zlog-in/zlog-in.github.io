@@ -76,6 +76,8 @@
 <li>CCA2(adaptive Chosen-Ciphertext Attacks)：2型选择密文攻击，攻击者拥有如1型相同能力的<code>Oracle</code>，不同的是攻击者可以【<strong>逐次提交</strong>】想要加密或者解密的内容，然后根据返回的结果，构造下一个明文或者密文并提交给<code>Oracle</code>。</li>
 </ol>
 <p>以上描述的三种攻击类型，区分了现实中攻击者所能支配的资源。例如，二战中英军曾获取到了德国人的Enigma机器，却不知道密钥，他们只能使用机器去加密输入的内容，然后观察结果以期望求得密钥簿，所谓选择明文攻击(CPA)。</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
 <h2 id="三种安全目标">三种安全目标</h2>
 <p>其实所谓“安全”的定义并没有一个严格又明晰的说法，但是密码学家还是尽可能给出了一些具有确定标准的安全概念。通过理论研究，密码学家为一个密码系统描述了三种安全目标：</p>
 <ol>
@@ -89,7 +91,7 @@
 |        b'        |
 |  --------------&gt; |b=b' ?
 </code></pre><ol start="2">
-<li>ROR(Real or Random)：不可辨别随机性。攻击者从明文空间<code>S</code>里选择一条明文<code>m</code>，并将二者发送给挑战者。挑战者随机在<code>S</code>中再抽选一条明文<code>x</code>，决定加密<code>m</code>或者<code>x</code>，将加密结果<code>c</code>返回给攻击者。如果攻击者无法判断挑战者加密的是<code>m</code>还是<code>x</code>，则挑战者胜利。称该密码系统具有不可辨别随机型；</li>
+<li>RoR(Real or Random)：不可辨别随机性。攻击者从明文空间<code>S</code>里选择一条明文<code>m</code>，并将二者发送给挑战者。挑战者随机在<code>S</code>中再抽选一条明文<code>x</code>，决定加密<code>m</code>或者<code>x</code>，将加密结果<code>c</code>返回给攻击者。如果攻击者无法判断挑战者加密的是<code>m</code>还是<code>x</code>，则挑战者胜利。称该密码系统具有不可辨别随机型；</li>
 </ol>
 <pre><code>A                  C
 |       m,S        |
