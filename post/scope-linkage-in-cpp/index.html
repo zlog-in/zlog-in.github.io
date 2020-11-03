@@ -85,7 +85,7 @@
 </tr>
 <tr>
 <td>动态存储</td>
-<td>使用<code>new</code>声明的变量，其获得的内存持续存在于堆区，直到使用<code>delete</code>释放其内存或者程序运行结束。</td>
+<td>使用<code>new</code>声明的变量，其获得的内存持续存在于【<strong>堆区</strong>】，直到使用<code>delete</code>释放其内存或者程序运行结束。</td>
 </tr>
 </tbody>
 </table>
@@ -95,7 +95,7 @@
 <p>函数的作用域是整个类或者整个名称空间，即全局。如果其作用域是局部，意味着它的名称仅对自己可见，因此无法被其它函数调用，这样的函数是无法运行的。所以编译器禁止在代码块内部定义函数。</p>
 <p>链接性描述了名称如何在不同单元间被共享使用。具有外部链接性的名称可在文件之间共享，内部链接性的名称只在本文件内部使用。自动变量【<strong>无</strong>】链接性，因为它们不能被共享。</p>
 <h3 id="自动变量">自动变量</h3>
-<p>通常，在函数内声明的函数参数和变量为自动的、局部的、无链接性，它们保存在栈区。在函数内的代码块定义的变量，其作用域仅在该代码块内有效。而且，如果该变量会隐藏之前定义的具有相同名称的变量。例如</p>
+<p>通常，在函数内声明的函数参数和变量为自动的、局部的、无链接性，它们保存在【<strong>栈区</strong>】。在函数内的代码块定义的变量，其作用域仅在该代码块内有效。而且，该变量会隐藏之前定义的具有相同名称的变量。例如</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>(){
 	<span style="color:#66d9ef">int</span> first <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>;
 	<span style="color:#66d9ef">int</span> second <span style="color:#f92672">=</span> <span style="color:#ae81ff">2</span>;
@@ -169,7 +169,7 @@
 <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">int</span> internal_func(){		<span style="color:#75715e">// definition
 </span><span style="color:#75715e"></span>	...
 }
-</code></pre></div><p>和变量类似，在定义静态函数的文件中，静态函数可隐藏外部定义，即使在定义了同名的外部函数，此文件仍将使用静态函数。</p>
+</code></pre></div><p>和变量类似，在定义静态函数的文件中，静态函数可隐藏外部定义，即使在其它文件中定义了同名的外部函数，此文件仍将使用静态函数。</p>
 
 
       
