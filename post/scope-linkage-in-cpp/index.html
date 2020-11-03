@@ -119,7 +119,7 @@
 <li>无链接性：只能在本代码块(函数也是一种代码块)访问</li>
 </ul>
 <p>所谓静态指的是，其内存地址由编译器自动分配，在程序运行期间都不会改变。而自动变量，在每次函数调用的时候都被分配到新的内存位置，用完后释放掉。另外，如果没有显示地初始化静态变量，编译器将默认设置为〇。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#66d9ef">int</span> global <span style="color:#f92672">=</span> <span style="color:#ae81ff">1000</span><span style="color:#960050;background-color:#1e0010">；</span>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#66d9ef">int</span> global <span style="color:#f92672">=</span> <span style="color:#ae81ff">1000</span>;
 <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">int</span> inner_file <span style="color:#f92672">=</span> <span style="color:#ae81ff">50</span>;
 <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>(){
 	func(); <span style="color:#75715e">// auto_virable = 10, inner_file = 30
@@ -127,7 +127,7 @@
 </span><span style="color:#75715e"></span>}
 <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">func</span>(){
     <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">int</span> inner_func <span style="color:#f92672">=</span> <span style="color:#ae81ff">30</span>;
-    <span style="color:#66d9ef">int</span> auto_virable <span style="color:#f92672">=</span> <span style="color:#ae81ff">10</span><span style="color:#960050;background-color:#1e0010">；</span>
+    <span style="color:#66d9ef">int</span> auto_virable <span style="color:#f92672">=</span> <span style="color:#ae81ff">10</span>;
     std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;auto:   &#34;</span> <span style="color:#f92672">&lt;&lt;</span> auto_virable <span style="color:#f92672">&lt;&lt;</span> endl;
     std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;static: &#34;</span> <span style="color:#f92672">&lt;&lt;</span> innner_file <span style="color:#f92672">&lt;&lt;</span> endl;
     inner_file <span style="color:#f92672">=</span> inner_file <span style="color:#f92672">+</span> <span style="color:#ae81ff">10</span>;
@@ -137,7 +137,7 @@
 <p>如要使用同目录下的其它文件中的全局变量，需要使用<code>extern</code>声明，且不能初始化，否则变声明为定义，违反「单定义原则」。</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#75715e">// file1.cpp
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">extern</span> <span style="color:#66d9ef">int</span> cat <span style="color:#f92672">=</span> <span style="color:#ae81ff">20</span>;  <span style="color:#75715e">// definition, &#34;extern&#34; is not obligatory
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">int</span> dogs <span style="color:#f92672">=</span> <span style="color:#ae81ff">22</span><span style="color:#960050;background-color:#1e0010">；</span>		 <span style="color:#75715e">// definition
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">int</span> dogs <span style="color:#f92672">=</span> <span style="color:#ae81ff">22</span>;		 <span style="color:#75715e">// definition
 </span><span style="color:#75715e"></span>...
 <span style="color:#75715e">// file2.cpp
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">extern</span> <span style="color:#66d9ef">int</span> cats;      <span style="color:#75715e">// declaration, defined in file1.cpp
