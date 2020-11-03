@@ -132,7 +132,7 @@
     std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;static: &#34;</span> <span style="color:#f92672">&lt;&lt;</span> innner_file <span style="color:#f92672">&lt;&lt;</span> endl;
     inner_file <span style="color:#f92672">=</span> inner_file <span style="color:#f92672">+</span> <span style="color:#ae81ff">10</span>;
 }
-</code></pre></div><p>定义在函数之外的变量均为静态变量，如果无关键字<code>static</code>限定，则具有外链接性，上例中<code>global</code>即是如此，；否则具有内链接性，例如变量<code>inner_file</code>。在代码块之内有<code>static</code>限定的变量为静态变量，不具有链接性，否则是自动变量。静态变量一定拥有内存，在上例中，即使函数<code>func()</code>没有被调用，编译器依然为变量<code>inner_func</code>分配内存，而自动变量只有被运行时才拥有内存。</p>
+</code></pre></div><p>定义在函数之外的变量均为静态变量，如果无关键字<code>static</code>修饰，则具有外链接性，上例中<code>global</code>即是如此，；否则具有内链接性，例如变量<code>inner_file</code>。在代码块之内有<code>static</code>修饰的变量为静态变量，不具有链接性，否则是自动变量。静态变量一定拥有内存，在上例中，即使函数<code>func()</code>没有被调用，编译器依然为变量<code>inner_func</code>分配内存，而自动变量只有被运行时才拥有内存。</p>
 <p>静态变量的另一个「静态」指的是，在函数两次调用期间，其值保持不变。在上例中，第一次执行完<code>func()</code>以后，变量<code>auto_virable</code>被释放掉，而<code>inner_file</code>依旧存在于内存之中，值为<code>40</code>；第二次调用<code>func()</code>，编译器并不会再次初始化<code>inner_file</code>，因此它的值依旧为<code>40</code>。</p>
 <p>如要使用同目录下的其它文件中的全局变量，需要使用<code>extern</code>声明，且不能初始化，否则变声明为定义，违反「单定义原则」。</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#75715e">// file1.cpp
