@@ -91,7 +91,7 @@
 </table>
 <h2 id="作用域与链接性">作用域与链接性</h2>
 <p>作用域描述了名称(变量名，或者函数名)的有效范围。例如，在函数中声明的变量，只能在该函数中被使用，而无法在其它函数中被使用。</p>
-<p>变量的作用域有多种。全局作用域的变量在函数之外被声明，其作用域自声明位置至文件结尾；局部作用域的变量在代码块(例如，函数或者<code>for</code>循环)中被声明，其作用域自声明位置自代码块结束，自动变量的作用域为局部。静态变量的作用域取决于其声明的位置。</p>
+<p>变量的作用域有多种。全局作用域的变量在函数之外被声明，其作用域自声明位置至文件结尾；局部作用域的变量在代码块(例如，函数或者<code>for</code>循环)中被声明，其作用域自声明位置至代码块结束，自动变量的作用域为局部。静态变量的作用域取决于其声明的位置。</p>
 <p>函数的作用域是整个类或者整个名称空间，即全局。如果其作用域是局部，意味着它的名称仅对自己可见，因此无法被其它函数调用，这样的函数是无法运行的。所以编译器禁止在代码块内部定义函数。</p>
 <p>链接性描述了名称如何在不同单元间被共享使用。具有外部链接性的名称可在文件之间共享，内部链接性的名称只在本文件内部使用。自动变量【<strong>无</strong>】链接性，因为它们不能被共享。</p>
 <h3 id="自动变量">自动变量</h3>
@@ -152,7 +152,24 @@
 <span style="color:#75715e">// file2.cpp
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">extern</span> <span style="color:#66d9ef">int</span> eys;				<span style="color:#75715e">// defined in file1.cpp
 </span><span style="color:#75715e"></span>...
-</code></pre></div>
+</code></pre></div><h3 id="函数的链接性">函数的链接性</h3>
+<p>函数的存储特性是静态的，即无论是否调用，被定义的函数代码块都会获得内存地址。</p>
+<p>同样地，函数也具有链接性。首先函数不可能是无连接性，因此禁止在函数内部定义另外一个函数。通常，函数具有外部链接性，可在文件间共享。可以在函数原型中使用<code>extern</code>指出此函数在另外一个文件中被定义，</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#75715e">// file1.cpp
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">extern</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">external_func</span>();
+...
+<span style="color:#75715e">// file2.cpp
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">int</span> external_func(){
+	...
+}
+...
+</code></pre></div><p>也可以使用<code>static</code>来限制函数为内链接性，但必须同时在函数原型与函数定义中使用<code>static</code>修饰，此类函数仅限本文件使用。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">internal_func</span>();		<span style="color:#75715e">// prototype
+</span><span style="color:#75715e"></span>...
+<span style="color:#66d9ef">static</span> <span style="color:#66d9ef">int</span> internal_func(){		<span style="color:#75715e">// definition
+</span><span style="color:#75715e"></span>	...
+}
+</code></pre></div><p>和变量类似，在定义静态函数的文件中，静态函数可隐藏外部定义，即使在定义了同名的外部函数，此文件仍将使用静态函数。</p>
 
 
       
