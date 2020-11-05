@@ -12,11 +12,11 @@
     
     
     <item>
-      <title>CPP之作用域与链接性</title>
-      <link>/post/scope-linkage-in-cpp/</link>
+      <title>作用域与链接性</title>
+      <link>/post/scope-linkage/</link>
       <pubDate>Thu, 29 Oct 2020 23:14:15 +0100</pubDate>
       
-      <guid>/post/scope-linkage-in-cpp/</guid>
+      <guid>/post/scope-linkage/</guid>
       <description>&lt;p&gt;这是一篇关于&lt;code&gt;C++&lt;/code&gt;变量的作用域与链接性的笔记，整理了各种相关概念以备疏忘。&lt;/p&gt;</description>
     </item>
     
