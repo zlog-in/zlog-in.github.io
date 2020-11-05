@@ -110,7 +110,7 @@
 	std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;Variable second = &#34;</span> <span style="color:#f92672">&lt;&lt;</span> second <span style="color:#f92672">&lt;&lt;</span> std<span style="color:#f92672">::</span>endl;
 }
 </code></pre></div><p>第一次定义的变量<code>first</code>, 和变量<code>second</code>，<code>end</code>，作用域为整个<code>main</code>函数。但是在代码块<code>for</code>循环里面，第二次定义的同名变量<code>first</code>【<strong>隐藏</strong>】了之前定义的变量<code>first </code>，使其在该代码块内失效。</p>
-<p>程序使用两个指针来管理栈，一个指针指向栈底，即栈开始的位置；另一个指向栈顶，即下一个可用内存单元。程序在调用函数的时候，其自动变量会被压入栈中，获得内存，栈顶指针挪向下一个可用内存单元。待函数执行结束，自动变量被弹出栈，释放内存，栈顶指针指回调用函数之前的位置。也就是说，只有在函数被执行的时候，自动变量才拥有内存。</p>
+<p>程序使用两个指针来管理栈，一个指针指向栈底，即栈开始的位置；另一个指向栈顶，即下一个可用内存单元。程序在调用函数的时候，其自动变量会被压入栈中，获得内存，栈顶指针挪向下一个可用内存单元。待函数执行结束，自动变量被弹出栈，释放内存，栈顶指针指回调用函数之前的位置。也就是说，【只有在函数被执行的时候，自动变量才拥有内存】。</p>
 <h3 id="静态变量">静态变量</h3>
 <p>静态变量有三种链接性：</p>
 <ul>
