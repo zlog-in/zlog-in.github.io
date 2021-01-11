@@ -82,7 +82,7 @@
 <p>另外多说一句，比特币并没有凭空创造任何新型技术，而是巧妙地使用了若干个已有的密码学工具，组合之后便是区块链这种从未见过的系统。这种创新需要极强的系统性思维，往往独自一人很难拥有这般思考的深度和广度，也就有人推测中本聪其人背后其实并不是某一个人，有可能是一群密码学专家。
 书言归正传，梅克尔树是一棵满二叉树，其结构如图所示。</p>
 <figure>
-    <img src="https://www.mrzz.cc/image/MerkleTree.png"/> 
+    <img src="https://www.mrzz.cc/image/merkle_tree.png"/> 
 </figure>
 
 <p>每个叶子节点的标签都是其所记录内容的哈希值，而将两个兄弟节点的标签串联起来，作为哈希函数的输入，经过计算得到父节点的哈希，如此重复直到最后只剩下一个节点，即根节点，又称作梅克尔树根。</p>
@@ -99,7 +99,7 @@
 <p>此时，在梅克尔树结构里面出现了3个父节点，然后再依据这3个节点继续往上构造父节点。同样的问题又出现了，这一层仅有3个节点，最后1个节点必须重复自身以满足兄弟节点成对出现的要求，这样又出现了新的多余信息。最后这样，再高一层又出现了2个父节点，然后继续合并，得到最后唯一的节点，即根节点。</p>
 <p>在交易数量为5的情况下，由此构造出来的梅克尔树的结构如下图所示。</p>
 <figure>
-    <img src="https://www.mrzz.cc/image/MerkleTree5.png"/> 
+    <img src="https://www.mrzz.cc/image/merkle_tree_5.png"/> 
 </figure>
 
 <p>在这里可能会有读者产生疑惑：既然最后一个叶子节点会被重复，从其父节点的角度看，它有两个具有相同哈希的叶子节点。根据哈希函数【第二个性质】可以判断，此二个叶子节点所代表的内容完全相同。也就意味着，假设区块里面还能再添加一笔完全相同的交易记录，计算得到的梅克尔树根的值保持不变。</p>
@@ -119,13 +119,13 @@
 <hr>
 <ol>
 <li id="fn:1" role="doc-endnote">
-<p><a href="https://bitcoin.org/bitcoin.pdf">比特币原始论文</a> <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<p>比特币原始<a href="https://bitcoin.org/bitcoin.pdf">论文</a> <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 <li id="fn:2" role="doc-endnote">
 <p>本文首发于分布科技Onchain的<a href="https://mp.weixin.qq.com/s/hwewwKHCWkZToy9BVZNJww">公众号</a>上，笔者现将原文贴在自己的博客上以作备份 <a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 <li id="fn:3" role="doc-endnote">
-<p><a href="https://patentimages.storage.googleapis.com/69/ab/d9/2ff9f94fada6ea/US4309569.pdf">梅克尔树原始专利文件</a> <a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<p>梅克尔树原始<a href="https://patentimages.storage.googleapis.com/69/ab/d9/2ff9f94fada6ea/US4309569.pdf">专利文件</a> <a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 </ol>
 </section>
