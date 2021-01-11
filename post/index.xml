@@ -6,10 +6,15 @@
     <description>Recent content in Posts on Zlog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 13 Nov 2020 11:09:25 +0100</lastBuildDate>
-    
-	<atom:link href="/post/index.xml" rel="self" type="application/rss+xml" />
-    
+    <lastBuildDate>Mon, 11 Jan 2021 17:33:21 +0800</lastBuildDate><atom:link href="/post/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Merkle Tree之一</title>
+      <link>/post/merkle-tree01/</link>
+      <pubDate>Mon, 11 Jan 2021 17:33:21 +0800</pubDate>
+      
+      <guid>/post/merkle-tree01/</guid>
+      <description>&lt;p&gt;双花攻击是任何一种数字货币都需要解决的问题，如果是真实的物理货币，天然可以避免双花攻击，因为攻击者口袋里的钱币花出去了，就真实地离开了自己。而数字货币，其实是一串特殊的字符串，可以无限复制，如何使被复制的信息不再有效，就成了解决双花问题的关键。即使是中国央行推出的数字人民币系统DC/EP，也在一定程度上面临双花问题。&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>回来</title>

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en-us">
+ 
+
+
+
+
+
+    
+
+  
+<meta charset="utf-8" />
+
+  <title>Merkle Tree之一 - Zlog</title>
+
+
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="stylesheet" href="/css/latex.css" />
+<link rel="stylesheet" href="/css/main.css" />
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<meta name="generator" content="Hugo 0.80.0" />
+ 
+  
+  <body>
+
+
+
+
+
+
+<header>  
+  <nav class="navbar">
+  <div class="nav">
+    
+
+    <ul class="nav-links">
+      
+    </ul>
+  </div>
+</nav>
+  <div class="intro-header">
+    <div class="container">
+      <div class="post-heading">
+        
+          <h1>Merkle Tree之一</h1>
+          
+        
+
+      </div>
+    </div>
+  </div>
+
+
+</header>
+<div id="content">
+  <div class="container" role="main">
+    <article class="article" class="blog-post">
+      <div class="postmeta">
+        <span class="meta-post">
+  <i class="fa fa-calendar-alt"></i>Jan 11, 2021
+  
+</span>
+      </div>
+      <br>
+      
+    <p>双花攻击是任何一种数字货币都需要解决的问题，如果是真实的物理货币，天然可以避免双花攻击，因为攻击者口袋里的钱币花出去了，就真实地离开了自己。而数字货币，其实是一串特殊的字符串，可以无限复制，如何使被复制的信息不再有效，就成了解决双花问题的关键。即使是中国央行推出的数字人民币系统DC/EP，也在一定程度上面临双花问题。</p>
+<p>比特币网络自诞生以来，就用其自身的稳健运行证明了，在没有结算中心的对等网络，点对点交易也能拒绝双花攻击。所有的比特币交易记录都保存在区块链上，2008年，在中本聪描述比特币原型的论文<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>里，使用了一种名为梅克尔树(Merkle Tree，缩写MT)的数据结构，去对每一个区块里的所有交易做一次简略记录，梅克尔树这种记录能够用较少的字节去表达极大量的信息。</p>
+
+然而梅克尔树的结构是个满二叉树，因此要求交易数量必须是\(2^n\)。中本聪通过引入无效却必要的信息来解决这个问题，这么做的代价是多余的信息可能会被攻击者利用，实施双花攻击。
+
+<p>本文<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup>先介绍梅克尔树的基本结构，生成节点的规则，然后用一个例子来说明如何为比特币交易构造梅克尔树，最后解释了比特币如何通过UTXO的唯一编号来避免因梅克尔树可能引起的双花威胁。</p>
+<p>知识点1：梅克尔树又被称作哈希树，因为在这种树状数据结构中，每个节点的标签(或称作值)都是一串哈希值。按照从左向右的顺序，将所有子节点的哈希串联成一个新的长字符串，结果作为哈希函数的输入，经计算得到父节点的标签。</p>
+<p>知识点2：可能有同学不知道哈希函数是什么，笔者先在这里做一个简单解释：哈希函数是由数学家或者密码学家精心设计的一种数学运算规则，它可以输入任意长度的数据，而输出结果(即哈希值)的长度保持不变，并且满足</p>
+<ol>
+<li>单向运算：只能计算输入得到输出，不能逆向计算输出得到输入</li>
+<li>冲突避免：无法找到两个不一样的输入，而它们的哈希值却相同</li>
+</ol>
+<p>哈希函数可以说是区块链最最核心的技术之一，另外一个是非对称加密。</p>
+<p>正是这二个性质确保了比特币像黄金一样难以获得，经过大量的运算才能得到某个正确的哈希值，使得该哈希值比其它字符串更加珍贵，从而获得价值属性。这是哈希函数在比特币挖矿中的应用，但这并不是本文的重点。本文想要介绍梅克尔树的基本结构和其可能引起的比特币交易双花问题。</p>
+<p>哈希树的概念得名于 Ralph Merkle，并且他在1979年9月5号提交文件<sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup>，申请注册了该项专利。当然，等到中本聪使用梅克尔树作为比特币的底层数据结构时，此专利保护期已经结束了。不然的话，中本聪得向梅克尔先生支付专利授权费，这样做也许他的身份就被曝光，而整个区块链行业都需要缴纳一笔不菲的费用。</p>
+<p>另外多说一句，比特币并没有凭空创造任何新型技术，而是巧妙地使用了若干个已有的密码学工具，组合之后便是区块链这种从未见过的系统。这种创新需要极强的系统性思维，往往独自一人很难拥有这般思考的深度和广度，也就有人推测中本聪其人背后其实并不是某一个人，有可能是一群密码学专家。
+书言归正传，梅克尔树是一棵满二叉树，其结构如图所示。</p>
+<figure>
+    <img src="https://www.mrzz.cc/image/MerkleTree.png"/> 
+</figure>
+
+<p>每个叶子节点的标签都是其所记录内容的哈希值，而将两个兄弟节点的标签串联起来，作为哈希函数的输入，经过计算得到父节点的哈希，如此重复直到最后只剩下一个节点，即根节点，又称作梅克尔树根。</p>
+<p>中本聪设计了一种区块结构，其区块头的某个字段就是梅克尔树根。梅克尔树根源自区块里记录的每一笔交易，交易可以理解成转账，例如类似「A转给B某某数额的比特币」的格式。将有着固定格式的一笔转账记录做序列化之后，就能作为输入tx，交由哈希函数运算，得到的结果就是叶子节点的标签<code>L</code>。</p>
+<pre><code>L = Hash(tx)
+</code></pre><p>而每二个叶子节点的哈希，便可以串联起来作为输入，得到父节点的哈希<code>P</code>。</p>
+<pre><code>P = Hash(L0+L1)         // '+' means concatenation
+</code></pre><p>区块可以记录的交易内容长度有限，在中本聪的设计里，严格限制了一个区块内所有交易的总长不超过1MB。而交易的长度又随交易的复杂度而变化，可以简单成理解成越复杂的交易，其内容越长。为了有效利用区块，挣更多的手续费，矿工们总是希望尽可能往区块里面记录更多的交易。</p>
+
+观察梅克尔树的结构，可以发现其总是一棵满二叉树，这意味着叶子节点的数量总为 \(2^n\)。当待记录的交易数量不足 \(2^n\)，又或者等于 \(2^n\) 时所有交易的总长度超过1MB限制，此时区块能够记录的交易数量不能恰好等于一棵满二叉树的叶子数量。这种情况出现时，该怎么计算梅克尔树根呢？
+
+<p>以一个简单的例子来说明这个问题。</p>
+<p>假设某区块里面记录了一共5笔交易，那么其初始叶子节点仅有5个。每2个叶子节点生成1个父节点，在产生父节点的过程中，却遇到了最后1一个叶子节点遇到了没有兄弟节点的情况，这时候需要构造出来另外一个节点与其匹配。中本聪的做法是：直接重复该节点本身作为其兄弟节点，然后再按照前述方法得到父节点。这个重复的节点，就是原始交易记录里没有但是梅克尔树上却存在的多余信息。</p>
+<p>此时，在梅克尔树结构里面出现了3个父节点，然后再依据这3个节点继续往上构造父节点。同样的问题又出现了，这一层仅有3个节点，最后1个节点必须重复自身以满足兄弟节点成对出现的要求，这样又出现了新的多余信息。最后这样，再高一层又出现了2个父节点，然后继续合并，得到最后唯一的节点，即根节点。</p>
+<p>在交易数量为5的情况下，由此构造出来的梅克尔树的结构如下图所示。</p>
+<figure>
+    <img src="https://www.mrzz.cc/image/MerkleTree5.png"/> 
+</figure>
+
+<p>在这里可能会有读者产生疑惑：既然最后一个叶子节点会被重复，从其父节点的角度看，它有两个具有相同哈希的叶子节点。根据哈希函数【第二个性质】可以判断，此二个叶子节点所代表的内容完全相同。也就意味着，假设区块里面还能再添加一笔完全相同的交易记录，计算得到的梅克尔树根的值保持不变。</p>
+<p>这样做岂不是会导致双花攻击的问题？那么比特币网络是如何避免不诚实节点故意在同一区块内记录完全相同的二笔交易？</p>
+<p>这个疑惑需要借助比特币交易的基本单位UTXO来解释。在比特币网络里面，并没有「账户」这种东西，也就没有所谓「余额」等衍生概念，因此无法像传统银行系统一样，通过检查账户余额来判断用户有没有可继续花费的资产。所有的比特币都是以UTXO(Unspend Transaction Output)的形式存在，交易消耗已经存在的UTXO(称作输入，Input)，产生新的UTXO(称作输出，Output)，被消耗的UTXO便不再有效。</p>
+<p>每一个UTXO都拥有一个锁定脚本(ScriptPubKey)，用来保护该UTXO不会被除了其拥有者以外的其它人使用。  UTXO能被花费的前提条件是，其锁定脚本被正确地解锁。通常，某UTXO的锁定脚本会指定其拥有者的公钥信息，当该UTXO被花费的时候，只有出示与该公钥匹配的私钥所生成的数字签名，即解锁脚本(ScriptSig)，才能成功解锁UTXO。</p>
+<p>如果有一种办法，可以唯一标识某个UTXO，将每一个还未被花费的UTXO都存储在数据库里，向全网公开，已经消耗的UTXO被销毁，并且从数据库中删去。那么攻击者在故意构造第二笔交易的时候，试图再一次花费相同的UTXO，但此时已经无法在数据库中找到拥有相同ID的那个UTXO。这就相当于，某人花掉了手中真实存在的物理货币以后，便没法再使用一遍。</p>
+<p>在比特币的设计中，使用交易ID和UTXO在该交易的输出序号来作为UTXO的唯一标识，所有可用的UTXO都保存在一个名为<code>UTXO set</code>的数据集合里面。</p>
+<p>所以在一个区块内，节点很容易判断每笔交易所消耗的UTXO是否相同：如果存在两笔交易的输入为具有相同ID的UTXO，即能判断第二笔交易无效，此区块无法被诚实节点验证通过。</p>
+
+因此，虽然梅克尔树在交易数量不等于\(\(2^n\)\)的情况下，会出现重复哈希值的问题，但其实在真实区块里面无法再伪造具有相同内容的交易，【双花问题得到避免】。 
+
+<p>在计算梅克尔树根的时候，中本聪选择了SHA256作为每个节点的哈希函数。更准确地说，是二次SHA256。即对输入做两次哈希运算，得到32字节的结果即是节点哈希，二次哈希运算可以抵御潜在的长度扩充攻击(Length Extension Attack)。</p>
+<pre><code>Hash(tx) = SHA256(SHA256(tx))
+</code></pre><p>当得到根节点以后，区块头就可以用其表示该区块包含的所有交易记录。一个很直觉的问题是，为什么梅克尔树根就能表示所有交易，该如何证明？笔者将在下一篇小文里面解释，如何验证一笔交易确实包含在某棵树梅克尔树下，以及说明为什么梅克尔树是一种高效的数据结构。</p>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p><a href="https://bitcoin.org/bitcoin.pdf">比特币原始论文</a> <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2" role="doc-endnote">
+<p>本文首发于分布科技Onchain的<a href="https://mp.weixin.qq.com/s/hwewwKHCWkZToy9BVZNJww">公众号</a>上，笔者现将原文贴在自己的博客上以作备份 <a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:3" role="doc-endnote">
+<p><a href="https://patentimages.storage.googleapis.com/69/ab/d9/2ff9f94fada6ea/US4309569.pdf">梅克尔树原始专利文件</a> <a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+
+
+      
+    </article>
+    
+  </div>
+
+        </div><footer>
+  <div class="container">
+    <p class="credits copyright">
+      <p class="credits theme-by">
+        <br>
+        <a href="/about">Zhan</a>
+        &copy;
+        <a href="/">2021 </a>
+       
+        <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" ><img alt="Creative Commons Licence" style="margin: auto;" src="https://i.creativecommons.org/l/by-nc/4.0/88x31.png" /></a>
+
+      </p>
+  </div>
+</footer></body>
+</html>
