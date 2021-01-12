@@ -102,7 +102,26 @@
     <img src="https://www.mrzz.cc/image/merkle_tree_5.png"/> 
 </figure>
 
-<p>在这里可能会有读者产生疑惑：既然最后一个叶子节点会被重复，从其父节点的角度看，它有两个具有相同哈希的叶子节点。根据哈希函数【第二个性质】可以判断，此二个叶子节点所代表的内容完全相同。也就意味着，假设区块里面还能再添加一笔完全相同的交易记录，计算得到的梅克尔树根的值保持不变。</p>
+<p>构造梅克尔树的代码片段如下</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">uint256 <span style="color:#a6e22e">BuildMerkleTree</span>() <span style="color:#66d9ef">const</span>
+    {
+        vMerkleTree.clear();
+        foreach(<span style="color:#66d9ef">const</span> CTransaction<span style="color:#f92672">&amp;</span> tx, vtx)
+            vMerkleTree.push_back(tx.GetHash());  
+        <span style="color:#66d9ef">int</span> j <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+        <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> nSize <span style="color:#f92672">=</span> vtx.size(); nSize <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">1</span>; nSize <span style="color:#f92672">=</span> (nSize <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>) <span style="color:#f92672">/</span> <span style="color:#ae81ff">2</span>)
+        {
+            <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; i <span style="color:#f92672">&lt;</span> nSize; i <span style="color:#f92672">+=</span> <span style="color:#ae81ff">2</span>)
+            {
+                <span style="color:#66d9ef">int</span> i2 <span style="color:#f92672">=</span> min(i<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>, nSize<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>); <span style="color:#75715e">// duplicate the last node when the size is odd
+</span><span style="color:#75715e"></span>                vMerkleTree.push_back(Hash(BEGIN(vMerkleTree[j<span style="color:#f92672">+</span>i]),  END(vMerkleTree[j<span style="color:#f92672">+</span>i]),
+                                           BEGIN(vMerkleTree[j<span style="color:#f92672">+</span>i2]), END(vMerkleTree[j<span style="color:#f92672">+</span>i2]))); 
+            }
+            j <span style="color:#f92672">+=</span> nSize;
+        }
+        <span style="color:#66d9ef">return</span> (vMerkleTree.empty() <span style="color:#f92672">?</span> <span style="color:#ae81ff">0</span> <span style="color:#f92672">:</span> vMerkleTree.back());
+    }
+</code></pre></div><p>在这里可能会有读者产生疑惑：既然最后一个叶子节点会被重复，从其父节点的角度看，它有两个具有相同哈希的叶子节点。根据哈希函数【第二个性质】可以判断，此二个叶子节点所代表的内容完全相同。也就意味着，假设区块里面还能再添加一笔完全相同的交易记录，计算得到的梅克尔树根的值保持不变。</p>
 <p>这样做岂不是会导致双花攻击的问题？那么比特币网络是如何避免不诚实节点故意在同一区块内记录完全相同的二笔交易？</p>
 <p>这个疑惑需要借助比特币交易的基本单位UTXO来解释。在比特币网络里面，并没有「账户」这种东西，也就没有所谓「余额」等衍生概念，因此无法像传统银行系统一样，通过检查账户余额来判断用户有没有可继续花费的资产。所有的比特币都是以UTXO(Unspend Transaction Output)的形式存在，交易消耗已经存在的UTXO(称作输入，Input)，产生新的UTXO(称作输出，Output)，被消耗的UTXO便不再有效。</p>
 <p>每一个UTXO都拥有一个锁定脚本(ScriptPubKey)，用来保护该UTXO不会被除了其拥有者以外的其它人使用。  UTXO能被花费的前提条件是，其锁定脚本被正确地解锁。通常，某UTXO的锁定脚本会指定其拥有者的公钥信息，当该UTXO被花费的时候，只有出示与该公钥匹配的私钥所生成的数字签名，即解锁脚本(ScriptSig)，才能成功解锁UTXO。</p>
