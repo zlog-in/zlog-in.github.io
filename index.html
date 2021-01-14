@@ -64,6 +64,48 @@
 
       
         <article class="post-preview">
+  <a href="/post/merkle-tree02/">
+      <h2 class="post-title">Merkle Tree之二</h2>
+  </a>
+  <div class="postmeta">
+    <span class="meta-post">
+  <i class="fa fa-calendar-alt"></i>Jan 14, 2021
+  
+</span>
+  </div>
+  <div class="post-entry">
+    
+      <p>在前一篇文章里，笔者介绍了如何使用梅克尔树给一个区块里的所有交易生成一个哈希，作为树根存储在区块头，以及解释了当交易数量不足时，为什么需要引入的冗余信息来「凑齐」一棵完整二叉树，最后说明了比特币网络如何避免由于冗余信息所引起的潜在双花攻击。
+在前文里，笔者还没有谈到的事情是如何判断一笔交易确实存在于某个区块之内？这就是本文想要解释的内容。
+可以简单地理解，梅克尔树根相当于一种声明，声明了一个区块包含的所有交易。那么节点凭什么相信该声明就是有效的呢？
+现在某SPV节点想要确认一条交易记录是不是有效的，也就是该交易是不是包含在区块链上的某个区块里面。它需要向全节点发送一次问询，告知其交易所在的区块ID，然后全节点会在区块链上找到此区块，并且从其中的梅克尔树上提取一条证据返回，该证据又称梅克尔路径(Merkle Path)。所谓梅克尔路径指的是，从某叶子节点出发，往上溯源直到根节点，这条枝干即称作梅克尔路径。
+ SPV(Simplified Payment Verification)节点：仅仅保存所有区块的头部，并不保存区块里的交易记录，无法独立判断交易的有效性
+全节点(Full Node)：保存完整区块链的节点，可以独立验证每一笔交易。
+ 通常把发送询问的节点称作验证节点，把提供证据的节点称作证明节点。凭借梅克尔路径，验证节点就可以判断它询问的交易究竟是不是记录在该区块里。
+现在，证明交易的有效性就等价于，此路径确实存在该区块的梅克尔树中。怎么证明呢？
+给
+你
+一
+柱
+香
+的
+时
+间
+诸位读者还记得梅克尔树中每个节点代表什么嘛？每个节点的标签都是一串哈希值，其中叶子节点的标签是交易的哈希，兄弟节点的哈希串联之后经哈希函数计算得到父节点的哈希。
+现在，验证节点已经知道的信息有：某条交易，交易所在的区块头(区块ID，梅克尔树根)，交易在此区块里的编号。从交易内容可以计算对应的叶子节点哈希，从区块头可以获得区块ID和梅克尔树根，证明人根据交易编号在区块内提取证据。
+因此，只要证明节点返回的证据能够令验证节点相信，存在一条从该交易的叶子节点到梅克尔树根的路径，即证明通过，也就是该证据能够帮助验证人由叶子节点哈希推导出根节点哈希。
+从叶子节点开始往上计算父节点的哈希，额外需要的信息是其兄弟节点。只要补全路径上每一个节点的兄弟节点，验证节点就能不停地计算，直到获得根节点的哈希。
+最后验证节点将计算出来的根节点，与已知的区块头中的梅克尔树根比较，如相等则证明交易存在于区块中，否则不存在。
+我们再以一个小小例子来说明以上过程，请看下图
+  在某区块的梅克尔树中，包含了8条交易的记录。假设验证节点想要知道该区块中编号为L的交易记录是否真实，证明节点收到请求以后，从梅克尔树中找到从编号为L的叶子节点到根节点的路径，即上图中绿色线条。接着安装从下往上的顺序，将路径上所有节点的兄弟节点依次加入证据里。如图中黄色节点所构成的队列A,B,C，这就是证据的内容。
+此过程在中本聪最初实现的代码里面如下所示，函数GetMerkleBranch返回的vMerkleBranch即证据
+vector&lt;uint256&gt; GetMerkleBranch(int nIndex) const // zero based index  { if (vMerkleTree.empty()) BuildMerkleTree(); vector&lt;uint256&gt; vMerkleBranch; int j = 0; for (int nSize = vtx.size(); nSize &gt; 1; nSize = (nSize + 1) / 2) { int i = min(nIndex^1, nSize-1); // nIndex^1 = nIndex+1 or nIndex-1  vMerkleBranch.</p>
+      
+    
+  </div>
+</article>
+      
+        <article class="post-preview">
   <a href="/post/merkle-tree01/">
       <h2 class="post-title">Merkle Tree之一</h2>
   </a>
@@ -201,24 +243,6 @@
   <div class="post-entry">
     
       <p><p>最近看了一下<a href="https://tools.ietf.org/html/rfc1928"><code>SOCKS5</code></a>协议，一个小巧方便的代理协议，这里是一些笔记。</p></p>
-      
-    
-  </div>
-</article>
-      
-        <article class="post-preview">
-  <a href="/post/exponential-large-number/">
-      <h2 class="post-title">大数幂运算</h2>
-  </a>
-  <div class="postmeta">
-    <span class="meta-post">
-  <i class="fa fa-calendar-alt"></i>Aug 25, 2020
-  
-</span>
-  </div>
-  <div class="post-entry">
-    
-      <p>幂运算(Exponentiation)又称指数运算，写作\(c= m^e \)，即\(c\)等于\(e\)个\(m\)相乘。当\(m\)或者\(e\)的数值不大的时候，可以通过重复的乘法运算来获得\(c\)。当\(m\)和\(e\)都是一个大数的时候，比如说512位长。尽管有了计算机，显然对\(m\)重复\(e\)次乘法运算的效率不高。那么该怎样快速进行大数幂运算呢？</p>
       
     
   </div>
