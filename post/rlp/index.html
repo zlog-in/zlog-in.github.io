@@ -159,7 +159,7 @@
 <li>如果首字节在范围<code>[0x80, 0xb7]</code>，目标数据是字符串，其长度为<code>prefix - 0x80</code>，紧跟在首字节之后</li>
 <li>如果首字节在范围<code>[0xb8, 0xbf]</code>，目标数据是字符串，超过55字节，首字节之后即长度，长度值的宽度为<code>prefix - 0xb7</code>，根据该长度值往后读取目标数据</li>
 <li>如果首字节在范围<code>[0xc0, 0xf7]</code>，目标数据是列表，总长度为<code>prefix - 0xc0</code>，首字节之后紧跟第一个列表长度值，其范围在 <code>[0x80, 0xb7]</code>，根据长度值往后读取一个目标数据，之后是第二个列表长度值，如此往下继续读取</li>
-<li>如果首字节在范围<code>[0xf8 0xff]</code> ，目标数据是列表，超过55字节，首字节之后为列表总长度，长度值的宽度为<code>prefix - 0xf8</code>，总长度之后开始读取第一个子列表，按照上述规则进行解码。</li>
+<li>如果首字节在范围<code>[0xf8 0xff]</code> ，目标数据是列表，超过55字节，首字节之后为列表总长度，长度值的宽度为<code>prefix - 0xf8</code>，总长度之后开始读取第一个子列表，按照以上规则进行解码。</li>
 </ol>
 <h3 id="代码-1">代码</h3>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">rlp_decode</span>(input):
