@@ -62,6 +62,26 @@
 
       
         <article class="post-preview">
+  <a href="/post/rlp/">
+      <h2 class="post-title">RLP编解码规则</h2>
+  </a>
+  <div class="postmeta">
+    <span class="meta-post">
+  <i class="fa fa-calendar-alt"></i>Mar 10, 2021
+  
+</span>
+  </div>
+  <div class="post-entry">
+    
+      <p>编码 适用于RLP编码规则的数据结构
+ 字符串，'doge'，aka. 字节数组 字符串的嵌套列表 ['doge', 'is', ['a', 'e-god'], ['backwards', ['V']]]  规则 三条针对字符串的编码规则
+ 对于单字节，且值在[0x00, 0x7f]范围内(ASCII 码表)，自身即是RLP编码  [&quot;a&quot;] 编码为 [0x61]  [&quot;0&quot;] 编码为 [0x00] [&quot;15&quot;] 编码 [0x0f]   对于字符串，且其长度小于55字节，RLP编码由[前缀 , 字符串] 构成，prefix = 0x80 + len(s)。因此，前缀的范围在 [0x80, 0xb7] 0xb7 = 0x80 + 55  [&quot;cat&quot;] 编码为[0x83, 'c', 'a', 't'] [&quot;1024&quot;] 编码为 [0x82, 0x04, 0x00]   对于长度大于或等于55字节的字符串，RLP编码由[前缀, 字符串长度, 字符串] 构成，prefix = 0xb7 + len(len(s)) (字符串长度值的二进制长度)。前缀的范围在[0xb8, 0xbf] 0xbf = 0xb7 + 8，因为字符串长度不得超过 2**64字节，二进制长度不得超过64位，即8字节。  [&quot;Lorem ipsum dolor sit amet, consectetur adipisicing elit&quot;]  &quot;Lorem ipsum dolor sit amet, consectetur adipisicing elit&quot; 长度为0x38，长度值0x38仅有一个字节 前缀prefix = 0xb7+1 = 0xb8 编码结果为[ 0xb8, 0x38, 'L', 'o', 'r', 'e', 'm', ' ', .</p>
+      
+    
+  </div>
+</article>
+      
+        <article class="post-preview">
   <a href="/post/mmr-intro/">
       <h2 class="post-title">梅克尔山脉——跨链交易中超轻验证的可能性</h2>
   </a>
@@ -201,24 +221,6 @@
   <div class="post-entry">
     
       <p><p>FEAL4(Fast data Encryption Algorithm)由日本密码学家清水明宏和宫口庄司于1987年在日本电信电话株式会社(NTT)任职期间提出，作为一个针对DES的替代加密方案。相比较DES被设计成硬件电路的思路，FEAL4可由纯软件实现，得益于较少的加密轮数(4轮)，其执行速度相当快。本文首先介绍FEAL4以及DES所使用的Feistel加密结构，根据FEAL4所使用的F函数，分析F输入及输出之间的线性关系。然后解释，如何利用该线性关系配合较少的明文密文对，攻击者可以快速破解密钥。</p></p>
-      
-    
-  </div>
-</article>
-      
-        <article class="post-preview">
-  <a href="/post/cbc-padding/">
-      <h2 class="post-title">CBC填充攻击</h2>
-  </a>
-  <div class="postmeta">
-    <span class="meta-post">
-  <i class="fa fa-calendar-alt"></i>Sep 19, 2020
-  
-</span>
-  </div>
-  <div class="post-entry">
-    
-      <p><p>CBC(Cipher Block Chaining)是一种块加密，所谓块，就是一段固定长度的数据。明文，也就是待加密的数据，被分割成若干个块，然后分别加密每一个块。如果最后一个块未被填满，则需要额外的数据填充其中，然后加密。在本文首先介绍CBC加密系统的工作流程，然后就其采用的填充标准<a href="https://tools.ietf.org/html/rfc2315#section-10.3">PKCS#7</a>详细说明一种攻击方法。</p></p>
       
     
   </div>

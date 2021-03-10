@@ -6,7 +6,18 @@
     <description>Recent content on Zlog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 05 Feb 2021 13:57:07 +0800</lastBuildDate><atom:link href="/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 10 Mar 2021 16:48:22 +0800</lastBuildDate><atom:link href="/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>RLP编解码规则</title>
+      <link>/post/rlp/</link>
+      <pubDate>Wed, 10 Mar 2021 16:48:22 +0800</pubDate>
+      
+      <guid>/post/rlp/</guid>
+      <description>编码 适用于RLP编码规则的数据结构
+ 字符串，&#39;doge&#39;，aka. 字节数组 字符串的嵌套列表 [&#39;doge&#39;, &#39;is&#39;, [&#39;a&#39;, &#39;e-god&#39;], [&#39;backwards&#39;, [&#39;V&#39;]]]  规则 三条针对字符串的编码规则
+ 对于单字节，且值在[0x00, 0x7f]范围内(ASCII 码表)，自身即是RLP编码  [&amp;quot;a&amp;quot;] 编码为 [0x61]  [&amp;quot;0&amp;quot;] 编码为 [0x00] [&amp;quot;15&amp;quot;] 编码 [0x0f]   对于字符串，且其长度小于55字节，RLP编码由[前缀 , 字符串] 构成，prefix = 0x80 + len(s)。因此，前缀的范围在 [0x80, 0xb7] 0xb7 = 0x80 + 55  [&amp;quot;cat&amp;quot;] 编码为[0x83, &#39;c&#39;, &#39;a&#39;, &#39;t&#39;] [&amp;quot;1024&amp;quot;] 编码为 [0x82, 0x04, 0x00]   对于长度大于或等于55字节的字符串，RLP编码由[前缀, 字符串长度, 字符串] 构成，prefix = 0xb7 + len(len(s)) (字符串长度值的二进制长度)。前缀的范围在[0xb8, 0xbf] 0xbf = 0xb7 + 8，因为字符串长度不得超过 2**64字节，二进制长度不得超过64位，即8字节。  [&amp;quot;Lorem ipsum dolor sit amet, consectetur adipisicing elit&amp;quot;]  &amp;quot;Lorem ipsum dolor sit amet, consectetur adipisicing elit&amp;quot; 长度为0x38，长度值0x38仅有一个字节 前缀prefix = 0xb7+1 = 0xb8 编码结果为[ 0xb8, 0x38, &#39;L&#39;, &#39;o&#39;, &#39;r&#39;, &#39;e&#39;, &#39;m&#39;, &#39; &#39;, .</description>
+    </item>
+    
     <item>
       <title>梅克尔山脉——跨链交易中超轻验证的可能性</title>
       <link>/post/mmr-intro/</link>
