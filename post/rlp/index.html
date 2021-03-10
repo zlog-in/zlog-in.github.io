@@ -64,7 +64,8 @@
       </div>
       <br>
       
-    <h2 id="编码">编码</h2>
+    <p>递归式长度前缀是以太坊用来对数据进行序列化和反序列的编码规则，这里是参考以太网维基<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>的一篇小小笔记。</p>
+<h2 id="编码">编码</h2>
 <p>适用于RLP编码规则的数据结构</p>
 <ol>
 <li>字符串，<code>'doge'</code>，aka. 字节数组</li>
@@ -205,7 +206,15 @@
         <span style="color:#66d9ef">return</span> ord(b[<span style="color:#ae81ff">0</span>])
     <span style="color:#66d9ef">else</span>:
         <span style="color:#66d9ef">return</span> ord(substr(b, <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>)) <span style="color:#f92672">+</span> to_integer(substr(b, <span style="color:#ae81ff">0</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>)) <span style="color:#f92672">*</span> <span style="color:#ae81ff">256</span>
-</code></pre></div><p>参考资料：https://eth.wiki/fundamentals/rlp</p>
+</code></pre></div><hr>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p><a href="https://eth.wiki/fundamentals/rlp">https://eth.wiki/fundamentals/rlp</a> <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
 
 
 
