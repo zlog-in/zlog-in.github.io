@@ -101,7 +101,7 @@
 </ol>
 <p>两条针对嵌套列表的编码规则</p>
 <ol start="4">
-<li>递归式编码列表：先从最内层列表开始。如果列表长度小于55字节，其RLP编码由[<strong>前缀</strong> ,  <strong>字符串</strong>] 构成，<code>prefix = 0xc0 + len(s)</code>。因此前缀的范围在 <code>[0xc0, 0xf7]</code> <code>0xf7 = 0xc0 + 55</code>；对于外层列表，其RLP编码由 **[前缀，子列表1 RLP，子列表2 RLP，&hellip; ]**构成，<code>prefix = 0xc0 + len(sublist1) + len(sublist2) + ...</code>
+<li>递归式编码列表：先从最内层列表开始。如果列表长度小于55字节，其RLP编码由[<strong>前缀</strong> ,  <strong>字符串</strong>] 构成，<code>prefix = 0xc0 + len(s)</code>。因此前缀的范围在 <code>[0xc0, 0xf7]</code> <code>0xf7 = 0xc0 + 55</code>；对于外层列表，其RLP编码由[<strong>前缀</strong>，<strong>子列表1 RLP</strong>，<strong>子列表2 RLP</strong>，<strong>&hellip;</strong>]构成，<code>prefix = 0xc0 + len(sublist1) + len(sublist2) + ...</code>
 <ul>
 <li><code>[&quot;cat&quot;, &quot;dog&quot;]</code>
 <ul>
