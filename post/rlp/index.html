@@ -64,7 +64,7 @@
       </div>
       <br>
       
-    <p>递归式长度前缀是以太坊用来对数据进行序列化和反序列的编码规则，这里是参考以太网维基<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>的一篇小小笔记。</p>
+    <p>递归式长度前缀(Recursive Length Prefix)是以太坊用来对数据进行序列化和反序列的编码规则，这里是参考以太网维基<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>的一篇小小笔记。</p>
 <h2 id="编码">编码</h2>
 <p>适用于RLP编码规则的数据结构</p>
 <ol>
@@ -77,8 +77,8 @@
 <li>对于单字节，且值在<code>[0x00, 0x7f]</code>范围内(ASCII 码表)，自身即是RLP编码
 <ul>
 <li><code>[&quot;a&quot;]</code> 编码为 <code>[0x61]</code></li>
-<li><code> [&quot;0&quot;]</code> 编码为<code> [0x00]</code></li>
-<li><code>[&quot;15&quot;]</code> 编码 <code>[0x0f]</code></li>
+<li><code>[&quot;0&quot;]</code> 编码为<code> [0x00]</code></li>
+<li><code>[&quot;15&quot;]</code> 编码为 <code>[0x0f]</code></li>
 </ul>
 </li>
 <li>对于字符串，且其长度小于55字节，RLP编码由[<strong>前缀</strong> ,  <strong>字符串</strong>] 构成，<code>prefix = 0x80 + len(s)</code>。因此，前缀的范围在 <code>[0x80, 0xb7]</code>  <code>0xb7 = 0x80 + 55</code>
