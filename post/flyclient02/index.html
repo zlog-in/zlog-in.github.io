@@ -180,7 +180,7 @@ $$</p>
 p.D_start == l.D_start
 p.D_next == r.D_next
 l.D_next == r.D_start
-</code></pre><p>检查高于<code>log(m)</code>节点的难度一致性则更为复杂：由于节点的难度参数受到了难度调整函数的影响，因此需要检查难度调整是否符合要求。我们定义累计难度<code>w</code>为节点之下所有区块的难度总和。经历若干次符合要求的难度调整之后，该节点的累计难度<code>w</code>总是被限制在某个区间范围<code>[w_min, w_max]</code>之内，即存在一组难度调整操作满足**<code>D_next = F(D_start, w)</code>**，<code>F</code>代表若干次难度调整操作。</p>
+</code></pre><p>检查高于<code>log(m)</code>节点的难度一致性则更为复杂：由于节点的难度参数受到了难度调整函数的影响，因此需要检查难度调整是否符合要求。我们定义累计难度<code>w</code>为节点之下所有区块的难度总和。经历若干次符合要求的难度调整之后，该节点的累计难度<code>w</code>总是被限制在某个区间范围<code>[w_min, w_max]</code>之内，即存在一组难度调整操作满足<code>D_next = F(D_start, w)</code>，<code>F</code>代表若干次难度调整操作。</p>
 <p>因此只要计算出当前节点累计难度的区间，然后检验累计难度<code>w</code>是否在此区间，就能判断<code>D_next</code>是否有效。为了简化分析，不妨假设某节点经过<code>n</code>次难度调整，并且满足
 $$
 \tau^{k} \cdot D_{start} = D_{end}, \ k \leq n
