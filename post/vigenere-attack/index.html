@@ -19,7 +19,7 @@
 <link rel="stylesheet" href="/css/latex.css" />
 <link rel="stylesheet" href="/css/main.css" />
 <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-<meta name="generator" content="Hugo 0.80.0" />
+<meta name="generator" content="Hugo 0.83.1" />
  
   
   <body>
@@ -77,8 +77,7 @@
 密文：  WKH TXLFN EURZQ IRA MXPSV RYHU WKH ODCB GRJ
 </code></pre><p>通过上面的描述可以知道，凯撒密码里最关键的信息是事先约定好的偏移量n，也被称作密钥。同时也很容易发现，凯撒密码有些缺陷，因为密钥空间太小很容易被暴力破解。另外一个缺陷就是替换过后的字母唯一，即A替换以后的密文只能是某一个字母，比如D。通过大量统计，人们发现了英语文本里面每个字母出现的频率接近某个固定的概率，比如E是出现频率最高的一个字母。只要攻击者拿到大量的密文，然后统计其中出现次数最多的字母，即可认为其对应的明文是E，从而解出密钥。</p>
 <h2 id="vigenere密码">Vigenere密码</h2>
-<figure>
-    <img src="https://www.mrzz.cc/image/vigenere_square.png"/> 
+<figure><img src="https://www.mrzz.cc/image/vigenere_square.png"/>
 </figure>
 
 <p>上图被称作Vigenere Square，展示了所有可能的凯撒密码。在凯撒密码中，一次加密只会用到一个密钥，导致相同密文对应的明文总相同。所以，有人根据凯撒密码发明了Vigenere密码：不同位置的明文用不同的密钥进行加密，因此相同字母由于使用不同的密钥而被替换成不同的密文， 不同字母也可能因为使用不同的密钥而被替换成相同的密文。在下面的例子里我们选择<code>LEMON</code>作为密钥的话，观察明文中的<code>T</code>和密文中的<code>R</code>可以验证前述说法。</p>
@@ -214,8 +213,7 @@ $$ m_i, m_{i+d}, \dots, m_{i+nd}。$$
 然后，针对每一个子序列\(M_i\)进行频率统计，求得在该密文子序列里面每一种字母出现的频率得到表H。如果每一个密文子序列足够的长，可以认为表H里面的频率分布应当对应加密前的明文字母分布，例如在表H里面出现次数最多的字母所对应的明文是E。那么这个过程仅仅只是对比查表吗？当然不是，起始还可以借助程序自动计算来代替这个过程。怎么做呢？
 
 现在有两张频率分布表P和H，观察它们的直方图，例如表P
-<figure>
-    <img src="https://www.mrzz.cc/image/letter_frequency.png"/> 
+<figure><img src="https://www.mrzz.cc/image/letter_frequency.png"/>
 </figure>
 </p>
 <p>

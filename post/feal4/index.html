@@ -19,7 +19,7 @@
 <link rel="stylesheet" href="/css/latex.css" />
 <link rel="stylesheet" href="/css/main.css" />
 <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-<meta name="generator" content="Hugo 0.80.0" />
+<meta name="generator" content="Hugo 0.83.1" />
  
   
   <body>
@@ -68,8 +68,7 @@
 <h2 id="feistel-network">Feistel Network</h2>
 <p>一切还需要从DES(Data Encryption Standard)讲起。二十世纪七〇年代，蓝色巨人IBM在NSA(后来被Snowden暴光棱镜计划的大名鼎鼎国安局)的资助下，提出了一套数据加密标准方案，简称DES。由于其密钥长度被设计成仅有56位，此方案一开始就被众多密码学家质疑其安全性。一九九八年EFF(电子前哨基金会)使用价值二万五千美元的并行计算机在大约九天的时间即能暴力破解DES，获得密钥。本节的重点并不是DES，而是DES采用的Feistel结构。</p>
 <p>Feistel Network得名于德裔密码学家Horst Feistel，七十年代他在美国为IBM工作，DES方案采用了他和Don Coppersmith设计的加密结构。其示意图如下</p>
-<figure>
-    <img src="https://www.mrzz.cc/image/feistel_cipher_diagram.png"/> 
+<figure><img src="https://www.mrzz.cc/image/feistel_cipher_diagram.png"/>
 </figure>
 
 
@@ -84,15 +83,13 @@ $$ L_i = R_{i+1} \oplus F(L_{i+1}, K_i)$$
 其中\(i = n, n-1, \dots, 0\)。</p>
 <h2 id="feal4">FEAL4</h2>
 <p>DES使用16轮加密函数，FEAL4仅使用了4轮加密函数。所以，尽管由纯软件实现，FEAL4的速度还是令人满意的。我们首先观察一下FEAL4的结构</p>
-<figure>
-    <img src="https://www.mrzz.cc/image/feal4.png"/> 
+<figure><img src="https://www.mrzz.cc/image/feal4.png"/>
 </figure>
 
 
 FEAL4仅有4轮加密过程，待加密的明文长度为64位，被分成\(m_l,m_r\)各32位的俩部分，密钥总长度位64位，每一轮子密钥\(K_i\)长度为16位。在每一轮加密过程中，F函数得到一个右侧32位待加密数据\(B_i = R_i\)和一个16位子密钥\(K_i\)，经过计算之后输出32位结果\(F_i = F(R_i, K_i)\)，再与左侧待加密数据异或得到下一轮右侧待加密的数据\(R_{i+1} = L_i \oplus F_i \)。
 <p>对FEAL4的线性分析的关键在F函数，在清水明宏和宫口庄司合著的<!-- raw HTML omitted -->论文<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup><!-- raw HTML omitted -->里面，我们可以得到F函数的结构如图所示</p>
-<figure>
-    <img src="https://www.mrzz.cc/image/f_function.png"/> 
+<figure><img src="https://www.mrzz.cc/image/f_function.png"/>
 </figure>
 
 <p>
@@ -207,7 +204,7 @@ $$ L_2 == R_1 $$
 <hr>
 <ol>
 <li id="fn:1" role="doc-endnote">
-<p>FEAL-Fast Data Encipherment Algorithm. Akihiro Shimizu and Shoji Miyaguchi, 1988 NTT <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<p>FEAL-Fast Data Encipherment Algorithm. Akihiro Shimizu and Shoji Miyaguchi, 1988 NTT&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 </ol>
 </section>

@@ -19,7 +19,7 @@
 <link rel="stylesheet" href="/css/latex.css" />
 <link rel="stylesheet" href="/css/main.css" />
 <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-<meta name="generator" content="Hugo 0.80.0" />
+<meta name="generator" content="Hugo 0.83.1" />
  
   
   <body>
@@ -64,6 +64,24 @@
 
       
         <article class="post-preview">
+  <a href="/post/flyclient01/">
+      <h2 class="post-title">超轻节点如何验证PoW有效性</h2>
+  </a>
+  <div class="postmeta">
+    <span class="meta-post">
+  <i class="fa fa-calendar-alt"></i>Jun 1, 2021
+  
+</span>
+  </div>
+  <div class="post-entry">
+    
+      <p><p>为了验证交易的合法性，加密货币例如比特币和以太坊，要求节点必须验证区块链的有效性。节点在接入加密货币网络之初，需要花费数小时以及相当大的磁盘空间来下载、验证和存储所有区块。然而一些客户端由于缺乏必要的资源(带宽、存储)，无法独立验证交易，必须依赖全节点。比特币和以太坊均提供了一种名为SPV客户端的方法，SPV客户端仅仅验证和保存所有的区块头。然而，仅仅保存区块头的存储要求也是随着链长的增长而线性增长。至2021年1月为止，以太坊网络的SPV客户端需要存储的区块头数据已经逼近 6 GB。对于资源更受限的 IoT 设备，其存储上限可能都无法达到上述要求。</p></p>
+      
+    
+  </div>
+</article>
+      
+        <article class="post-preview">
   <a href="/post/rlp/">
       <h2 class="post-title">RLP编解码规则</h2>
   </a>
@@ -75,7 +93,7 @@
   </div>
   <div class="post-entry">
     
-      <p><p>递归式长度前缀(Recursive Length Prefix)是以太坊用来对数据进行序列化和反序列的编码规则，这里是参考以太网维基<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>的一篇小小笔记。</p></p>
+      <p><p>递归式长度前缀(Recursive Length Prefix)是以太坊用来对数据进行序列化和反序列的编码规则，这里是参考以太网维基1的一篇小小笔记。</p></p>
       
     
   </div>
@@ -112,8 +130,7 @@
   </div>
   <div class="post-entry">
     
-      <p><p>在前一篇文章里，笔者介绍了如何使用梅克尔树给一个区块里的所有交易生成一个哈希，作为树根存储在区块头，以及解释了当交易数量不足时，为什么需要引入的冗余信息来「凑齐」一棵完整二叉树，最后说明了比特币网络如何避免由于冗余信息所引起的潜在双花攻击。</p>
-<p>在前文里，笔者还没有谈到的事情是如何判断一笔交易确实存在于某个区块之内？这就是本文想要解释的内容。</p></p>
+      <p><p>在前一篇文章里，笔者介绍了如何使用梅克尔树给一个区块里的所有交易生成一个哈希，作为树根存储在区块头，以及解释了当交易数量不足时，为什么需要引入的冗余信息来「凑齐」一棵完整二叉树，最后说明了比特币网络如何避免由于冗余信息所引起的潜在双花攻击。</p></p>
       
     
   </div>
@@ -203,24 +220,6 @@
   <div class="post-entry">
     
       <p><p>之前的<a href="https://www.mrzz.cc/post/cbc-padding/">小文</a>详细介绍了如何利用<code>Oracle</code>实现对CBC的填充攻击，从而解出明文内容。此篇小文将解释如何利用这一对明文密文<code>(m,c)</code>，在不知道密钥的情况下，构造一个对合法的明文密钥<code>(M,C)</code>。这样，攻击者便能在通信双方未能察觉之下修改通信内容，以达到自己的目的。跟前文一样，此文还是以二个消息块为例。有了前文的基础，此文直接进入主题。对CBC不了解或者不够熟悉的读者，请先翻阅前文。</p></p>
-      
-    
-  </div>
-</article>
-      
-        <article class="post-preview">
-  <a href="/post/feal4/">
-      <h2 class="post-title">线性分析 FEAL4</h2>
-  </a>
-  <div class="postmeta">
-    <span class="meta-post">
-  <i class="fa fa-calendar-alt"></i>Oct 1, 2020
-  
-</span>
-  </div>
-  <div class="post-entry">
-    
-      <p><p>FEAL4(Fast data Encryption Algorithm)由日本密码学家清水明宏和宫口庄司于1987年在日本电信电话株式会社(NTT)任职期间提出，作为一个针对DES的替代加密方案。相比较DES被设计成硬件电路的思路，FEAL4可由纯软件实现，得益于较少的加密轮数(4轮)，其执行速度相当快。本文首先介绍FEAL4以及DES所使用的Feistel加密结构，根据FEAL4所使用的F函数，分析F输入及输出之间的线性关系。然后解释，如何利用该线性关系配合较少的明文密文对，攻击者可以快速破解密钥。</p></p>
       
     
   </div>

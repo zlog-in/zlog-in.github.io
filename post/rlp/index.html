@@ -19,7 +19,7 @@
 <link rel="stylesheet" href="/css/latex.css" />
 <link rel="stylesheet" href="/css/main.css" />
 <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-<meta name="generator" content="Hugo 0.80.0" />
+<meta name="generator" content="Hugo 0.83.1" />
  
   
   <body>
@@ -64,7 +64,7 @@
       </div>
       <br>
       
-    <p>递归式长度前缀(Recursive Length Prefix)是以太坊用来对数据进行序列化和反序列的编码规则，这里是参考以太网维基<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>的一篇小小笔记。</p>
+    <p>递归式长度前缀(Recursive Length Prefix)是以太坊用来对数据进行序列化和反序列的编码规则，这里是参考以太网维基1的一篇小小笔记。</p>
 <h2 id="编码">编码</h2>
 <p>适用于RLP编码规则的数据结构</p>
 <ol>
@@ -74,23 +74,48 @@
 <h3 id="规则">规则</h3>
 <p>三条针对字符串的编码规则</p>
 <ol>
-<li>对于单字节，且值在<code>[0x00, 0x7f]</code>范围内(ASCII 码表)，自身即是RLP编码
+<li>
+<p>对于单字节，且值在</p>
+<pre><code>[0x00, 0x7f]
+</code></pre><p>范围内(ASCII 码表)，自身即是RLP编码</p>
 <ul>
 <li><code>[&quot;a&quot;]</code> 编码为 <code>[0x61]</code></li>
 <li><code>[&quot;0&quot;]</code> 编码为<code> [0x00]</code></li>
 <li><code>[&quot;15&quot;]</code> 编码为 <code>[0x0f]</code></li>
 </ul>
 </li>
-<li>对于字符串，且其长度小于55字节，RLP编码由[<strong>前缀</strong> ,  <strong>字符串</strong>] 构成，<code>prefix = 0x80 + len(s)</code>。因此，前缀的范围在 <code>[0x80, 0xb7]</code>  <code>0xb7 = 0x80 + 55</code>
-<ul>
-<li><code>[&quot;cat&quot;]</code> 编码为<code>[0x83,  'c', 'a', 't']</code></li>
+<li>
+<p>对于字符串，且其长度小于55字节，RLP编码由[</p>
+<p>前缀</p>
+<p>,</p>
+<p>字符串</p>
+<p>] 构成，</p>
+<pre><code>prefix = 0x80 + len(s)
+</code></pre><p>。因此，前缀的范围在</p>
+<pre><code>[0x80, 0xb7]
+</code></pre><pre><code>0xb7 = 0x80 + 55
+</code></pre><ul>
+<li><code>[&quot;cat&quot;]</code> 编码为<code>[0x83, 'c', 'a', 't']</code></li>
 <li><code>[&quot;1024&quot;]</code> 编码为 <code>[0x82, 0x04, 0x00]</code></li>
 </ul>
 </li>
-<li>对于长度大于或等于55字节的字符串，RLP编码由[<strong>前缀</strong>, <strong>字符串长度</strong>, <strong>字符串</strong>] 构成，<code>prefix = 0xb7 + len(len(s))</code> (字符串长度值的二进制长度)。前缀的范围在<code>[0xb8, 0xbf]</code> <code>0xbf = 0xb7 + 8</code>，因为字符串长度不得超过 2**64字节，长度值的二进制不超过64位，即8字节。
+<li>
+<p>对于长度大于或等于55字节的字符串，RLP编码由[</p>
+<p>前缀</p>
+<p>,</p>
+<p>字符串长度</p>
+<p>,</p>
+<p>字符串</p>
+<p>] 构成，</p>
+<pre><code>prefix = 0xb7 + len(len(s))
+</code></pre><p>(字符串长度值的二进制长度)。前缀的范围在</p>
+<pre><code>[0xb8, 0xbf]
+</code></pre><pre><code>0xbf = 0xb7 + 8
+</code></pre><p>，因为字符串长度不得超过 2**64字节，长度值的二进制不超过64位，即8字节。</p>
 <ul>
-<li><code>[&quot;Lorem ipsum dolor sit amet, consectetur adipisicing elit&quot;]</code>
-<ul>
+<li>
+<pre><code>[&quot;Lorem ipsum dolor sit amet, consectetur adipisicing elit&quot;]
+</code></pre><ul>
 <li><code>&quot;Lorem ipsum dolor sit amet, consectetur adipisicing elit&quot;</code> 长度为<code>0x38</code>，长度值<code>0x38</code>仅有一个字节</li>
 <li>前缀<code>prefix = 0xb7+1 = 0xb8</code></li>
 <li>编码结果为<code>[ 0xb8, 0x38, 'L', 'o', 'r', 'e', 'm', ' ', ... , 'e', 'l', 'i', 't' ]</code></li>
@@ -100,11 +125,31 @@
 </li>
 </ol>
 <p>两条针对嵌套列表的编码规则</p>
-<ol start="4">
-<li>递归式编码列表：先从最内层列表开始。如果列表长度小于55字节，其RLP编码由[<strong>前缀</strong> ,  <strong>字符串</strong>] 构成，<code>prefix = 0xc0 + len(s)</code>。因此前缀的范围在 <code>[0xc0, 0xf7]</code> <code>0xf7 = 0xc0 + 55</code>；对于外层列表，其RLP编码由[<strong>前缀</strong>，<strong>子列表1 RLP</strong>，<strong>子列表2 RLP</strong>，<strong>&hellip;</strong>]构成，<code>prefix = 0xc0 + len(sublist1) + len(sublist2) + ...</code>
-<ul>
-<li><code>[&quot;cat&quot;, &quot;dog&quot;]</code>
-<ul>
+<ol>
+<li>
+<p>递归式编码列表：先从最内层列表开始。如果列表长度小于55字节，其RLP编码由[</p>
+<p>前缀</p>
+<p>,</p>
+<p>字符串</p>
+<p>] 构成，</p>
+<pre><code>prefix = 0xc0 + len(s)
+</code></pre><p>。因此前缀的范围在</p>
+<pre><code>[0xc0, 0xf7]
+</code></pre><pre><code>0xf7 = 0xc0 + 55
+</code></pre><p>；对于外层列表，其RLP编码由[</p>
+<p>前缀</p>
+<p>，</p>
+<p>子列表1 RLP</p>
+<p>，</p>
+<p>子列表2 RLP</p>
+<p>，</p>
+<p>…</p>
+<p>]构成，</p>
+<pre><code>prefix = 0xc0 + len(sublist1) + len(sublist2) + ...
+</code></pre><ul>
+<li>
+<pre><code>[&quot;cat&quot;, &quot;dog&quot;]
+</code></pre><ul>
 <li><code>&quot;cat&quot;</code>长度为<code>0x03</code>，子列表前缀<code>0x80 + 0x03 = 0x83</code></li>
 <li><code>&quot;dog&quot;</code>长度为<code>0x03</code>，子列表前缀<code>0x80 + 0x03 = 0x83</code></li>
 <li>前缀<code>prefix = 0xc0 + 0x04 + 0x04 = 0x08</code></li>
@@ -113,10 +158,25 @@
 </li>
 </ul>
 </li>
-<li>对于长度大于55字节的列表，RLP编码由[<strong>前缀</strong>, <strong>列表长度</strong>, <strong>子列表1RLP</strong>, <strong>子列表2RLP</strong> &hellip;]，前缀 <code>prefix = 0xf7 + len(len(sublist1)) + len(len(sublist2)) + ...</code>。前缀的范围在<code>[0xf8 0xff]</code> <code>0xff = 0xf7 + 8</code>，因为字符串长度不得超过 2**64字节，二进制长度不得超过64位，即8字节。
+<li>
+<p>对于长度大于55字节的列表，RLP编码由[</p>
+<p>前缀</p>
+<p>,</p>
+<p>列表长度</p>
+<p>,</p>
+<p>子列表1RLP</p>
+<p>,</p>
+<p>子列表2RLP</p>
+<p>…]，前缀</p>
+<pre><code>prefix = 0xf7 + len(len(sublist1)) + len(len(sublist2)) + ...
+</code></pre><p>。前缀的范围在</p>
+<pre><code>[0xf8 0xff]
+</code></pre><pre><code>0xff = 0xf7 + 8
+</code></pre><p>，因为字符串长度不得超过 2**64字节，二进制长度不得超过64位，即8字节。</p>
 <ul>
-<li><code>[&quot;The length of this sentence is more than 55 bytes, &quot;, &quot;I know it because I pre-designed it&quot;]</code>
-<ul>
+<li>
+<pre><code>[&quot;The length of this sentence is more than 55 bytes, &quot;, &quot;I know it because I pre-designed it&quot;]
+</code></pre><ul>
 <li><code>&quot;The length of this sentence is more than 55 bytes, &quot;</code> 长度为 <code>0x33</code>，根据规则2得到 <code>0x80 + 0x33 = 0xb3</code></li>
 <li><code>&quot;I know it because I pre-designed it&quot;</code> 长度为 <code>0x23</code>，根据规则2得到 <code>0x80 + 0x23 = 0xa3</code></li>
 <li>列表总长度 <code>0x33 + 0x23 + 0x02 = 0x58</code>，长度值的二进制宽度为1字节</li>
@@ -128,30 +188,30 @@
 </li>
 </ol>
 <h3 id="代码">代码</h3>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">rlp_encode</span>(input):
-    <span style="color:#66d9ef">if</span> isinstance(input,str):
-        <span style="color:#66d9ef">if</span> len(input) <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">and</span> ord(input) <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">0x80</span>: <span style="color:#66d9ef">return</span> input
-        <span style="color:#66d9ef">else</span>: <span style="color:#66d9ef">return</span> encode_length(len(input), <span style="color:#ae81ff">0x80</span>) <span style="color:#f92672">+</span> input
-    <span style="color:#66d9ef">elif</span> isinstance(input,list):
-        output <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;&#39;</span>
-        <span style="color:#66d9ef">for</span> item <span style="color:#f92672">in</span> input: output <span style="color:#f92672">+=</span> rlp_encode(item)
-        <span style="color:#66d9ef">return</span> encode_length(len(output), <span style="color:#ae81ff">0xc0</span>) <span style="color:#f92672">+</span> output
+<pre><code>def rlp_encode(input):
+    if isinstance(input,str):
+        if len(input) == 1 and ord(input) &lt; 0x80: return input
+        else: return encode_length(len(input), 0x80) + input
+    elif isinstance(input,list):
+        output = ''
+        for item in input: output += rlp_encode(item)
+        return encode_length(len(output), 0xc0) + output
 
-<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">encode_length</span>(L,offset):
-    <span style="color:#66d9ef">if</span> L <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">56</span>:
-         <span style="color:#66d9ef">return</span> chr(L <span style="color:#f92672">+</span> offset)
-    <span style="color:#66d9ef">elif</span> L <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">256</span><span style="color:#f92672">**</span><span style="color:#ae81ff">8</span>:
-         BL <span style="color:#f92672">=</span> to_binary(L)
-         <span style="color:#66d9ef">return</span> chr(len(BL) <span style="color:#f92672">+</span> offset <span style="color:#f92672">+</span> <span style="color:#ae81ff">55</span>) <span style="color:#f92672">+</span> BL
-    <span style="color:#66d9ef">else</span>:
-         <span style="color:#66d9ef">raise</span> <span style="color:#a6e22e">Exception</span>(<span style="color:#e6db74">&#34;input too long&#34;</span>)
+def encode_length(L,offset):
+    if L &lt; 56:
+         return chr(L + offset)
+    elif L &lt; 256**8:
+         BL = to_binary(L)
+         return chr(len(BL) + offset + 55) + BL
+    else:
+         raise Exception(&quot;input too long&quot;)
 
-<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">to_binary</span>(x):
-    <span style="color:#66d9ef">if</span> x <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>:
-        <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#39;&#39;</span>
-    <span style="color:#66d9ef">else</span>:
-        <span style="color:#66d9ef">return</span> to_binary(int(x <span style="color:#f92672">/</span> <span style="color:#ae81ff">256</span>)) <span style="color:#f92672">+</span> chr(x <span style="color:#f92672">%</span> <span style="color:#ae81ff">256</span>)
-</code></pre></div><h2 id="解码">解码</h2>
+def to_binary(x):
+    if x == 0:
+        return ''
+    else:
+        return to_binary(int(x / 256)) + chr(x % 256)
+</code></pre><h2 id="解码">解码</h2>
 <h3 id="规则-1">规则</h3>
 <p>RLP解码器的输入一律被视作二进制数组，输入的首字节称作 <code>prefix</code>，解码过程如下：</p>
 <ol>
@@ -162,58 +222,54 @@
 <li>如果首字节在范围<code>[0xf8 0xff]</code> ，目标数据是列表，超过55字节，首字节之后为列表总长度，长度值的宽度为<code>prefix - 0xf8</code>，总长度之后开始读取第一个子列表，按照以上规则进行解码。</li>
 </ol>
 <h3 id="代码-1">代码</h3>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">rlp_decode</span>(input):
-    <span style="color:#66d9ef">if</span> len(input) <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>:
-        <span style="color:#66d9ef">return</span>
-    output <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;&#39;</span>
-    (offset, dataLen, type) <span style="color:#f92672">=</span> decode_length(input)
-    <span style="color:#66d9ef">if</span> type <span style="color:#f92672">is</span> str:
-        output <span style="color:#f92672">=</span> instantiate_str(substr(input, offset, dataLen))
-    <span style="color:#66d9ef">elif</span> type <span style="color:#f92672">is</span> list:
-        output <span style="color:#f92672">=</span> instantiate_list(substr(input, offset, dataLen))
-    output <span style="color:#f92672">+</span> rlp_decode(substr(input, offset <span style="color:#f92672">+</span> dataLen))
-    <span style="color:#66d9ef">return</span> output
+<pre><code>def rlp_decode(input):
+    if len(input) == 0:
+        return
+    output = ''
+    (offset, dataLen, type) = decode_length(input)
+    if type is str:
+        output = instantiate_str(substr(input, offset, dataLen))
+    elif type is list:
+        output = instantiate_list(substr(input, offset, dataLen))
+    output + rlp_decode(substr(input, offset + dataLen))
+    return output
 
-<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">decode_length</span>(input):
-    length <span style="color:#f92672">=</span> len(input)
-    <span style="color:#66d9ef">if</span> length <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>:
-        <span style="color:#66d9ef">raise</span> <span style="color:#a6e22e">Exception</span>(<span style="color:#e6db74">&#34;input is null&#34;</span>)
-    prefix <span style="color:#f92672">=</span> ord(input[<span style="color:#ae81ff">0</span>])
-    <span style="color:#66d9ef">if</span> prefix <span style="color:#f92672">&lt;=</span> <span style="color:#ae81ff">0x7f</span>:
-        <span style="color:#66d9ef">return</span> (<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">1</span>, str)
-    <span style="color:#66d9ef">elif</span> prefix <span style="color:#f92672">&lt;=</span> <span style="color:#ae81ff">0xb7</span> <span style="color:#f92672">and</span> length <span style="color:#f92672">&gt;</span> prefix <span style="color:#f92672">-</span> <span style="color:#ae81ff">0x80</span>:
-        strLen <span style="color:#f92672">=</span> prefix <span style="color:#f92672">-</span> <span style="color:#ae81ff">0x80</span>
-        <span style="color:#66d9ef">return</span> (<span style="color:#ae81ff">1</span>, strLen, str)
-    <span style="color:#66d9ef">elif</span> prefix <span style="color:#f92672">&lt;=</span> <span style="color:#ae81ff">0xbf</span> <span style="color:#f92672">and</span> length <span style="color:#f92672">&gt;</span> prefix <span style="color:#f92672">-</span> <span style="color:#ae81ff">0xb7</span> <span style="color:#f92672">and</span> length <span style="color:#f92672">&gt;</span> prefix <span style="color:#f92672">-</span> <span style="color:#ae81ff">0xb7</span> <span style="color:#f92672">+</span> to_integer(substr(input, <span style="color:#ae81ff">1</span>, prefix <span style="color:#f92672">-</span> <span style="color:#ae81ff">0xb7</span>)):
-        lenOfStrLen <span style="color:#f92672">=</span> prefix <span style="color:#f92672">-</span> <span style="color:#ae81ff">0xb7</span>
-        strLen <span style="color:#f92672">=</span> to_integer(substr(input, <span style="color:#ae81ff">1</span>, lenOfStrLen))
-        <span style="color:#66d9ef">return</span> (<span style="color:#ae81ff">1</span> <span style="color:#f92672">+</span> lenOfStrLen, strLen, str)
-    <span style="color:#66d9ef">elif</span> prefix <span style="color:#f92672">&lt;=</span> <span style="color:#ae81ff">0xf7</span> <span style="color:#f92672">and</span> length <span style="color:#f92672">&gt;</span> prefix <span style="color:#f92672">-</span> <span style="color:#ae81ff">0xc0</span>:
-        listLen <span style="color:#f92672">=</span> prefix <span style="color:#f92672">-</span> <span style="color:#ae81ff">0xc0</span>;
-        <span style="color:#66d9ef">return</span> (<span style="color:#ae81ff">1</span>, listLen, list)
-    <span style="color:#66d9ef">elif</span> prefix <span style="color:#f92672">&lt;=</span> <span style="color:#ae81ff">0xff</span> <span style="color:#f92672">and</span> length <span style="color:#f92672">&gt;</span> prefix <span style="color:#f92672">-</span> <span style="color:#ae81ff">0xf7</span> <span style="color:#f92672">and</span> length <span style="color:#f92672">&gt;</span> prefix <span style="color:#f92672">-</span> <span style="color:#ae81ff">0xf7</span> <span style="color:#f92672">+</span> to_integer(substr(input, <span style="color:#ae81ff">1</span>, prefix <span style="color:#f92672">-</span> <span style="color:#ae81ff">0xf7</span>)):
-        lenOfListLen <span style="color:#f92672">=</span> prefix <span style="color:#f92672">-</span> <span style="color:#ae81ff">0xf7</span>
-        listLen <span style="color:#f92672">=</span> to_integer(substr(input, <span style="color:#ae81ff">1</span>, lenOfListLen))
-        <span style="color:#66d9ef">return</span> (<span style="color:#ae81ff">1</span> <span style="color:#f92672">+</span> lenOfListLen, listLen, list)
-    <span style="color:#66d9ef">else</span>:
-        <span style="color:#66d9ef">raise</span> <span style="color:#a6e22e">Exception</span>(<span style="color:#e6db74">&#34;input don&#39;t conform RLP encoding form&#34;</span>)
+def decode_length(input):
+    length = len(input)
+    if length == 0:
+        raise Exception(&quot;input is null&quot;)
+    prefix = ord(input[0])
+    if prefix &lt;= 0x7f:
+        return (0, 1, str)
+    elif prefix &lt;= 0xb7 and length &gt; prefix - 0x80:
+        strLen = prefix - 0x80
+        return (1, strLen, str)
+    elif prefix &lt;= 0xbf and length &gt; prefix - 0xb7 and length &gt; prefix - 0xb7 + to_integer(substr(input, 1, prefix - 0xb7)):
+        lenOfStrLen = prefix - 0xb7
+        strLen = to_integer(substr(input, 1, lenOfStrLen))
+        return (1 + lenOfStrLen, strLen, str)
+    elif prefix &lt;= 0xf7 and length &gt; prefix - 0xc0:
+        listLen = prefix - 0xc0;
+        return (1, listLen, list)
+    elif prefix &lt;= 0xff and length &gt; prefix - 0xf7 and length &gt; prefix - 0xf7 + to_integer(substr(input, 1, prefix - 0xf7)):
+        lenOfListLen = prefix - 0xf7
+        listLen = to_integer(substr(input, 1, lenOfListLen))
+        return (1 + lenOfListLen, listLen, list)
+    else:
+        raise Exception(&quot;input don't conform RLP encoding form&quot;)
 
-<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">to_integer</span>(b):
-    length <span style="color:#f92672">=</span> len(b)
-    <span style="color:#66d9ef">if</span> length <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>:
-        <span style="color:#66d9ef">raise</span> <span style="color:#a6e22e">Exception</span>(<span style="color:#e6db74">&#34;input is null&#34;</span>)
-    <span style="color:#66d9ef">elif</span> length <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span>:
-        <span style="color:#66d9ef">return</span> ord(b[<span style="color:#ae81ff">0</span>])
-    <span style="color:#66d9ef">else</span>:
-        <span style="color:#66d9ef">return</span> ord(substr(b, <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>)) <span style="color:#f92672">+</span> to_integer(substr(b, <span style="color:#ae81ff">0</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>)) <span style="color:#f92672">*</span> <span style="color:#ae81ff">256</span>
-</code></pre></div><section class="footnotes" role="doc-endnotes">
-<hr>
+def to_integer(b):
+    length = len(b)
+    if length == 0:
+        raise Exception(&quot;input is null&quot;)
+    elif length == 1:
+        return ord(b[0])
+    else:
+        return ord(substr(b, -1)) + to_integer(substr(b, 0, -1)) * 256
+</code></pre><hr>
 <ol>
-<li id="fn:1" role="doc-endnote">
-<p><a href="https://eth.wiki/fundamentals/rlp">https://eth.wiki/fundamentals/rlp</a> <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
-</li>
+<li><a href="https://eth.wiki/fundamentals/rlp">https://eth.wiki/fundamentals/rlp</a> ↩︎</li>
 </ol>
-</section>
 
 
       

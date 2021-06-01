@@ -19,7 +19,7 @@
 <link rel="stylesheet" href="/css/latex.css" />
 <link rel="stylesheet" href="/css/main.css" />
 <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-<meta name="generator" content="Hugo 0.80.0" />
+<meta name="generator" content="Hugo 0.83.1" />
  
   
   <body>
@@ -67,8 +67,7 @@
     <p>CBC(Cipher Block Chaining)是一种块加密，所谓块，就是一段固定长度的数据。明文，也就是待加密的数据，被分割成若干个块，然后分别加密每一个块。如果最后一个块未被填满，则需要额外的数据填充其中，然后加密。在本文首先介绍CBC加密系统的工作流程，然后就其采用的填充标准<a href="https://tools.ietf.org/html/rfc2315#section-10.3">PKCS#7</a>详细说明一种攻击方法。</p>
 <h2 id="cbc">CBC</h2>
 <p>首先看一下，CBC是如何加密
-<figure>
-    <img src="https://www.mrzz.cc/image/cbc_encryption.png"/> 
+<figure><img src="https://www.mrzz.cc/image/cbc_encryption.png"/>
 </figure>
 </p>
 <p>
@@ -77,8 +76,7 @@
 $$ c_0 = IV,$$
 $$ c_i = Enc_k(m_i \oplus c_{i-1})。$$</p>
 <p>解密过程则与其相反
-<figure>
-    <img src="https://www.mrzz.cc/image/cbc_decryption.png"/> 
+<figure><img src="https://www.mrzz.cc/image/cbc_decryption.png"/>
 </figure>
 </p>
 <p>
@@ -88,8 +86,7 @@ $$ c_0 = IV,$$
 $$ m_i = Dec_k(c_i )\oplus c_{i-1}。$$</p>
 <p>从示意图和表达式都很容易发现，每一个区块的加密或者解密都依赖于上一个区块的内容，这也是Block Chaining名称的由来。其中，解密过程可以并行计算，因为所有密文区块都是已知，而加密过程必须等待上一个密文区块计算完成。</p>
 <h2 id="比特翻转">比特翻转</h2>
-<figure>
-    <img src="https://www.mrzz.cc/image/cbc_bitflip.JPG"/> 
+<figure><img src="https://www.mrzz.cc/image/cbc_bitflip.JPG"/>
 </figure>
 
 <p>
@@ -109,8 +106,7 @@ $$ m_i = Dec_k(c_i )\oplus c_{i-1}。$$</p>
 <h2 id="攻击开始">攻击开始</h2>
 <p>有了<code>Padding Oracle</code>，攻击者可以恢复某个密文的明文。为了不至于文章太冗长，我们只演示对<code>3</code>个区块的攻击过程，其中第一个区块是初始化向量\(c_0 = IV\)。</p>
 <p>先观察一下解密的过程，下图是一个简略的示意，帮助我们更直观地理解
-<figure>
-    <img src="https://www.mrzz.cc/image/simple_cbc_dec.jpg"/> 
+<figure><img src="https://www.mrzz.cc/image/simple_cbc_dec.jpg"/>
 </figure>
 </p>
 
