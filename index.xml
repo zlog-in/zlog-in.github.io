@@ -17,6 +17,16 @@
     </item>
     
     <item>
+      <title>Flyclient02</title>
+      <link>/post/flyclient02/</link>
+      <pubDate>Thu, 06 May 2021 22:58:30 +0200</pubDate>
+      
+      <guid>/post/flyclient02/</guid>
+      <description>&lt;p&gt;在前一篇文章，我们详细解释了基于不变难度的超轻节点如何验证区块的有效性以及其验证结果正确概率的模型。这个模型的前提是基于理想状态设定的，能够帮助读者更容易理解超轻节点的工作流程和其背后的数学原理，但在真实的区块链行业，基于PoW的共识算法会随着参与网络竞争的节点数量和运算能力改变而周期性调整难度目标。这意味着，节点必须检查区块的PoW是否满足难度调整函数。&lt;/p&gt;
+&lt;p&gt;在本篇文章，我们将首先介绍中本聪为比特币网络设置的难度调整函数，然后用更形式化的方法为读者解释难度调整函数，最后说明在可变难度下超轻节点如何检查区块的PoW。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
       <title>RLP编解码规则</title>
       <link>/post/rlp/</link>
       <pubDate>Wed, 10 Mar 2021 22:15:27 +0200</pubDate>
