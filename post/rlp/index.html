@@ -85,9 +85,7 @@
 <p>三条针对字符串的编码规则</p>
 <ol>
 <li>
-<p>对于单字节，且值在</p>
-<pre><code>[0x00, 0x7f]
-</code></pre><p>范围内(ASCII 码表)，自身即是RLP编码</p>
+<p>对于单字节，且值在[0x00, 0x7f]范围内(ASCII 码表)，自身即是RLP编码</p>
 <ul>
 <li><code>[&quot;a&quot;]</code> 编码为 <code>[0x61]</code></li>
 <li><code>[&quot;0&quot;]</code> 编码为<code> [0x00]</code></li>
@@ -95,40 +93,20 @@
 </ul>
 </li>
 <li>
-<p>对于字符串，且其长度小于55字节，RLP编码由[</p>
-<p>前缀</p>
-<p>,</p>
-<p>字符串</p>
-<p>] 构成，</p>
-<pre><code>prefix = 0x80 + len(s)
-</code></pre><p>。因此，前缀的范围在</p>
-<pre><code>[0x80, 0xb7]
-</code></pre><pre><code>0xb7 = 0x80 + 55
-</code></pre><ul>
-<li><code>[&quot;cat&quot;]</code> 编码为<code>[0x83, 'c', 'a', 't']</code></li>
-<li><code>[&quot;1024&quot;]</code> 编码为 <code>[0x82, 0x04, 0x00]</code></li>
+<p>对于字符串，且其长度小于55字节，RLP编码由[前缀 , 字符串] 构成，prefix = 0x80 + len(s)。因此，前缀的范围在 [0x80, 0xb7] 0xb7 = 0x80 + 55</p>
+<ul>
+<li>[&ldquo;cat&rdquo;] 编码为[0x83, &lsquo;c&rsquo;, &lsquo;a&rsquo;, &rsquo;t']</li>
+<li>[&ldquo;1024&rdquo;] 编码为 [0x82, 0x04, 0x00]</li>
 </ul>
 </li>
 <li>
-<p>对于长度大于或等于55字节的字符串，RLP编码由[</p>
-<p>前缀</p>
-<p>,</p>
-<p>字符串长度</p>
-<p>,</p>
-<p>字符串</p>
-<p>] 构成，</p>
-<pre><code>prefix = 0xb7 + len(len(s))
-</code></pre><p>(字符串长度值的二进制长度)。前缀的范围在</p>
-<pre><code>[0xb8, 0xbf]
-</code></pre><pre><code>0xbf = 0xb7 + 8
-</code></pre><p>，因为字符串长度不得超过 2**64字节，长度值的二进制不超过64位，即8字节。</p>
+<p>对于长度大于或等于55字节的字符串，RLP编码由[前缀, 字符串长度, 字符串] 构成，prefix = 0xb7 + len(len(s)) (字符串长度值的二进制长度)。前缀的范围在[0xb8, 0xbf] 0xbf = 0xb7 + 8，因为字符串长度不得超过 2**64字节，长度值的二进制不超过64位，即8字节。</p>
 <ul>
-<li>
-<pre><code>[&quot;Lorem ipsum dolor sit amet, consectetur adipisicing elit&quot;]
-</code></pre><ul>
-<li><code>&quot;Lorem ipsum dolor sit amet, consectetur adipisicing elit&quot;</code> 长度为<code>0x38</code>，长度值<code>0x38</code>仅有一个字节</li>
-<li>前缀<code>prefix = 0xb7+1 = 0xb8</code></li>
-<li>编码结果为<code>[ 0xb8, 0x38, 'L', 'o', 'r', 'e', 'm', ' ', ... , 'e', 'l', 'i', 't' ]</code></li>
+<li>[&ldquo;Lorem ipsum dolor sit amet, consectetur adipisicing elit&rdquo;]
+<ul>
+<li>&ldquo;Lorem ipsum dolor sit amet, consectetur adipisicing elit&rdquo; 长度为0x38，长度值0x38仅有一个字节</li>
+<li>前缀prefix = 0xb7+1 = 0xb8</li>
+<li>编码结果为[ 0xb8, 0x38, &lsquo;L&rsquo;, &lsquo;o&rsquo;, &lsquo;r&rsquo;, &lsquo;e&rsquo;, &rsquo;m', ' &lsquo;, &hellip; , &lsquo;e&rsquo;, &lsquo;l&rsquo;, &lsquo;i&rsquo;, &rsquo;t&rsquo; ]</li>
 </ul>
 </li>
 </ul>
@@ -137,29 +115,10 @@
 <p>两条针对嵌套列表的编码规则</p>
 <ol>
 <li>
-<p>递归式编码列表：先从最内层列表开始。如果列表长度小于55字节，其RLP编码由[</p>
-<p>前缀</p>
-<p>,</p>
-<p>字符串</p>
-<p>] 构成，</p>
-<pre><code>prefix = 0xc0 + len(s)
-</code></pre><p>。因此前缀的范围在</p>
-<pre><code>[0xc0, 0xf7]
-</code></pre><pre><code>0xf7 = 0xc0 + 55
-</code></pre><p>；对于外层列表，其RLP编码由[</p>
-<p>前缀</p>
-<p>，</p>
-<p>子列表1 RLP</p>
-<p>，</p>
-<p>子列表2 RLP</p>
-<p>，</p>
-<p>…</p>
-<p>]构成，</p>
-<pre><code>prefix = 0xc0 + len(sublist1) + len(sublist2) + ...
-</code></pre><ul>
-<li>
-<pre><code>[&quot;cat&quot;, &quot;dog&quot;]
-</code></pre><ul>
+<p>递归式编码列表：先从最内层列表开始。如果列表长度小于55字节，其RLP编码由[前缀 , 字符串] 构成，prefix = 0xc0 + len(s)。因此前缀的范围在 [0xc0, 0xf7] 0xf7 = 0xc0 + 55；对于外层列表，其RLP编码由[前缀，子列表1 RLP，子列表2 RLP，…]构成，prefix = 0xc0 + len(sublist1) + len(sublist2) + &hellip;</p>
+<ul>
+<li>[&ldquo;cat&rdquo;, &ldquo;dog&rdquo;]
+<ul>
 <li><code>&quot;cat&quot;</code>长度为<code>0x03</code>，子列表前缀<code>0x80 + 0x03 = 0x83</code></li>
 <li><code>&quot;dog&quot;</code>长度为<code>0x03</code>，子列表前缀<code>0x80 + 0x03 = 0x83</code></li>
 <li>前缀<code>prefix = 0xc0 + 0x04 + 0x04 = 0x08</code></li>
@@ -169,24 +128,11 @@
 </ul>
 </li>
 <li>
-<p>对于长度大于55字节的列表，RLP编码由[</p>
-<p>前缀</p>
-<p>,</p>
-<p>列表长度</p>
-<p>,</p>
-<p>子列表1RLP</p>
-<p>,</p>
-<p>子列表2RLP</p>
-<p>…]，前缀</p>
-<pre><code>prefix = 0xf7 + len(len(sublist1)) + len(len(sublist2)) + ...
-</code></pre><p>。前缀的范围在</p>
-<pre><code>[0xf8 0xff]
-</code></pre><pre><code>0xff = 0xf7 + 8
-</code></pre><p>，因为字符串长度不得超过 2**64字节，二进制长度不得超过64位，即8字节。</p>
+<p>对于长度大于55字节的列表，RLP编码由[前缀, 列表长度, 子列表1RLP, 子列表2RLP …]，前缀 prefix = 0xf7 + len(len(sublist1)) + len(len(sublist2)) + &hellip;。前缀的范围在[0xf8 0xff] 0xff = 0xf7 + 8，因为字符串长度不得超过 2**64字节，二进制长度不得超过64位，即8字节。</p>
 <ul>
 <li>
-<pre><code>[&quot;The length of this sentence is more than 55 bytes, &quot;, &quot;I know it because I pre-designed it&quot;]
-</code></pre><ul>
+<p>[&ldquo;The length of this sentence is more than 55 bytes, &ldquo;, &ldquo;I know it because I pre-designed it&rdquo;]</p>
+<ul>
 <li><code>&quot;The length of this sentence is more than 55 bytes, &quot;</code> 长度为 <code>0x33</code>，根据规则2得到 <code>0x80 + 0x33 = 0xb3</code></li>
 <li><code>&quot;I know it because I pre-designed it&quot;</code> 长度为 <code>0x23</code>，根据规则2得到 <code>0x80 + 0x23 = 0xa3</code></li>
 <li>列表总长度 <code>0x33 + 0x23 + 0x02 = 0x58</code>，长度值的二进制宽度为1字节</li>
