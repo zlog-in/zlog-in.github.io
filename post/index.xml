@@ -6,7 +6,18 @@
     <description>Recent content in Posts on Zlog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 06 May 2021 22:58:30 +0200</lastBuildDate><atom:link href="/post/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 06 Aug 2021 11:31:19 +0200</lastBuildDate><atom:link href="/post/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>《民权初步》序</title>
+      <link>/post/%E6%B0%91%E6%9D%83%E5%88%9D%E6%AD%A5-%E5%BA%8F/</link>
+      <pubDate>Fri, 06 Aug 2021 11:31:19 +0200</pubDate>
+      
+      <guid>/post/%E6%B0%91%E6%9D%83%E5%88%9D%E6%AD%A5-%E5%BA%8F/</guid>
+      <description>&lt;blockquote&gt;
+&lt;p&gt;最近在读《罗伯特议事规则》，瞥见孙中山曾为此书作序言，便手录在此。&lt;/p&gt;
+&lt;/blockquote&gt;</description>
+    </item>
+    
     <item>
       <title>可变难度下的超轻验证原理</title>
       <link>/post/flyclient02/</link>
