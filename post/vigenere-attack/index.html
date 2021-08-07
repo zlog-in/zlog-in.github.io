@@ -258,6 +258,28 @@ $$ C(k) = \sum_{i=0}^{25} (P[i] - H[i + k \mod 26])^2ï¼Œ k \in \{ 0,\dots,25 \}ï
       
       <div class="post-comment">
         
+<div id="gitalk-container"></div>
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+<script>
+  const gitalk = new Gitalk({
+    clientID: '28369b07e2360baae2e7',
+    clientSecret: '4c94169b822196a74a4c07354c0c2a9acee5779b',
+    repo: 'mrzz00.github.io',
+    owner: 'mrzz00',
+    admin: ['mrzz00'],
+    id: location.pathname, 
+    distractionFreeMode: false 
+  });
+  (function() {
+    if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+      document.getElementById('gitalk-container').innerHTML = 'Gitalk comments not available by default when the website is previewed locally.';
+      return;
+    }
+    gitalk.render('gitalk-container');
+  })();
+</script>
+
 
 
       </div>
