@@ -19,6 +19,15 @@
     </item>
     
     <item>
+      <title>共识系列|拜占庭将军问题</title>
+      <link>/post/byz/</link>
+      <pubDate>Mon, 05 Jul 2021 20:52:56 +0200</pubDate>
+      
+      <guid>/post/byz/</guid>
+      <description>&lt;p&gt;得益于无数聪明的头脑，对于区块链行业发展的思考和探索正在朝着两个方向迈进，有人在想象并期待着区块链之上能够出现更多安全而且可靠的DAPP，为数字资产的流动赋予无与伦比的自由和速度；也有人在深刻思索着区块链之下的共识机制，审视着人类协作活动的最基础性原理，以求得一条最为直接而且可信的通往共识之路，并改变人类组织的管理模式。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
       <title>可变难度下的超轻验证原理</title>
       <link>/post/flyclient02/</link>
       <pubDate>Thu, 06 May 2021 22:58:30 +0200</pubDate>
