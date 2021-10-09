@@ -61,7 +61,7 @@
       <pubDate>Wed, 10 Mar 2021 22:15:27 +0200</pubDate>
       
       <guid>/post/rlp/</guid>
-      <description>&lt;p&gt;递归式长度前缀(Recursive Length Prefix)是以太坊用来对数据进行序列化和反序列的编码规则，这里是参考以太网维基1的一篇小小笔记。&lt;/p&gt;</description>
+      <description>&lt;p&gt;递归式长度前缀(Recursive Length Prefix)是以太坊用来对数据进行序列化和反序列的编码规则，这里是参考以太网维基[^1]的一篇小小笔记。&lt;/p&gt;</description>
     </item>
     
     <item>
