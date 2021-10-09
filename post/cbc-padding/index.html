@@ -76,19 +76,15 @@
       
     <p>CBC(Cipher Block Chaining)是一种块加密，所谓块，就是一段固定长度的数据。明文，也就是待加密的数据，被分割成若干个块，然后分别加密每一个块。如果最后一个块未被填满，则需要额外的数据填充其中，然后加密。在本文首先介绍CBC加密系统的工作流程，然后就其采用的填充标准<a href="https://tools.ietf.org/html/rfc2315#section-10.3">PKCS#7</a>详细说明一种攻击方法。</p>
 <h2 id="cbc">CBC</h2>
-<p>首先看一下，CBC是如何加密
-<figure><img src="https://www.mrzz.cc/image/cbc_encryption.png"/>
-</figure>
-</p>
+<p>首先看一下，CBC是如何加密</p>
+<p><img src="/image/cbc_encryption.png" alt="img"></p>
 <p>
 待加密的消息被分成若干个明文数据块，每个区块长度为\(L\)，并按序编号为\(m_1，\cdots, m_n\)。明文\(m_i\)首先与前一个密文\(c_{i-1}\)进行一次异或操作<code>XOR</code>，运算结果进入加密函数得到密文\(c_i\)。其中，第一段明文\(m_1\)与一个随机选择的初始化向量\(IV\)异或。最终得到所有的密文区块\( C = (c_0=IV, c_1, \cdots, c_n)\)，其中\(IV\)以明文传输。</p>
 <p>CBC加密的数学形式为
 $$ c_0 = IV,$$
 $$ c_i = Enc_k(m_i \oplus c_{i-1})。$$</p>
-<p>解密过程则与其相反
-<figure><img src="https://www.mrzz.cc/image/cbc_decryption.png"/>
-</figure>
-</p>
+<p>解密过程则与其相反</p>
+<p><img src="/image/cbc_decryption.png" alt="img"></p>
 <p>
 每段密文\(c_i\)首先被解密，然后与前一个密文\(c_{i-1}\)再异或得到明文\(m_i\)。
 同样，简单地表达为
@@ -96,9 +92,7 @@ $$ c_0 = IV,$$
 $$ m_i = Dec_k(c_i )\oplus c_{i-1}。$$</p>
 <p>从示意图和表达式都很容易发现，每一个区块的加密或者解密都依赖于上一个区块的内容，这也是Block Chaining名称的由来。其中，解密过程可以并行计算，因为所有密文区块都是已知，而加密过程必须等待上一个密文区块计算完成。</p>
 <h2 id="比特翻转">比特翻转</h2>
-<figure><img src="https://www.mrzz.cc/image/cbc_bitflip.JPG"/>
-</figure>
-
+<p><img src="/image/cbc_bitflip.JPG" alt="img"></p>
 <p>
 在密文传输过程中，如果信道不稳定导致某个密文\(c_i\)中的一个比特位发生错误，比如因为宇宙射线的轰击，某个位上的<code>1</code>翻转成了<code>0</code> 🌚 解密的时候，因为解密函数运算会导致整个\(m_i\)损坏。同时，还会引起\(m_{i-1}\)的一位比特出现翻转错误，如上图红色部分所示。</p>
 <p>而本文介绍的攻击方法正是基于密文比特翻转会引起下一块明文对应位置也会发生翻转的特性，下文会有详述。</p>
@@ -115,10 +109,8 @@ $$ m_i = Dec_k(c_i )\oplus c_{i-1}。$$</p>
 </code></pre><p>同样地，攻击者拥有一位<code>Oracle</code>，解密攻击者提交的密文并判断明文的填充是否符合标准，如是返回<code>1</code>，如否返回<code>0</code>。</p>
 <h2 id="攻击开始">攻击开始</h2>
 <p>有了<code>Padding Oracle</code>，攻击者可以恢复某个密文的明文。为了不至于文章太冗长，我们只演示对<code>3</code>个区块的攻击过程，其中第一个区块是初始化向量\(c_0 = IV\)。</p>
-<p>先观察一下解密的过程，下图是一个简略的示意，帮助我们更直观地理解
-<figure><img src="https://www.mrzz.cc/image/simple_cbc_dec.jpg"/>
-</figure>
-</p>
+<p>先观察一下解密的过程，下图是一个简略的示意，帮助我们更直观地理解</p>
+<p><img src="/image/simple_cbc_dec.jpg" alt="img"></p>
 
 可以发现，经过填充以后的最后一块明文\(m_2 = c_1 \oplus t_2\)，\(t_2\)是\(c_2\)经过解密函数计算以后得到的中间结果。也就是说如果攻击者翻转\(c_1\)的某一位比特，\(m_2\)相应的位置也会被翻转，这就是攻击发生的基础。让我们仔细看一看攻击是如何发生的？
 <p>
