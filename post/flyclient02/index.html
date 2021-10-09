@@ -99,13 +99,9 @@ bnNew <span style="color:#f92672">/=</span> params.nPowTargetTimespan;
 </code></pre></div><p>为了抵御潜在的攻击，实际的调整系数会被限制在 $[1/4, 4]$ 之间。要理解这么做的原因，我们还需回顾一下区块链的基本结构：在比特币网络，矿工们总是选择从**累计最难(即难度目标总和最小)**的那条最长链末端开始挖取下一个区块。假设不限制调整系数，恶意节点可以强行设置一个难度极高的PoW目标。这样即使恶意节点的算力不足，也有可能因为运气足够好而成功挖出区块，从而短暂地超过诚实节点成为最难最长链，此时区块链就出现了分叉。这种攻击手法称作 Difficulty Raising Attack。</p>
 <p>因此为了阻止此类攻击的发生，可以通过限制调整系数，使得难度设定过于离谱的PoW变为无效。但是如此一来，有可能会导致难度调整函数无法准确得到下一轮的难度目标，从而导致出块速率无法通过一次调整就能够稳定在10分钟。可以说，这是为了保障网络安全性而做出的必要的妥协。</p>
 <p>可以看出，上述的PoW难度调整机制是十分简单且有效的，但它最终将比特币引入了算力争霸的赛道。众所周知，比特币挖矿消耗的能量越来越多，其网络一年消耗的电能已经超过阿根廷的年发电总量。随着参与挖矿的节点越来越多，以及挖矿设备的算力越来越强(CPU -&gt; GPU -&gt; ASIC)，如今全网算力已达 153.5 EH/s，即每秒可做 $153.5 \times 10^{18}$ 次哈希运算。</p>
-<figure><img src="https://www.mrzz.cc/image/hash_rate.png"/>
-</figure>
-
+<p><img src="/image/hash_rate.png" alt="img"></p>
 <p>随着矿池的出现和矿机的专业化，挖矿算力越来越集中于几个大矿池，使得普通个人只能通过购买手段来获取比特币。这引起了一些人对于比特币安全性的担心，他们认为今天的局面有悖于当初中本聪设想的去中心化货币。第三方的统计数据显示，几大矿池的算力之和已经超过了全网总算力的50%，因而理论上如果它们达成共谋，针对网络的「51%攻击」就很有可能成为现实。</p>
-<figure><img src="https://www.mrzz.cc/image/hash_distribution.png"/>
-</figure>
-
+<p><img src="/image/hash_distribution.png" alt="img"></p>
 <h2 id="形式化难度调整">形式化难度调整</h2>
 <p>为了读者能够更准确地理解PoW链的难度调整机制，我们将用更专业的数学语言来进行进一步的解释</p>
 <p>首先约定几个术语：</p>
@@ -159,9 +155,7 @@ $$</p>
 	D_next = r.D_next
 ]
 </code></pre><p>为了简化分析过程，设置难度调整函数的周期为 $m = 2^n$ 个区块，以及MMR结构的叶子数量也为$2^n$，例如下图</p>
-<figure><img src="https://www.mrzz.cc/image/mmr.png"/>
-</figure>
-
+<p><img src="/image/mmr.png" alt="img"></p>
 <p>超轻节点如何验证某个被采样区块的MMR证据：</p>
 <ol>
 <li>由兄弟节点计算得到父节点</li>
@@ -189,25 +183,19 @@ $$
 </code></pre><p>然后再以最大幅度进行若干次减少难度值</p>
 <pre><code>New Target= 1/t * Old Target
 </code></pre><p>难度调整过程如下图所示</p>
-<figure><img src="https://www.mrzz.cc/image/w_max.png"/>
-</figure>
-
+<p><img src="/image/w_max.png" alt="img"></p>
 <p>此时的难度调整曲线与座标轴围成的面积即是累计难度的最大值，即
 $$
 w \leq D_{start} \Big( \Sigma_{i = 0}^{\frac{n+k}{2}} \tau^i + \Sigma_{i=k+1}^{\frac{n+k}{2} -1} \tau^i \Big) = D_{start} \cdot \frac{(\tau + 1) \tau^{\frac{n+k}{2}} - \tau^{k+1} -1}{\tau -1} = w_{max}
 $$</p>
 <p>同理，为了求得区间的下限，应该先以最大幅度对难度值进行若干次的减少，再以最大幅度对难度值进行若干次的增加，如下图所示</p>
-<figure><img src="https://www.mrzz.cc/image/w_min.png"/>
-</figure>
-
+<p><img src="/image/w_min.png" alt="img"></p>
 <p>求得最小累计难度为
 $$
 w \geq D_{start} \Big( \Sigma_{i = 0}^{\frac{n-k}{2}}  \tau^{-i}  +  \Sigma_{i=1}^{\frac{n-k}{2}-1} \tau^{-i} + \Sigma_{i = 0}^{k-1} \tau^{i} \Big) = D_{start} \cdot \frac{\tau^k + \tau - (\tau +1 ) \tau ^{\frac{n+k}{2}}}{\tau -1} = w_{min}
 $$</p>
 <p>现在，我们再来举一个例子说明如何利用累计难度来判断区块PoW的有效性。</p>
-<figure><img src="https://www.mrzz.cc/image/mmr_proof.png"/>
-</figure>
-
+<p><img src="/image/mmr_proof.png" alt="img"></p>
 <p>上图中底层蓝色区块代表MMR结构中的叶子节点，父节点由兄弟节点产生。假设图中红色区块被采样，图中黄色图形和左上方红色节点组成该区块的MMR证据。如果红色区块的PoW造假，即其难度目标不符合难度调整函数的结果，也即左上方红色的MMR节点的<code>D_next</code>值无效。</p>
 <p>根据该红色节点在MMR结构中的位置，可以得出其下所有区块共经历几次难度调整，即<code>n</code>。再根据此节点的<code>D_start</code>和<code>D_next</code>(即<code>D_end</code>)，可以得出<code>k</code>值。</p>
 <p>获得<code>D_start, n, k</code>之后，可以求出累计难度的区间，最后再检查红色节点的<code>w</code><strong>是否属于该区间</strong>。如果<strong>不属于</strong>，即判断红色区块的PoW无效。</p>
