@@ -185,7 +185,9 @@ $$
 </code></pre><p>难度调整过程如下图所示</p>
 <p><img src="/image/w_max.png" alt="img"></p>
 <p>此时的难度调整曲线与座标轴围成的面积即是累计难度的最大值，即</p>
-<!-- raw HTML omitted -->
+<p>$$
+w \leq D_{start} \Big( \Sigma_{i = 0}^{\frac{n+k}{2}} \tau^i + \Sigma_{i=k+1}^{\frac{n+k}{2} -1} \tau^i \Big) = D_{start} \cdot \frac{(\tau + 1) \tau^{\frac{n+k}{2}} - \tau^{k+1} -1}{\tau -1} = w_{max}
+$$</p>
 <p>同理，为了求得区间的下限，应该先以最大幅度对难度值进行若干次的减少，再以最大幅度对难度值进行若干次的增加，如下图所示</p>
 <p><img src="/image/w_min.png" alt="img"></p>
 <p>求得最小累计难度为
