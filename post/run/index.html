@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en-us">
+ 
+
+
+
+
+
+    
+
+  
+<meta charset="utf-8" />
+
+  <title>Run - Zlog</title>
+
+
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="stylesheet" href="/css/latex.css" />
+<link rel="stylesheet" href="/css/main.css" />
+<link rel="stylesheet" href="https://latex.now.sh/style.css">
+<script>
+  MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']]
+    },
+    svg: {
+      fontCache: 'global'
+    }
+  };
+  </script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<meta name="generator" content="Hugo 0.83.1" />
+ 
+  
+  <body>
+
+
+
+
+
+
+<header>  
+  <nav class="navbar">
+  <div class="nav">
+    
+
+    <ul class="nav-links">
+      
+    </ul>
+  </div>
+</nav>
+  <div class="intro-header">
+    <div class="container">
+      <div class="post-heading">
+        
+          <h1>Run</h1>
+          
+        
+
+      </div>
+    </div>
+  </div>
+
+
+</header>
+<div id="content">
+  <div class="container" role="main">
+    <article class="article" class="blog-post">
+      <div class="postmeta">
+        <span class="meta-post">
+  <i class="fa fa-calendar-alt"></i>Apr 8, 2022
+  
+</span>
+      </div>
+      <br>
+      
+    <p>跑步对于我来说，是最舒服的独处方式。跑起来很简单，左脚迈过右脚，右脚迈过左脚，一步一步往前。</p>
+<p>跑步大概是最亲民的运动，几乎没有任何场地限制，也无需添购额外的装备。有一双合脚的鞋，在晴朗的天空下，你就可以跑起来。</p>
+<p>跑步的时候，我不听音乐，也可以没有播客。什么也不用想，做最简单的重复动作。</p>
+<p>慢慢地，呼吸开始加重，心跳变得有力。身体的变化带来快乐的感觉，跑步让人快乐。我跑得不快，但是跑步的快乐足够长久。</p>
+<p>除了一把钥匙，我不想带任何东西出门跑步。虽然也跑了好几年，但没怎么记录跑步数据。</p>
+<p>后来，发现有位前辈开源了一款用来展示跑步轨迹的工具 Running Page。看着足迹一点点铺在地图上，感觉还蛮不错，我也希望保留下跑过的痕迹。</p>
+<p>于是，我也部署了一个<a href="https://run.zlog.in/">Running Page</a>。现在记录的数据还不多，待几年之后再看应该会更丰富一些。</p>
+<p>希望以后每去到一个新的环境，我都能有机会出去小跑一圈。</p>
+<p>如果你也喜欢跑步，并且愿意记录，这篇教程可以帮助你在GitHub上部署一个自己的Running Page。</p>
+<p>以下将一步步教你如何利用GitHub Action + GitHub Pages来部署Running Page。</p>
+<p>首先，在Running Page的作者 Yihong 的主页找到此项目的<a href="https://github.com/yihong0618/running_page">仓库</a>，然后点击Fork选项来复制一份该仓库。</p>
+<p>然后，在自己的GitHub主页下进入该仓库，做一些配置。Running Page支持多种跑步应用，例如 Nike Run Club, Strave, Garmin, Keep。我使用一块苹果手表+Nike Run Club来记录轨迹，所以以下设置均基于此搭配。</p>
+<p>第一步，在Fork操作完成以后，先修改文件 <code>gatsby-config.js</code>，将此文件中变量 <code>pathPrefix</code>设置为<code>/running_page</code>。即</p>
+<pre><code>pathPrefix = /running_page
+</code></pre><p>如果不做此修改，GitHub Page渲染出来的网页将无法显示地图。</p>
+<p>第二步，修改GitHub Action的配置。GitHub Action的工作流，由仓库<code>.github/workflow</code>目录下的文件定义。在仓库的该目录下存在三个<code>.yml</code>文件，此处只需要修改其中的<code>run_data_sync.yml</code>以下内容即可</p>
+<p><img src="/image/run-data-sync-config.png" alt="img"></p>
+<p>其中<code>RUN_TYPE</code>字段用来指定跑步应用类型，如果你还没有使用过任何跑步APP，可以将变量内容设置为<code>only_gpx</code>。如此，在第一次部署网站的时候，展示的是Yihong大神十年的跑步数据</p>
+<p><img src="/image/yihong-running-page.png" alt="img"></p>
+<p>如果你和我一样，选择Nike Run Club来记录跑步，应设置【<code>RUN_TYPE = nike</code>】。第三步中的配置，根据APP的不同而有所区别。但目的均相同，为了获得对应APP的访问Token，使Running Page可以从APP拉取跑步数据。</p>
+<p>第三步，配置访问NRC的Token。在电脑的浏览器（Firefox）上打开NRC官网，登录你的帐号（或先注册），然后点击自己的头像进入主页；</p>
+<p>接着打开开发者工具（快捷键为 Ctrl + Shift + I），在 <code>Storage-Local Storage</code>下找到自己的 refresh_token，并复制<strong>即双引号内的字符串</strong>；</p>
+<p><img src="/image/nrc.png" alt="img"></p>
+<p>然后，回到自己的Running Page仓库下的选项<code>Settings-Secrets-Actions</code>，点击按钮 <code>New repository secret</code>，命名为<code>NIKE_REFRESH_TOKEN</code>，内容为NRC网站上复制来的字符串。</p>
+<p><img src="/image/nike-token.png" alt="img"></p>
+<p>如此，便设置好了Running Page访问NRC的权限。获得其它APP访问TOKEN的操作类似，具体可参考Yihong的<a href="https://github.com/yihong0618/running_page#download-your-running-data-and-do-not-forget-to-generate-svg-in-total-page">教程</a>。</p>
+<p>第四步，启动GitHub Pages。在仓库的Setting-Pages选项下面，选择Branch: gh-pages，并点击Save按钮。</p>
+<p><img src="/image/gh-pages.png" alt="img"></p>
+<p>第五步，启动GitHub Action的工作流<code>workflow</code>。即，在仓库的Action选项下面，依次启用工作流 Run Data Sync 和 Publish GitHub Pages 。</p>
+<p><img src="/image/action-workflow.png" alt="img"></p>
+<p>然后，依次手动点击Run Data Sync 和 Publish GitHub Page的按钮 Run Workflow。</p>
+<p><img src="/image/run-workflow.png" alt="img"></p>
+<p>等待后台执行结束，访问该仓库的GitHub Pages网址，即可看见自己的Running Pages！</p>
+<p><img src="/image/running-page-demo.png" alt="img"></p>
+<p>这两个工作流分别用来同步数据和生成网页，它们会每天在GitHub的服务器上定时运行，因此你的Running Page可以自动同步来自NRC的跑步数据，并展示在网站上。</p>
+<p>完成！</p>
+<p>Enjoy your running 🏃</p>
+
+
+      
+      
+    
+    </article>
+    
+  </div>
+
+        </div><footer>
+  <div class="container">
+    <p class="credits copyright">
+      <p class="credits theme-by">
+        <br>
+        <a href="/about">Zhān</a>
+        &copy;
+        <a href="/">2022 </a>
+       
+        <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" ><img alt="Creative Commons Licence" style="margin: auto;" src="https://i.creativecommons.org/l/by-nc/4.0/88x31.png" /></a>
+
+      </p>
+  </div>
+</footer></body>
+</html>
