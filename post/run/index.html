@@ -77,15 +77,15 @@
       
     <p>跑步对于我来说，是最舒服的独处方式。跑起来很简单，左脚迈过右脚，右脚迈过左脚，一步一步往前。</p>
 <p>跑步大概是最亲民的运动，几乎没有任何场地限制，也无需添购额外的装备。有一双合脚的鞋，在晴朗的天空下，你就可以跑起来。</p>
-<p>跑步的时候，我不听音乐，也可以没有播客。什么也不用想，做最简单的重复动作。</p>
+<p>跑步的时候，我不听音乐，也可以没有播客。什么也不想，做最简单的重复动作。</p>
 <p>慢慢地，呼吸开始加重，心跳变得有力。身体的变化带来快乐的感觉，跑步让人快乐。我跑得不快，但是跑步的快乐足够长久。</p>
 <p>除了一把钥匙，我不想带任何东西出门跑步。虽然也跑了好几年，但没怎么记录跑步数据。</p>
 <p>后来，发现有位前辈开源了一款用来展示跑步轨迹的工具 Running Page。看着足迹一点点铺在地图上，感觉还蛮不错，我也希望保留下跑过的痕迹。</p>
 <p>于是，我也部署了一个<a href="https://run.zlog.in/">Running Page</a>。现在记录的数据还不多，待几年之后再看应该会更丰富一些。</p>
-<p>希望以后每去到一个新的环境，我都能有机会出去小跑一圈。</p>
+<p>希望以后每去到一个新的环境，我都能有机会溜出去小跑一圈。</p>
 <p>如果你也喜欢跑步，并且愿意记录，这篇教程可以帮助你在GitHub上部署一个自己的Running Page。</p>
 <p>以下将一步步教你如何利用GitHub Action + GitHub Pages来部署Running Page。</p>
-<p>首先，在Running Page的作者 Yihong 的主页找到此项目的<a href="https://github.com/yihong0618/running_page">仓库</a>，然后点击Fork选项来复制一份该仓库。</p>
+<p>首先，在Running Page的作者 Yihong 的主页找到此项目的<a href="https://github.com/yihong0618/running_page">仓库</a>，点击Fork选项来复制一份该仓库。</p>
 <p>然后，在自己的GitHub主页下进入该仓库，做一些配置。Running Page支持多种跑步应用，例如 Nike Run Club, Strave, Garmin, Keep。我使用一块苹果手表+Nike Run Club来记录轨迹，所以以下设置均基于此搭配。</p>
 <p>第一步，在Fork操作完成以后，先修改文件 <code>gatsby-config.js</code>，将此文件中变量 <code>pathPrefix</code>设置为<code>/running_page</code>。即</p>
 <pre><code>pathPrefix = /running_page
@@ -96,7 +96,7 @@
 <p><img src="/image/yihong-running-page.png" alt="img"></p>
 <p>如果你和我一样，选择Nike Run Club来记录跑步，应设置【<code>RUN_TYPE = nike</code>】。第三步中的配置，根据APP的不同而有所区别。但目的均相同，为了获得对应APP的访问Token，使Running Page可以从APP拉取跑步数据。</p>
 <p>第三步，配置访问NRC的Token。在电脑的浏览器（Firefox）上打开NRC官网，登录你的帐号（或先注册），然后点击自己的头像进入主页；</p>
-<p>接着打开开发者工具（快捷键为 Ctrl + Shift + I），在 <code>Storage-Local Storage</code>下找到自己的 refresh_token，并复制<strong>即双引号内的字符串</strong>；</p>
+<p>接着打开开发者工具（快捷键为 Ctrl + Shift + I），在 <code>Storage-Local Storage</code>下找到自己的 refresh_token，并复制<strong>双引号内的字符串</strong>；</p>
 <p><img src="/image/nrc.png" alt="img"></p>
 <p>然后，回到自己的Running Page仓库下的选项<code>Settings-Secrets-Actions</code>，点击按钮 <code>New repository secret</code>，命名为<code>NIKE_REFRESH_TOKEN</code>，内容为NRC网站上复制来的字符串。</p>
 <p><img src="/image/nike-token.png" alt="img"></p>
@@ -110,8 +110,8 @@
 <p>等待后台执行结束，访问该仓库的GitHub Pages网址，即可看见自己的Running Pages！</p>
 <p><img src="/image/running-page-demo.png" alt="img"></p>
 <p>这两个工作流分别用来同步数据和生成网页，它们会每天在GitHub的服务器上定时运行，因此你的Running Page可以自动同步来自NRC的跑步数据，并展示在网站上。</p>
-<p>完成！</p>
-<p>Enjoy your running 🏃</p>
+<p>完成，开始跑步叭！</p>
+<p>Enjoy your running 🏃🏃‍♀️</p>
 
 
       
