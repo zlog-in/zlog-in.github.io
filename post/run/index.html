@@ -89,7 +89,7 @@
 <p>然后，在自己的GitHub主页下进入该仓库，做一些配置。Running Page支持多种跑步应用，例如 Nike Run Club, Strave, Garmin, Keep。我使用一块苹果手表+Nike Run Club来记录轨迹，所以以下设置均基于此搭配。</p>
 <p>第一步，在Fork操作完成以后，先修改文件 <code>gatsby-config.js</code>，将此文件中变量 <code>pathPrefix</code>设置为<code>/running_page</code>。即</p>
 <pre><code>pathPrefix = /running_page
-</code></pre><p>如果不做此修改，GitHub Page渲染出来的网页将无法显示地图。</p>
+</code></pre><p>如果不做此修改，GitHub Pages渲染出来的网页将无法显示地图。</p>
 <p>第二步，修改GitHub Action的配置。GitHub Action的工作流，由仓库<code>.github/workflow</code>目录下的文件定义。在仓库的该目录下存在三个<code>.yml</code>文件，此处只需要修改其中的<code>run_data_sync.yml</code>以下内容即可</p>
 <p><img src="/image/run-data-sync-config.png" alt="img"></p>
 <p>其中<code>RUN_TYPE</code>字段用来指定跑步应用类型，如果你还没有使用过任何跑步APP，可以将变量内容设置为<code>only_gpx</code>。如此，在第一次部署网站的时候，展示的是Yihong大神十年的跑步数据</p>
