@@ -30,7 +30,7 @@
   };
   </script>
 <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-<meta name="generator" content="Hugo 0.83.1" />
+<meta name="generator" content="Hugo 0.96.0" />
  
   
   <body>
@@ -102,7 +102,7 @@
 <p><img src="/image/merkle_path.png" alt="img"></p>
 <p>在某区块的梅克尔树中，包含了8条交易的记录。假设验证节点想要知道该区块中编号为<code>L</code>的交易记录是否真实，证明节点收到请求以后，从梅克尔树中找到从编号为<code>L</code>的叶子节点到根节点的路径，即上图中绿色线条。接着安装从下往上的顺序，将路径上所有节点的兄弟节点依次加入证据里。如图中黄色节点所构成的队列<code>A,B,C</code>，这就是证据的内容。</p>
 <p>此过程在中本聪最初实现的代码里面如下所示，函数<code>GetMerkleBranch</code>返回的<code>vMerkleBranch</code>即证据</p>
-<pre><code>vector&lt;uint256&gt; GetMerkleBranch(int nIndex) const     // zero based index
+<pre tabindex="0"><code>vector&lt;uint256&gt; GetMerkleBranch(int nIndex) const     // zero based index
     {
         if (vMerkleTree.empty())
             BuildMerkleTree();
@@ -120,7 +120,7 @@
 </code></pre><p>当验证节点收到证据以后，事情就简单了。它需要做的就是，从证据队列里面取出第一个元素，即待验证叶子节点的兄弟节点，按照左节点在前，右节点在后的顺序串联起来，然后经过哈希函数计算，得到父节点哈希。然后将父节点与队列里的下一个元素做同样的处理，重复以上过程直到队列为空。</p>
 <p>此刻，验证节点获得了一个最终的哈希，即「根节点」。如果该交易确实存在于区块当中，那么凭借证据经过计算获得的根哈希应该等于验证人已知的区块头部的梅克尔树根。</p>
 <p>实现验证过程的代码如下</p>
-<pre><code>static uint256 CheckMerkleBranch(uint256 hash, const vector&lt;uint256&gt;&amp; vMerkleBranch, int nIndex)
+<pre tabindex="0"><code>static uint256 CheckMerkleBranch(uint256 hash, const vector&lt;uint256&gt;&amp; vMerkleBranch, int nIndex)
     {
         if (nIndex == -1)
             return 0;
@@ -135,7 +135,7 @@
         return hash;
     }
 </code></pre><p>当返回的<code>hash</code>等于区块头部的梅克尔树根，即验证通过。在我们的例子里，则有以下表达式结果为真</p>
-<pre><code>merkel_root == Hash(C + Hash(Hash(tx + A) + B))
+<pre tabindex="0"><code>merkel_root == Hash(C + Hash(Hash(tx + A) + B))
 </code></pre><p>现在来说明一下，为什么使用梅克尔树作为验证数据的手段是高效的。</p>
 <p>假设一个区块记录的交易数量为$2^N$ ，其路径长度恰好等于$N$。也就是说，当交易数量指数增长时，梅克尔路径的节点数量仅线性增长，其速率要远远慢于交易的增长速率。观察下表也可以得到</p>
 <table>

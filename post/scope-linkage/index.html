@@ -30,7 +30,7 @@
   };
   </script>
 <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-<meta name="generator" content="Hugo 0.83.1" />
+<meta name="generator" content="Hugo 0.96.0" />
  
   
   <body>
@@ -107,20 +107,20 @@
 <p>链接性描述了名称如何在不同单元间被共享使用。具有外部链接性的名称可在文件之间共享，内部链接性的名称只在本文件内部使用。自动变量【<strong>无</strong>】链接性，因为它们不能被共享。</p>
 <h3 id="自动变量">自动变量</h3>
 <p>通常，在函数内声明的函数参数和变量为自动的、局部的、无链接性，它们保存在【<strong>栈区</strong>】。在函数内的代码块定义的变量，其作用域仅在该代码块内有效。而且，该变量会隐藏之前定义的具有相同名称的变量。例如</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>(){
-	<span style="color:#66d9ef">int</span> first <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>;
-	<span style="color:#66d9ef">int</span> second <span style="color:#f92672">=</span> <span style="color:#ae81ff">2</span>;
-	<span style="color:#66d9ef">int</span> end <span style="color:#f92672">=</span> <span style="color:#ae81ff">1000</span>;
-	<span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">int</span> first <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; first <span style="color:#f92672">&lt;</span> end; first <span style="color:#f92672">++</span>){
-		std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;Here is inner block:&#34;</span> <span style="color:#f92672">&lt;&lt;</span> std<span style="color:#f92672">::</span>endl;
-		std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;Variable first = &#34;</span> <span style="color:#f92672">&lt;&lt;</span> first <span style="color:#f92672">&lt;&lt;</span> std<span style="color:#f92672">::</span>endl;
-		std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;Variable second = &#34;</span> <span style="color:#f92672">&lt;&lt;</span> second <span style="color:#f92672">&lt;&lt;</span> std<span style="color:#f92672">::</span>endl;
-	}
-	std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;Here is outer block:&#34;</span> <span style="color:#f92672">&lt;&lt;</span> std<span style="color:#f92672">::</span>endl;
-	std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;Variable first = &#34;</span> <span style="color:#f92672">&lt;&lt;</span> first <span style="color:#f92672">&lt;&lt;</span> std<span style="color:#f92672">::</span>endl;
-	std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;Variable second = &#34;</span> <span style="color:#f92672">&lt;&lt;</span> second <span style="color:#f92672">&lt;&lt;</span> std<span style="color:#f92672">::</span>endl;
-}
-</code></pre></div><p>第一次定义的变量<code>first</code>, 和变量<code>second</code>，<code>end</code>，作用域为整个<code>main</code>函数。但是在代码块<code>for</code>循环里面，第二次定义的同名变量<code>first</code>【<strong>隐藏</strong>】了之前定义的变量<code>first </code>，使其在该代码块内失效。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>(){
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">int</span> first <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">int</span> second <span style="color:#f92672">=</span> <span style="color:#ae81ff">2</span>;
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">int</span> end <span style="color:#f92672">=</span> <span style="color:#ae81ff">1000</span>;
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">int</span> first <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; first <span style="color:#f92672">&lt;</span> end; first <span style="color:#f92672">++</span>){
+</span></span><span style="display:flex;"><span>		std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;Here is inner block:&#34;</span> <span style="color:#f92672">&lt;&lt;</span> std<span style="color:#f92672">::</span>endl;
+</span></span><span style="display:flex;"><span>		std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;Variable first = &#34;</span> <span style="color:#f92672">&lt;&lt;</span> first <span style="color:#f92672">&lt;&lt;</span> std<span style="color:#f92672">::</span>endl;
+</span></span><span style="display:flex;"><span>		std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;Variable second = &#34;</span> <span style="color:#f92672">&lt;&lt;</span> second <span style="color:#f92672">&lt;&lt;</span> std<span style="color:#f92672">::</span>endl;
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;Here is outer block:&#34;</span> <span style="color:#f92672">&lt;&lt;</span> std<span style="color:#f92672">::</span>endl;
+</span></span><span style="display:flex;"><span>	std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;Variable first = &#34;</span> <span style="color:#f92672">&lt;&lt;</span> first <span style="color:#f92672">&lt;&lt;</span> std<span style="color:#f92672">::</span>endl;
+</span></span><span style="display:flex;"><span>	std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;Variable second = &#34;</span> <span style="color:#f92672">&lt;&lt;</span> second <span style="color:#f92672">&lt;&lt;</span> std<span style="color:#f92672">::</span>endl;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>第一次定义的变量<code>first</code>, 和变量<code>second</code>，<code>end</code>，作用域为整个<code>main</code>函数。但是在代码块<code>for</code>循环里面，第二次定义的同名变量<code>first</code>【<strong>隐藏</strong>】了之前定义的变量<code>first </code>，使其在该代码块内失效。</p>
 <p>程序使用两个指针来管理栈，一个指针指向栈底，即栈开始的位置；另一个指向栈顶，即下一个可用内存单元。程序在调用函数的时候，其自动变量会被压入栈中，获得内存，栈顶指针挪向下一个可用内存单元。待函数执行结束，自动变量被弹出栈，释放内存，栈顶指针指回调用函数之前的位置。也就是说，【只有在函数被执行的时候，自动变量才拥有内存】。</p>
 <h3 id="静态变量">静态变量</h3>
 <p>静态变量有三种链接性：</p>
@@ -130,57 +130,57 @@
 <li>无链接性：只能在本代码块(函数也是一种代码块)访问</li>
 </ul>
 <p>所谓静态指的是，其内存地址由编译器自动分配，在程序运行期间都不会改变。而自动变量，在每次函数调用的时候都被分配到新的内存位置，用完后释放掉。另外，如果没有显示地初始化静态变量，编译器将默认设置为〇。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#66d9ef">int</span> global <span style="color:#f92672">=</span> <span style="color:#ae81ff">1000</span>;
-<span style="color:#66d9ef">static</span> <span style="color:#66d9ef">int</span> inner_file <span style="color:#f92672">=</span> <span style="color:#ae81ff">50</span>;
-<span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>(){
-	func(); <span style="color:#75715e">// auto_virable = 10, inner_file = 30
-</span><span style="color:#75715e"></span>    func(); <span style="color:#75715e">// auto_virable = 10, inner_file = 40
-</span><span style="color:#75715e"></span>}
-<span style="color:#66d9ef">void</span> <span style="color:#a6e22e">func</span>(){
-    <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">int</span> inner_func <span style="color:#f92672">=</span> <span style="color:#ae81ff">30</span>;
-    <span style="color:#66d9ef">int</span> auto_virable <span style="color:#f92672">=</span> <span style="color:#ae81ff">10</span>;
-    std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;auto:   &#34;</span> <span style="color:#f92672">&lt;&lt;</span> auto_virable <span style="color:#f92672">&lt;&lt;</span> endl;
-    std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;static: &#34;</span> <span style="color:#f92672">&lt;&lt;</span> innner_file <span style="color:#f92672">&lt;&lt;</span> endl;
-    inner_file <span style="color:#f92672">=</span> inner_file <span style="color:#f92672">+</span> <span style="color:#ae81ff">10</span>;
-}
-</code></pre></div><p>定义在【<strong>函数之外</strong>】的变量均为静态变量，如果无关键字<code>static</code>修饰，则具有外链接性，上例中<code>global</code>即是如此；否则具有内链接性，例如变量<code>inner_file</code>。在代码块之内有【<code>static</code>】修饰的变量为静态变量，不具有链接性，否则是自动变量。静态变量【<strong>一定</strong>】拥有内存，在上例中，即使函数<code>func()</code>没有被调用，编译器依然为变量<code>inner_func</code>分配内存，而自动变量只有被运行时才拥有内存。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#66d9ef">int</span> global <span style="color:#f92672">=</span> <span style="color:#ae81ff">1000</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">int</span> inner_file <span style="color:#f92672">=</span> <span style="color:#ae81ff">50</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>(){
+</span></span><span style="display:flex;"><span>	func(); <span style="color:#75715e">// auto_virable = 10, inner_file = 30
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    func(); <span style="color:#75715e">// auto_virable = 10, inner_file = 40
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">func</span>(){
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">int</span> inner_func <span style="color:#f92672">=</span> <span style="color:#ae81ff">30</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> auto_virable <span style="color:#f92672">=</span> <span style="color:#ae81ff">10</span>;
+</span></span><span style="display:flex;"><span>    std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;auto:   &#34;</span> <span style="color:#f92672">&lt;&lt;</span> auto_virable <span style="color:#f92672">&lt;&lt;</span> endl;
+</span></span><span style="display:flex;"><span>    std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;static: &#34;</span> <span style="color:#f92672">&lt;&lt;</span> innner_file <span style="color:#f92672">&lt;&lt;</span> endl;
+</span></span><span style="display:flex;"><span>    inner_file <span style="color:#f92672">=</span> inner_file <span style="color:#f92672">+</span> <span style="color:#ae81ff">10</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>定义在【<strong>函数之外</strong>】的变量均为静态变量，如果无关键字<code>static</code>修饰，则具有外链接性，上例中<code>global</code>即是如此；否则具有内链接性，例如变量<code>inner_file</code>。在代码块之内有【<code>static</code>】修饰的变量为静态变量，不具有链接性，否则是自动变量。静态变量【<strong>一定</strong>】拥有内存，在上例中，即使函数<code>func()</code>没有被调用，编译器依然为变量<code>inner_func</code>分配内存，而自动变量只有被运行时才拥有内存。</p>
 <p>静态变量的另一个「静态」指的是，在函数两次调用期间，其值保持不变。在上例中，第一次执行完<code>func()</code>以后，变量<code>auto_virable</code>被释放掉，而<code>inner_file</code>依旧存在于内存之中，值为<code>40</code>；第二次调用<code>func()</code>，编译器并不会再次初始化<code>inner_file</code>，因此它的值依旧为<code>40</code>。</p>
 <p>如要使用同目录下的其它文件中的全局变量，需要使用<code>extern</code>声明，且不能初始化，否则变声明为定义，违反「单定义原则」。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#75715e">// file1.cpp
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">extern</span> <span style="color:#66d9ef">int</span> cat <span style="color:#f92672">=</span> <span style="color:#ae81ff">20</span>;  <span style="color:#75715e">// definition, &#34;extern&#34; is not obligatory
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">int</span> dogs <span style="color:#f92672">=</span> <span style="color:#ae81ff">22</span>;		 <span style="color:#75715e">// definition
-</span><span style="color:#75715e"></span>...
-<span style="color:#75715e">// file2.cpp
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">extern</span> <span style="color:#66d9ef">int</span> cats;      <span style="color:#75715e">// declaration, defined in file1.cpp
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">extern</span> <span style="color:#66d9ef">int</span> dogs;	  <span style="color:#75715e">// declaration
-</span><span style="color:#75715e"></span>...
-</code></pre></div><p>同样的，变量隐藏也适用于静态变量。通常，使用<code>extern</code>修饰的变量在文件之间共享数据，使用<code>static</code>修饰的变量在文件内的各个代码块之间共享数据。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#75715e">// file1.cpp
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">extern</span> <span style="color:#66d9ef">int</span> cat <span style="color:#f92672">=</span> <span style="color:#ae81ff">20</span>;  <span style="color:#75715e">// definition, &#34;extern&#34; is not obligatory
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">int</span> dogs <span style="color:#f92672">=</span> <span style="color:#ae81ff">22</span>;		 <span style="color:#75715e">// definition
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>...
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// file2.cpp
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">extern</span> <span style="color:#66d9ef">int</span> cats;      <span style="color:#75715e">// declaration, defined in file1.cpp
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">extern</span> <span style="color:#66d9ef">int</span> dogs;	  <span style="color:#75715e">// declaration
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>...
+</span></span></code></pre></div><p>同样的，变量隐藏也适用于静态变量。通常，使用<code>extern</code>修饰的变量在文件之间共享数据，使用<code>static</code>修饰的变量在文件内的各个代码块之间共享数据。</p>
 <p>一个容易和静态变量混淆的概念是常量变量，由关键字<code>const</code>修饰的变量。此类变量一旦被定义，其内存里的内容在生命期内都不能被改变，而静态变量是内存地址不会变。在【<strong>函数外</strong>】定义的常量变量具有内链接性，除非使用<code>extern</code>修饰。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#75715e">// file1.cpp
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">const</span> <span style="color:#66d9ef">int</span> fingers <span style="color:#f92672">=</span> <span style="color:#ae81ff">10</span>;  	<span style="color:#75715e">// internal linkage
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">extern</span> <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">int</span> eyes <span style="color:#f92672">=</span> <span style="color:#ae81ff">2</span>;	<span style="color:#75715e">// external linkage
-</span><span style="color:#75715e"></span>...
-<span style="color:#75715e">// file2.cpp
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">extern</span> <span style="color:#66d9ef">int</span> eys;				<span style="color:#75715e">// defined in file1.cpp
-</span><span style="color:#75715e"></span>...
-</code></pre></div><h3 id="函数的链接性">函数的链接性</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#75715e">// file1.cpp
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">const</span> <span style="color:#66d9ef">int</span> fingers <span style="color:#f92672">=</span> <span style="color:#ae81ff">10</span>;  	<span style="color:#75715e">// internal linkage
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">extern</span> <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">int</span> eyes <span style="color:#f92672">=</span> <span style="color:#ae81ff">2</span>;	<span style="color:#75715e">// external linkage
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>...
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// file2.cpp
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">extern</span> <span style="color:#66d9ef">int</span> eys;				<span style="color:#75715e">// defined in file1.cpp
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>...
+</span></span></code></pre></div><h3 id="函数的链接性">函数的链接性</h3>
 <p>函数的存储特性是静态的，即无论是否调用，被定义的函数代码块都会获得内存地址。</p>
 <p>同样地，函数也具有链接性。首先函数不可能是无连接性，因此禁止在函数内部定义另外一个函数。通常，函数具有外部链接性，可在文件间共享。可以在函数原型中使用<code>extern</code>指出此函数在另外一个文件中被定义，</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#75715e">// file1.cpp
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">extern</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">external_func</span>();
-...
-<span style="color:#75715e">// file2.cpp
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">int</span> external_func(){
-	...
-}
-...
-</code></pre></div><p>也可以使用<code>static</code>来限制函数为内链接性，但必须同时在函数原型与函数定义中使用<code>static</code>修饰，此类函数仅限本文件使用。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">internal_func</span>();		<span style="color:#75715e">// prototype
-</span><span style="color:#75715e"></span>...
-<span style="color:#66d9ef">static</span> <span style="color:#66d9ef">int</span> internal_func(){		<span style="color:#75715e">// definition
-</span><span style="color:#75715e"></span>	...
-}
-</code></pre></div><p>和变量类似，在定义静态函数的文件中，静态函数可隐藏外部定义，即使在其它文件中定义了同名的外部函数，此文件仍将使用该静态函数。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#75715e">// file1.cpp
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">extern</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">external_func</span>();
+</span></span><span style="display:flex;"><span>...
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// file2.cpp
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">int</span> external_func(){
+</span></span><span style="display:flex;"><span>	...
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>...
+</span></span></code></pre></div><p>也可以使用<code>static</code>来限制函数为内链接性，但必须同时在函数原型与函数定义中使用<code>static</code>修饰，此类函数仅限本文件使用。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">internal_func</span>();		<span style="color:#75715e">// prototype
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>...
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">int</span> internal_func(){		<span style="color:#75715e">// definition
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	...
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>和变量类似，在定义静态函数的文件中，静态函数可隐藏外部定义，即使在其它文件中定义了同名的外部函数，此文件仍将使用该静态函数。</p>
 
 
       

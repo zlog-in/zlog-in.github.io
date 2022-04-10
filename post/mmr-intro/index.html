@@ -30,7 +30,7 @@
   };
   </script>
 <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-<meta name="generator" content="Hugo 0.83.1" />
+<meta name="generator" content="Hugo 0.96.0" />
  
   
   <body>
@@ -90,11 +90,11 @@
 <p>Peter Todd的思路[^2]是这样的：既然有时候会出现凑不齐一棵满二叉树的情况，那干脆就拆成几个高度较低的满二叉树(也就是山)，然后再通过山峰求取最后的根。而生成父节点的规则是这样的：当同一高度出现左右个兄弟节点，即合并生成一个父节点。而高度为<code>0</code>的最底层节点，即代表新增的数据。一个叶子数量为<code>7</code>的MMR结构如下所示</p>
 <p><img src="/image/mmr7.png" alt="img"></p>
 <p>从<code>1</code>开始，按照生成的顺序对节点进行编号。我们把每个满二叉树称作一座山，山顶的节点叫做山峰。最后按照从最低山峰向最高山峰的顺序，计算MMR的根哈希。在上例中，设最低峰为<code>P11</code>、次低峰为<code>P10</code>、最高峰为<code>P7</code>，则根哈希如下</p>
-<pre><code>root = Hash(Hash(P11 + P10) + P7)
+<pre tabindex="0"><code>root = Hash(Hash(P11 + P10) + P7)
 </code></pre><p>当再来一个节点(编号为12)，则叶子数量为<code>8</code>的MMR结构如下所示</p>
 <p><img src="/image/mmr8.png" alt="img"></p>
 <p>此时根哈希即为最高峰<code>P15</code>。</p>
-<pre><code>root = P15
+<pre tabindex="0"><code>root = P15
 </code></pre><p>如果想要为某叶子节点构造证明其存在于MMR中的证据，规则也十分简单：</p>
 <ol>
 <li>构造子树从叶子节点到山峰的 merkle proof</li>

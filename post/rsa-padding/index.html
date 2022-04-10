@@ -30,7 +30,7 @@
   };
   </script>
 <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-<meta name="generator" content="Hugo 0.83.1" />
+<meta name="generator" content="Hugo 0.96.0" />
  
   
   <body>
@@ -78,7 +78,7 @@
     <p>在实际应用的RSA算法里面，消息都必须经过填充以后才会被加密，以拒绝同态攻击。在RFC8017的<a href="https://tools.ietf.org/html/rfc8017#section-7.2.1">7.2.1</a>节，详细介绍了RSA的加密过程。本文稍微简化了加密流程，以求更能直观解释填充攻击的原理。想要了解RSA算法更多细节的同学，请参阅RFC8017文档。</p>
 <h2 id="pkcs1填充">PKCS1填充</h2>
 <p>PKCS1规定了RSA填充标准，简单描述如下：</p>
-<pre><code>00 02 &lt; at least 8 random non-null-bytes &gt; 00 &lt; message &gt;
+<pre tabindex="0"><code>00 02 &lt; at least 8 random non-null-bytes &gt; 00 &lt; message &gt;
 &lt;--           total length: keylength bits            --&gt;
 </code></pre><p>消息块的前2个字节内容是<code>0x00，0x02</code>，随后跟上至少8个随机生成的非〇字节，接着一个〇字节<code>0x00</code>，最后是真正的消息内容。整个消息块的长度等于密钥长度，例如<code>2048</code>比特。</p>
 <p>填充有两个主要的好处：其一是算法不再是确定的，同样的消息经填充加密以后的密文也不一样；其二是不同消息加密以后的密文不具有同态性。</p>

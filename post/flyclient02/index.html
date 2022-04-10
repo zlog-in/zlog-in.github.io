@@ -30,7 +30,7 @@
   };
   </script>
 <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-<meta name="generator" content="Hugo 0.83.1" />
+<meta name="generator" content="Hugo 0.96.0" />
  
   
   <body>
@@ -82,22 +82,22 @@
 <p>为了平衡这种波动，让区块产出的速率尽可能地保持稳定，中本聪引入了难度调整机制：每隔2016个区块，所有节点将独立计算新的难度目标值。在理想的情况下，难度目标和全网哈希算力能够恰好匹配，这样挖出2016个区块花费的时间应该就是20160分钟，也就是两周。但真实时间往往是或高于或低于这个目标，所以需要调整难度以期能够接近理想出块速率。真实时间与目标时间之比称作调整系数。</p>
 <p>简单地说：当出块速率低于10分钟，网络将提高挖矿难度(减小难度值)；反之，将降低难度(增大难度值)。</p>
 <p>调整函数如下</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">New Target = Old Target * (Actual Time of Last 2016 Blocks / 20160 minutes)
-</code></pre></div><p>在Bitcoin Core里，难度调整函数的代码如下</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#75715e">// Limit adjustment step
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">int64_t</span> nActualTimespan <span style="color:#f92672">=</span> pindexLast<span style="color:#f92672">-&gt;</span>GetBlockTime() <span style="color:#f92672">-</span> nFirstBlockTime;
-<span style="color:#66d9ef">if</span> (nActualTimespan <span style="color:#f92672">&lt;</span> params.nPowTargetTimespan<span style="color:#f92672">/</span><span style="color:#ae81ff">4</span>)
-    nActualTimespan <span style="color:#f92672">=</span> params.nPowTargetTimespan<span style="color:#f92672">/</span><span style="color:#ae81ff">4</span>;
-<span style="color:#66d9ef">if</span> (nActualTimespan <span style="color:#f92672">&gt;</span> params.nPowTargetTimespan<span style="color:#f92672">*</span><span style="color:#ae81ff">4</span>)
-    nActualTimespan <span style="color:#f92672">=</span> params.nPowTargetTimespan<span style="color:#f92672">*</span><span style="color:#ae81ff">4</span>;
-
-<span style="color:#75715e">// Retarget
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">const</span> arith_uint256 bnPowLimit <span style="color:#f92672">=</span> UintToArith256(params.powLimit);
-arith_uint256 bnNew;
-bnNew.SetCompact(pindexLast<span style="color:#f92672">-&gt;</span>nBits);
-bnNew <span style="color:#f92672">*=</span> nActualTimespan;
-bnNew <span style="color:#f92672">/=</span> params.nPowTargetTimespan;	
-</code></pre></div><p>为了抵御潜在的攻击，实际的调整系数会被限制在 $[1/4, 4]$ 之间。要理解这么做的原因，我们还需回顾一下区块链的基本结构：在比特币网络，矿工们总是选择从**累计最难(即难度目标总和最小)**的那条最长链末端开始挖取下一个区块。假设不限制调整系数，恶意节点可以强行设置一个难度极高的PoW目标。这样即使恶意节点的算力不足，也有可能因为运气足够好而成功挖出区块，从而短暂地超过诚实节点成为最难最长链，此时区块链就出现了分叉。这种攻击手法称作 Difficulty Raising Attack。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>New Target = Old Target * (Actual Time of Last 2016 Blocks / 20160 minutes)
+</span></span></code></pre></div><p>在Bitcoin Core里，难度调整函数的代码如下</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#75715e">// Limit adjustment step
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">int64_t</span> nActualTimespan <span style="color:#f92672">=</span> pindexLast<span style="color:#f92672">-&gt;</span>GetBlockTime() <span style="color:#f92672">-</span> nFirstBlockTime;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> (nActualTimespan <span style="color:#f92672">&lt;</span> params.nPowTargetTimespan<span style="color:#f92672">/</span><span style="color:#ae81ff">4</span>)
+</span></span><span style="display:flex;"><span>    nActualTimespan <span style="color:#f92672">=</span> params.nPowTargetTimespan<span style="color:#f92672">/</span><span style="color:#ae81ff">4</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> (nActualTimespan <span style="color:#f92672">&gt;</span> params.nPowTargetTimespan<span style="color:#f92672">*</span><span style="color:#ae81ff">4</span>)
+</span></span><span style="display:flex;"><span>    nActualTimespan <span style="color:#f92672">=</span> params.nPowTargetTimespan<span style="color:#f92672">*</span><span style="color:#ae81ff">4</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// Retarget
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">const</span> arith_uint256 bnPowLimit <span style="color:#f92672">=</span> UintToArith256(params.powLimit);
+</span></span><span style="display:flex;"><span>arith_uint256 bnNew;
+</span></span><span style="display:flex;"><span>bnNew.SetCompact(pindexLast<span style="color:#f92672">-&gt;</span>nBits);
+</span></span><span style="display:flex;"><span>bnNew <span style="color:#f92672">*=</span> nActualTimespan;
+</span></span><span style="display:flex;"><span>bnNew <span style="color:#f92672">/=</span> params.nPowTargetTimespan;	
+</span></span></code></pre></div><p>为了抵御潜在的攻击，实际的调整系数会被限制在 $[1/4, 4]$ 之间。要理解这么做的原因，我们还需回顾一下区块链的基本结构：在比特币网络，矿工们总是选择从**累计最难(即难度目标总和最小)**的那条最长链末端开始挖取下一个区块。假设不限制调整系数，恶意节点可以强行设置一个难度极高的PoW目标。这样即使恶意节点的算力不足，也有可能因为运气足够好而成功挖出区块，从而短暂地超过诚实节点成为最难最长链，此时区块链就出现了分叉。这种攻击手法称作 Difficulty Raising Attack。</p>
 <p>因此为了阻止此类攻击的发生，可以通过限制调整系数，使得难度设定过于离谱的PoW变为无效。但是如此一来，有可能会导致难度调整函数无法准确得到下一轮的难度目标，从而导致出块速率无法通过一次调整就能够稳定在10分钟。可以说，这是为了保障网络安全性而做出的必要的妥协。</p>
 <p>可以看出，上述的PoW难度调整机制是十分简单且有效的，但它最终将比特币引入了算力争霸的赛道。众所周知，比特币挖矿消耗的能量越来越多，其网络一年消耗的电能已经超过阿根廷的年发电总量。随着参与挖矿的节点越来越多，以及挖矿设备的算力越来越强(CPU -&gt; GPU -&gt; ASIC)，如今全网算力已达 153.5 EH/s，即每秒可做 $153.5 \times 10^{18}$ 次哈希运算。</p>
 <p><img src="/image/hash_rate.png" alt="img"></p>
@@ -118,23 +118,23 @@ $$</p>
 $$
 n \cdot q  \cdot R \cdot  \frac{T}{2^\kappa} = m
 $$
-在新的难度周期内有$n'$个节点，<strong>调整目标：经过 $\Delta$ 轮竞争之后能够产生 $m$ 个区块</strong>，即
+在新的难度周期内有$n&rsquo;$个节点，<strong>调整目标：经过 $\Delta$ 轮竞争之后能够产生 $m$ 个区块</strong>，即
 $$
-n' \cdot q \cdot \Delta \cdot \frac{T'}{2^\kappa} = m
+n&rsquo; \cdot q \cdot \Delta \cdot \frac{T&rsquo;}{2^\kappa} = m
 $$
 经由两式相比，得到
 $$
-T' = \frac{n}{n'} \cdot \frac{R}{\Delta} \cdot T
+T&rsquo; = \frac{n}{n&rsquo;} \cdot \frac{R}{\Delta} \cdot T
 $$
 并且，抑制难度波动
 $$
-\frac{1}{\tau} \le \frac{T'}{T} \leq \tau
+\frac{1}{\tau} \le \frac{T&rsquo;}{T} \leq \tau
 $$
 即
 $$</p>
 <p>$$</p>
 <p>$$
-T’ = \tau \cdot T	 \Longleftarrow \frac{ T'}{ T} &gt; \tau
+T’ = \tau \cdot T	 \Longleftarrow \frac{ T&rsquo;}{ T} &gt; \tau
 $$</p>
 <h2 id="可变难度mmr">可变难度MMR</h2>
 <p>在正式介绍<strong>可变难度</strong>下的超轻验证原理之前，我们还需要对MMR结构体做些改动：此前我们定义每个MMR节点仅仅保存哈希值，现在定义新的MMR节点为 <code>[h, w, t, n, D_start, D_next]</code>，其中各个字段的含义如下：</p>
@@ -147,7 +147,7 @@ $$</p>
 <li><code>D_next</code>：前节点指定的下一个相同高度节点的难度目标</li>
 </ul>
 <p>父节点<code>p</code>的定义如下所示，其中<code>l,r</code>分别代表左右子节点</p>
-<pre><code>[
+<pre tabindex="0"><code>[
 	h = H(l.h, r.h),
 	w = l.w + r.w,
 	t = l.t + r.t,
@@ -170,7 +170,7 @@ $$</p>
 </ol>
 <p>为了检查难度一致性，超轻节点需要判断【是否存在一组难度调整过程，决定了当前节点的各项参数?】</p>
 <p>检查高度不大于<code>log(m)</code>节点的难度一致性较为简单：高度不大于<code>log(m)</code>节点的难度参数<code>w, D_start, D_next</code>完全由此周期决定，即检查</p>
-<pre><code>p.w == l.w + r.w
+<pre tabindex="0"><code>p.w == l.w + r.w
 p.D_start == l.D_start
 p.D_next == r.D_next
 l.D_next == r.D_start
@@ -180,9 +180,9 @@ $$
 \tau^{k} \cdot D_{start} = D_{end}, \ k \leq n
 $$
 为了达到区间上限，应该以最大幅度对难度值进行若干次的增加</p>
-<pre><code>New Target = t * Old Target
+<pre tabindex="0"><code>New Target = t * Old Target
 </code></pre><p>然后再以最大幅度进行若干次减少难度值</p>
-<pre><code>New Target= 1/t * Old Target
+<pre tabindex="0"><code>New Target= 1/t * Old Target
 </code></pre><p>难度调整过程如下图所示</p>
 <p><img src="/image/w_max.png" alt="img"></p>
 <p>此时的难度调整曲线与座标轴围成的面积即是累计难度的最大值，即</p>

@@ -30,7 +30,7 @@
   };
   </script>
 <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-<meta name="generator" content="Hugo 0.83.1" />
+<meta name="generator" content="Hugo 0.96.0" />
  
   
   <body>
@@ -99,7 +99,7 @@ $$ m_i = Dec_k(c_i )\oplus c_{i-1}。$$</p>
 <p>而本文介绍的攻击方法正是基于密文比特翻转会引起下一块明文对应位置也会发生翻转的特性，下文会有详述。</p>
 <h2 id="pkcs7">PKCS#7</h2>
 <p>实际上，并不是所有的消息都能完整切割成几个块，总会有最后一个块长度不足的情况发生。此时，就需要填充额外的内容进去。假设一个区块的长度为<code>L=16</code>个字节，当最后一块内容长度不足时，根据PKCS#7规定，空余的每一个字节里填上的数值等于空余的字节数。例如</p>
-<pre><code>    .. .. .. .. 30
+<pre tabindex="0"><code>    .. .. .. .. 30
 -&gt;  .. .. .. .. 30 01
     .. .. .. 30
 -&gt;  .. .. .. 30 02 02
@@ -116,28 +116,28 @@ $$ m_i = Dec_k(c_i )\oplus c_{i-1}。$$</p>
 可以发现，经过填充以后的最后一块明文\(m_2 = c_1 \oplus t_2\)，\(t_2\)是\(c_2\)经过解密函数计算以后得到的中间结果。也就是说如果攻击者翻转\(c_1\)的某一位比特，\(m_2\)相应的位置也会被翻转，这就是攻击发生的基础。让我们仔细看一看攻击是如何发生的？
 <p>
 假设区块\(m_2\)被填充的长度为<code>padding_len</code>，则有</p>
-<pre><code>m_2[L-padding_len:L] == padding_len
+<pre tabindex="0"><code>m_2[L-padding_len:L] == padding_len
 </code></pre><p>为了确定明文的<code>padding_len</code>，攻击者从后往前，每次仅改动\(c_1\)的一个字节，其余内容保持原样，然后提交整个密文\(C = (IV,c_1,c_2)\)给<code>Oracle</code>解密。假如填充长度为3，也就意味着，头三次提交，Oracle返回值都为<code>0</code>，因为攻击者每次篡改，都导致了对应的填充区域内容发生改变。当攻击者第四次修改的时候，\(c_1\)的最后3个字节依然正确，也就意味着填充区域的内容合法，即<code>03 03 03</code>，此时Oracle返回<code>1</code>。如此，攻击者知道了填充区域的大小。正是这样逐字节修改\(c_1\)的内容，攻击最终能确定\(m_2\)的填充长度。
 <p>
 知道填充长度以后，该怎样恢复剩下的明文呢？这时候需要利用中间值：由上图可以知道\(t_2 = c_1 \oplus m_2\)
 ，此时攻击者已经知道明文的填充内容，因此他可以计算得到\(t_2\)对应区域的值
 </p>
-<pre><code>t_2[L-padding_len:L] = c_1[L-padding_len:L] ^ m_2[L-padding_len:L]
+<pre tabindex="0"><code>t_2[L-padding_len:L] = c_1[L-padding_len:L] ^ m_2[L-padding_len:L]
 </code></pre><p>
 然后反过来他就可以精确改变填充内容\(m_2 = c_1 \oplus t_2\)。接着上例，攻击者现在想要使得填充内容为<code>04</code>，在对应的位置他只需要修改\(c_1 = 04 \oplus t_2\)</p>
-<pre><code>c_1[L-padding_len:L] = [04,04,04] ^ t_2[L-padding_len:L]
+<pre tabindex="0"><code>c_1[L-padding_len:L] = [04,04,04] ^ t_2[L-padding_len:L]
 </code></pre><p>
 此时提交\(c_1\)被修改以后的密文给<code>Oracle</code>解密，基本上结果是<code>0</code>。因为此时明文的最后三个字节的填充内容变成了<code>04 04 04</code>，所以<code>Oracle</code>会继续往前检查一下字节，看是否为<code>04</code>。而从这里开始，就是消息的真正内容。而攻击者接下来要做就是，继续修改\(c_1\)里面这一字节的内容，然后提交<code>Oracle</code>解密，直到返回值为1。此时攻击者就知道了中间值对应位置的内容</p>
-<pre><code>padding_len = padding + 1
+<pre tabindex="0"><code>padding_len = padding + 1
 t_2[L-padding_len-1] = c_1[L-padding_len-1] ^ 04
 </code></pre>填充长度也相应增长一个字节。知道了中间值，然后利用原始的密文，便能直接计算明文\(m_2 = c_1 \oplus t_2\)。
-<pre><code>m_2[L-padding_len-1] = c_1[L-padding_len-1] ^ t_2[L-padding_len-1]
+<pre tabindex="0"><code>m_2[L-padding_len-1] = c_1[L-padding_len-1] ^ t_2[L-padding_len-1]
 </code></pre><p>如此这般不断修改填充部分的内容，增加填充长度，通过<code>Orackle</code>求出中间值，然后再和原始密文异或，最终能够恢复整个明文\(m_1,m_2\)。攻击者，胜。</p>
 <h2 id="结束语">结束语</h2>
 <p>此攻击的思路就是利用已知的填充内容和不停修改上一段密文，直到构造出一个合法的填充，求出当前密文(例如\(c_2\))对应的中间值，然后此中间值再和原始密文异或便得到明文。</p>
 <p>上述攻击完成以后，攻击者就获得了一对明文密文\((M,C)\)。利用\((M,C)\)和<code>Oracle</code>攻击者甚至还能给任意一个明文\(M'\)构造一个合法的密文\(C'\)。思路类似，有兴趣的同学可以思考一下这是如何做到的？给一个小小的提示，以后有机会希望能够再写篇<a href="https://www.mrzz.cc/post/cbc-fake-cipher/">小文</a>详细说明一番。
-$$ IV' = IV \oplus m_1 \oplus m'_1,\ c'_1 = c_1 $$
-$$ m'_1 = Dec_k(c'_1) \oplus IV' = Dec_k(c_1) \oplus IV \oplus m_1 \oplus m'_1$$</p>
+$$ IV&rsquo; = IV \oplus m_1 \oplus m&rsquo;_1,\ c&rsquo;_1 = c_1 $$
+$$ m&rsquo;_1 = Dec_k(c&rsquo;_1) \oplus IV&rsquo; = Dec_k(c_1) \oplus IV \oplus m_1 \oplus m&rsquo;_1$$</p>
 <p>在笔者的<a href="https://github.com/mrzz00/tinycode/blob/master/cbc_padding.c">代码</a>里面，也实现了第一种和第二种攻击，欢迎查阅。</p>
 
 

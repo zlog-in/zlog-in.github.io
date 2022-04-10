@@ -30,7 +30,7 @@
   };
   </script>
 <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-<meta name="generator" content="Hugo 0.83.1" />
+<meta name="generator" content="Hugo 0.96.0" />
  
   
   <body>
@@ -88,7 +88,7 @@
 <p>首先，在Running Page的作者 Yihong 的主页找到此项目的<a href="https://github.com/yihong0618/running_page">仓库</a>，点击Fork选项来复制一份该仓库。</p>
 <p>然后，在自己的GitHub主页下进入该仓库，做一些配置。Running Page支持多种跑步应用，例如 Nike Run Club, Strave, Garmin, Keep。我使用一块苹果手表+Nike Run Club来记录轨迹，所以以下设置均基于此搭配。</p>
 <p>第一步，在Fork操作完成以后，先修改文件 <code>gatsby-config.js</code>，将此文件中变量 <code>pathPrefix</code>设置为<code>/running_page</code>。即</p>
-<pre><code>pathPrefix = /running_page
+<pre tabindex="0"><code>pathPrefix = /running_page
 </code></pre><p>如果不做此修改，GitHub Pages渲染出来的网页将无法显示地图。</p>
 <p>第二步，修改GitHub Action的配置。GitHub Action的工作流，由仓库<code>.github/workflow</code>目录下的文件定义。在仓库的该目录下存在三个<code>.yml</code>文件，此处只需要修改其中的<code>run_data_sync.yml</code>以下内容即可</p>
 <p><img src="/image/run-data-sync-config.png" alt="img"></p>
