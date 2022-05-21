@@ -30,7 +30,7 @@
   };
   </script>
 <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-<meta name="generator" content="Hugo 0.96.0" />
+<meta name="generator" content="Hugo 0.92.2" />
  
   
   <body>
@@ -98,7 +98,7 @@
 <p>中本聪设计了一种区块结构，其区块头的某个字段就是梅克尔树根。梅克尔树根源自区块里记录的每一笔交易，交易可以理解成转账，例如类似「A转给B某某数额的比特币」的格式。将有着固定格式的一笔转账记录做序列化之后，就能作为输入tx，交由哈希函数运算，得到的结果就是叶子节点的标签<code>L</code>。</p>
 <pre tabindex="0"><code>L = Hash(tx)
 </code></pre><p>而每二个叶子节点的哈希，便可以串联起来作为输入，得到父节点的哈希<code>P</code>。</p>
-<pre tabindex="0"><code>P = Hash(L0+L1)         // &#39;+&#39; means concatenation
+<pre tabindex="0"><code>P = Hash(L0+L1)         // '+' means concatenation
 </code></pre><p>区块可以记录的交易内容长度有限，在中本聪的设计里，严格限制了一个区块内所有交易的总长不超过1MB。而交易的长度又随交易的复杂度而变化，可以简单成理解成越复杂的交易，其内容越长。为了有效利用区块，挣更多的手续费，矿工们总是希望尽可能往区块里面记录更多的交易。</p>
 
 观察梅克尔树的结构，可以发现其总是一棵满二叉树，这意味着叶子节点的数量总为 \(2^n\)。当待记录的交易数量不足 \(2^n\)，又或者等于 \(2^n\) 时所有交易的总长度超过1MB限制，此时区块能够记录的交易数量不能恰好等于一棵满二叉树的叶子数量。这种情况出现时，该怎么计算梅克尔树根呢？

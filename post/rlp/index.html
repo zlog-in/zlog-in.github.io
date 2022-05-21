@@ -30,7 +30,7 @@
   };
   </script>
 <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-<meta name="generator" content="Hugo 0.96.0" />
+<meta name="generator" content="Hugo 0.92.2" />
  
   
   <body>
@@ -96,7 +96,7 @@
 <li>
 <p>对于字符串，且其长度小于55字节，RLP编码由[前缀 , 字符串] 构成，prefix = 0x80 + len(s)。因此，前缀的范围在 [0x80, 0xb7] 0xb7 = 0x80 + 55</p>
 <ul>
-<li>[&ldquo;cat&rdquo;] 编码为[0x83, &lsquo;c&rsquo;, &lsquo;a&rsquo;, &rsquo;t&rsquo;]</li>
+<li>[&ldquo;cat&rdquo;] 编码为[0x83, &lsquo;c&rsquo;, &lsquo;a&rsquo;, &rsquo;t']</li>
 <li>[&ldquo;1024&rdquo;] 编码为 [0x82, 0x04, 0x00]</li>
 </ul>
 </li>
@@ -107,7 +107,7 @@
 <ul>
 <li>&ldquo;Lorem ipsum dolor sit amet, consectetur adipisicing elit&rdquo; 长度为0x38，长度值0x38仅有一个字节</li>
 <li>前缀prefix = 0xb7+1 = 0xb8</li>
-<li>编码结果为[ 0xb8, 0x38, &lsquo;L&rsquo;, &lsquo;o&rsquo;, &lsquo;r&rsquo;, &rsquo;e&rsquo;, &rsquo;m&rsquo;, &rsquo; &lsquo;, &hellip; , &rsquo;e&rsquo;, &rsquo;l&rsquo;, &lsquo;i&rsquo;, &rsquo;t&rsquo; ]</li>
+<li>编码结果为[ 0xb8, 0x38, &lsquo;L&rsquo;, &lsquo;o&rsquo;, &lsquo;r&rsquo;, &lsquo;e&rsquo;, &rsquo;m', ' &lsquo;, &hellip; , &lsquo;e&rsquo;, &lsquo;l&rsquo;, &lsquo;i&rsquo;, &rsquo;t&rsquo; ]</li>
 </ul>
 </li>
 </ul>
@@ -150,7 +150,7 @@
         if len(input) == 1 and ord(input) &lt; 0x80: return input
         else: return encode_length(len(input), 0x80) + input
     elif isinstance(input,list):
-        output = &#39;&#39;
+        output = ''
         for item in input: output += rlp_encode(item)
         return encode_length(len(output), 0xc0) + output
 
@@ -161,11 +161,11 @@ def encode_length(L,offset):
          BL = to_binary(L)
          return chr(len(BL) + offset + 55) + BL
     else:
-         raise Exception(&#34;input too long&#34;)
+         raise Exception(&quot;input too long&quot;)
 
 def to_binary(x):
     if x == 0:
-        return &#39;&#39;
+        return ''
     else:
         return to_binary(int(x / 256)) + chr(x % 256)
 </code></pre><h2 id="解码">解码</h2>
@@ -182,7 +182,7 @@ def to_binary(x):
 <pre tabindex="0"><code>def rlp_decode(input):
     if len(input) == 0:
         return
-    output = &#39;&#39;
+    output = ''
     (offset, dataLen, type) = decode_length(input)
     if type is str:
         output = instantiate_str(substr(input, offset, dataLen))
@@ -194,7 +194,7 @@ def to_binary(x):
 def decode_length(input):
     length = len(input)
     if length == 0:
-        raise Exception(&#34;input is null&#34;)
+        raise Exception(&quot;input is null&quot;)
     prefix = ord(input[0])
     if prefix &lt;= 0x7f:
         return (0, 1, str)
@@ -213,12 +213,12 @@ def decode_length(input):
         listLen = to_integer(substr(input, 1, lenOfListLen))
         return (1 + lenOfListLen, listLen, list)
     else:
-        raise Exception(&#34;input don&#39;t conform RLP encoding form&#34;)
+        raise Exception(&quot;input don't conform RLP encoding form&quot;)
 
 def to_integer(b):
     length = len(b)
     if length == 0:
-        raise Exception(&#34;input is null&#34;)
+        raise Exception(&quot;input is null&quot;)
     elif length == 1:
         return ord(b[0])
     else:
