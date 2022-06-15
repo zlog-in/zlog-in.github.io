@@ -73,6 +73,43 @@
 
       
         <article class="post-preview">
+  <a href="/post/rlp/">
+      <h2 class="post-title">RLP编解码规则</h2>
+  </a>
+  <div class="postmeta">
+    <span class="meta-post">
+  <i class="fa fa-calendar-alt"></i>Mar 10, 2021
+  
+</span>
+  </div>
+  <div class="post-entry">
+    
+      <p><p>递归式长度前缀(Recursive Length Prefix)是以太坊用来对数据进行序列化和反序列的编码规则，这里是参考以太网维基[^1]的一篇小小笔记。</p></p>
+      
+    
+  </div>
+</article>
+      
+        <article class="post-preview">
+  <a href="/post/mmr-intro/">
+      <h2 class="post-title">梅克尔山脉——跨链交易中超轻验证的可能性</h2>
+  </a>
+  <div class="postmeta">
+    <span class="meta-post">
+  <i class="fa fa-calendar-alt"></i>Feb 5, 2021
+  
+</span>
+  </div>
+  <div class="post-entry">
+    
+      <p><p>梅克尔树被发明的初衷，是为了给大量的数据做一个简短的声明，即使数据被拆成若干个部分保存，也能通过梅克尔树来判断最后组合起来的整体的正确性。因为如果某一部分数据被修改或者遭受损坏，最后就无法得到与之前相同的根哈希。</p>
+<p>不难理解，能够这么做的前提是已知所有的数据，才能使用梅克尔树。但在区块链领域，每一种链一直都在产生新的区块。2012年，比特币核心开发者Peter Todd遇到了类似的问题。在为一堆不停增长的数据求根哈希的时候，他需要找到一种办法来方便快捷地向梅克尔树上新增叶子节点，同时保证求取根的过程尽量简单，于是他发明了梅克尔山脉(Merkle Mountain Ranges, )——一种专为不停增长的数据整体求根哈希的结构。本文将详细介绍梅克尔山脉及其应用。</p></p>
+      
+    
+  </div>
+</article>
+      
+        <article class="post-preview">
   <a href="/post/merkle-tree02/">
       <h2 class="post-title">Merkle Tree之二</h2>
   </a>
@@ -192,42 +229,6 @@
   <div class="post-entry">
     
       <p><p>FEAL4(Fast data Encryption Algorithm)由日本密码学家清水明宏和宫口庄司于1987年在日本电信电话株式会社(NTT)任职期间提出，作为一个针对DES的替代加密方案。相比较DES被设计成硬件电路的思路，FEAL4可由纯软件实现，得益于较少的加密轮数(4轮)，其执行速度相当快。本文首先介绍FEAL4以及DES所使用的Feistel加密结构，根据FEAL4所使用的F函数，分析F输入及输出之间的线性关系。然后解释，如何利用该线性关系配合较少的明文密文对，攻击者可以快速破解密钥。</p></p>
-      
-    
-  </div>
-</article>
-      
-        <article class="post-preview">
-  <a href="/post/cbc-padding/">
-      <h2 class="post-title">CBC填充攻击</h2>
-  </a>
-  <div class="postmeta">
-    <span class="meta-post">
-  <i class="fa fa-calendar-alt"></i>Sep 19, 2020
-  
-</span>
-  </div>
-  <div class="post-entry">
-    
-      <p><p>CBC(Cipher Block Chaining)是一种块加密，所谓块，就是一段固定长度的数据。明文，也就是待加密的数据，被分割成若干个块，然后分别加密每一个块。如果最后一个块未被填满，则需要额外的数据填充其中，然后加密。在本文首先介绍CBC加密系统的工作流程，然后就其采用的填充标准<a href="https://tools.ietf.org/html/rfc2315#section-10.3">PKCS#7</a>详细说明一种攻击方法。</p></p>
-      
-    
-  </div>
-</article>
-      
-        <article class="post-preview">
-  <a href="/post/socks5/">
-      <h2 class="post-title">SOCKS5协议</h2>
-  </a>
-  <div class="postmeta">
-    <span class="meta-post">
-  <i class="fa fa-calendar-alt"></i>Sep 8, 2020
-  
-</span>
-  </div>
-  <div class="post-entry">
-    
-      <p><p>最近看了一下<a href="https://tools.ietf.org/html/rfc1928"><code>SOCKS5</code></a>协议，一个小巧方便的代理协议，这里是一些笔记。</p></p>
       
     
   </div>
