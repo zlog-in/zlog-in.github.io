@@ -6,7 +6,16 @@
     <description>Recent content in Posts on Zlog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 15 Jun 2022 18:51:25 +0200</lastBuildDate><atom:link href="/post/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 16 Jun 2022 17:35:45 +0200</lastBuildDate><atom:link href="/post/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>旅行的意義</title>
+      <link>/post/love-traveling/</link>
+      <pubDate>Thu, 16 Jun 2022 17:35:45 +0200</pubDate>
+      
+      <guid>/post/love-traveling/</guid>
+      <description></description>
+    </item>
+    
     <item>
       <title>浅谈三种跨链技术</title>
       <link>/post/cross-chain/</link>
