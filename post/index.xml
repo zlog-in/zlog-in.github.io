@@ -6,7 +6,25 @@
     <description>Recent content in Posts on Zlog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 16 Jun 2022 17:35:45 +0200</lastBuildDate><atom:link href="/post/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 08 Jul 2022 14:04:31 +0200</lastBuildDate><atom:link href="/post/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>以太坊的状态存储结构</title>
+      <link>/post/storage-in-ethereum/</link>
+      <pubDate>Fri, 08 Jul 2022 14:04:31 +0200</pubDate>
+      
+      <guid>/post/storage-in-ethereum/</guid>
+      <description>以太坊是由交易驱动的状态机，一笔正确有效的交易将以太坊的当前状态变更为下一个状态。区块是交易集合的基本单位，一个有效的区块包含多笔交易。当一个有效区块被加入到以太坊的区块链中，也就意味着该区块包含的所有交易完成了一次对以太坊的状态更新。即，区块触发了以太坊的状态变更。
+以太坊使用Trie结构(comes from reTrieve)去存储所有的状态变化，Trie是一种前缀树，实现了key-value的存储结构，通过key可以很方便地取出(retrieve)value。Trie的具体结构是另外一件有意思的事情，有机会另写一篇小文解释。本文主要描述，基于Trie实现的四种以太坊存储结构。
+以太坊定义了四种树形存储结构
+ State Tree Receipt Tree Transaction Tree Storage Tree  img
+State Tree又被称作世界状态树(World State Tree)，整个以太坊网络仅有一颗状态树，状态树的根哈希相当于目前整个以太坊的状态快照，每一个区块头均保存着当前区块高度下的状态根。每一次以太坊世界的状态更新，都会引起状态根(State Root)的变化。 由于每一次区块的增加，都会引起状态树的变化，因此需要一种数据结构来完成方便高效的插入、更新、删除等操作。以太坊采用了Merkkle-Patricia-Trie(MPT)树来实现状态树,一个以太坊账户地址就是一把key ，而对应的value包含了该账户的余额、nounce、合约代码（如果key是合约地址）以及合约账户的存储（Storage Root）。
+可以这样理解状态树：所有的以太坊账户(key)以及它们的状态(value)构成了一棵MPT，状态根就是对作为整体的以太坊的一次快照。因为每一个区块头均包含一个状态根，所以称区块触发了以太坊的状态变更。
+Receipt Tree和Transaction Tree均是和交易相关的树形结构，一个区块体所包含的所有交易构成一棵Transaction Tree(通常是Merkle Tree)，其根哈希(transaction root)保存在区块头，作为该区块内所有交易内容的存在性证明。而Receipt Tree负责保存一个区块内所有交易的执行结果，包括了消耗的燃气，记录的日志，交易结束后的状态等等，其根哈希(receipt root)同样保存在区块头，作为该区块内所有交易的执行证明。
+每一个区块都记录了一棵独立的Transaction Tree和 Receipt Tree，区块一旦入链，其Root将不再改变；而所有的区块共同维护着一个State Tree，随着区块链的增长，其root在每个区块高度上记录着以太坊的状态变化。
+另外一棵隐藏在状态树下的Storage Tree是用来记录智能合约的存储状态的变化，每一个合约地址在状态树上的value中均有一个Storage Root，记录着合约在每次交易之后的存储变化。合约存储的数据保存在以太坊的数据库中，不同的以太坊实现可以采用不同的数据库技术。例如，Go-Ethereum使用leveldb，而Parity使用了rocksdb。通过查询隐藏在State Root里面的Storage Root，每一个智能合约的每一次对数据库内容的修改都能得到所有节点的确认，实现了以太坊的分布式存储。
+在这里我们简单描述了，四种树形结构帮助实现了以太坊的去中心化共识，在存储、执行(Transcation, Receipt)和状态三个层次上，Trie都能够用来对信息的确认和回溯。而具体的树形结构和对其的各种操作并非本文的重点，但是对于它们对于以太坊的开发者至关重要，值得学习。</description>
+    </item>
+    
     <item>
       <title>旅行的意義</title>
       <link>/post/love-traveling/</link>
