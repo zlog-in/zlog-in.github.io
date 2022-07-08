@@ -9,10 +9,10 @@
     <lastBuildDate>Fri, 08 Jul 2022 14:04:31 +0200</lastBuildDate><atom:link href="/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>以太坊的状态存储</title>
-      <link>/post/storage-in-ethereum/</link>
+      <link>/post/state-in-ethereum/</link>
       <pubDate>Fri, 08 Jul 2022 14:04:31 +0200</pubDate>
       
-      <guid>/post/storage-in-ethereum/</guid>
+      <guid>/post/state-in-ethereum/</guid>
       <description>以太坊是由交易驱动的状态机，一笔正确有效的交易将以太坊的当前状态变更为下一个状态。区块是交易集合的基本单位，一个有效的区块包含多笔交易。当一个有效区块被加入到以太坊的区块链中，也就意味着该区块包含的所有交易完成了一次对以太坊的状态更新。即，区块触发了以太坊的状态变更。
 以太坊使用Trie结构(comes from reTrieve)去存储所有的状态变化，Trie是一种前缀树，实现了key-value的存储结构，通过key可以很方便地取出(retrieve)value。Trie的具体结构是另外一件有意思的事情，有机会另写一篇小文解释。本文主要描述，基于Trie实现的四种以太坊存储结构。
 以太坊定义了四种树形存储结构
