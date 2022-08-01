@@ -20,7 +20,7 @@
 可以这样理解状态树：所有的以太坊账户(key)以及它们的状态(value)构成了一棵MPT，状态根就是对作为整体的以太坊的一次快照。因为每一个区块头均包含一个状态根，所以称区块触发了以太坊的状态变更。
 Receipt Tree和Transaction Tree均是和交易相关的树形结构，一个区块体所包含的所有交易构成一棵Transaction Tree(通常是Merkle Tree)，其根哈希(transaction root)保存在区块头，作为该区块内所有交易内容的存在性证明。而Receipt Tree负责保存一个区块内所有交易的执行结果，包括了消耗的燃气，记录的日志，交易结束后的状态等等，其根哈希(receipt root)同样保存在区块头，作为该区块内所有交易的执行证明。
 每一个区块都记录了一棵独立的Transaction Tree和Receipt Tree，区块一旦入链，其root将不再改变；而所有的区块共同维护着一个State Tree，随着区块链的增长，其root在每个区块高度上记录着以太坊的状态变化。
-另外一棵隐藏在状态树下的Storage Tree是用来记录智能合约的存储状态的变化，每一个合约地址在状态树上的value中均有一个storage root，记录着合约在每次交易之后的存储变化。合约存储的数据保存在以太坊的数据库中，不同的以太坊实现可以采用不同的数据库技术。例如，Go-Ethereum使用leveldb，而Parity使用了rocksdb。通过查询隐藏在State Root里面的storage root，每一个智能合约的每一次对数据库内容的修改都能得到所有节点的确认，实现了以太坊的分布式存储。
+另外一棵隐藏在状态树下的Storage Tree是用来记录智能合约的存储状态的变化。每一个合约地址在状态树上的value中均有一个storage root，记录着合约在每次交易之后的存储变化。合约存储的数据保存在以太坊的数据库中，不同的以太坊实现可以采用不同的数据库技术。例如，Go-Ethereum使用leveldb，而Parity使用了rocksdb。通过查询隐藏在State Root里面的storage root，每一个智能合约的每一次对数据库内容的修改都能得到所有节点的确认，实现了以太坊的分布式存储。
 在这里我们简单描述了，四种树形结构帮助实现了以太坊的去中心化共识，在存储、执行(Transaction, Receipt)和状态三个层次上，Trie都能够用来对信息的确认和回溯。而具体的树形结构和对其的各种操作方法并非本文的重点，但是它们对于以太坊的开发者至关重要，值得学习。</description>
     </item>
     
@@ -48,7 +48,7 @@ Receipt Tree和Transaction Tree均是和交易相关的树形结构，一个区�
       <pubDate>Fri, 08 Apr 2022 01:01:34 +0200</pubDate>
       
       <guid>/post/run/</guid>
-      <description>&lt;p&gt;跑步对于我来说，是最舒服的独处方式。跑起来很简单，左脚迈过右脚，右脚迈过左脚，一步一步往前。&lt;/p&gt;</description>
+      <description></description>
     </item>
     
     <item>
@@ -57,9 +57,46 @@ Receipt Tree和Transaction Tree均是和交易相关的树形结构，一个区�
       <pubDate>Wed, 30 Mar 2022 20:17:00 +0200</pubDate>
       
       <guid>/post/commencement/</guid>
-      <description>&lt;blockquote&gt;
-&lt;p&gt;一篇抄自維基文庫收錄的&lt;a href=&#34;https://zh.m.wikisource.org/zh-hant/%E4%B8%80%E5%80%8B%E9%98%B2%E8%BA%AB%E8%97%A5%E6%96%B9%E7%9A%84%E4%B8%89%E5%91%B3%E8%97%A5&#34;&gt;演講稿&lt;/a&gt;&lt;/p&gt;
-&lt;/blockquote&gt;</description>
+      <description>一篇抄自維基文庫收錄的演講稿
+ 畢業班的諸位同學，現在都得離開學校去開始你們自己的事業了，今天的典禮，我們叫作「畢業」，叫作「卒業」，在英文裡叫作「始業」（Commencement）。你們的學校生活現在有一個結束，現在你們開始進入一段新的生活，開始撐起自己的肩膀來挑自己的擔子，所以叫作「始業」。
+我今天承畢業班同學的好意，承閻校長的好意，要我來說幾句話。我進大學是在五十年前（1910），我畢業是在四十六年前（1914），夠得上做你們的老大哥了。今天我用老大哥的資格，應該送你們一點小禮物，我要送你們的小禮物只是一個防身的藥方，給你們離開校門，進入大世界，作隨時防身救急之用的一個藥方。
+這個防身藥方只有三味藥：
+ 第一味藥叫作「問題丹」。 第二味藥叫作「興趣散」。 第三味藥叫作「信心湯」。  第一味藥，「問題丹」。就是說：每個人離開學校，總得帶一兩個麻煩而有趣味的問題在身邊作伴，這是你們入世的第一要緊的救命寶丹。
+問題是一切只是學識的來源，活的學問、活的知識，都是為了解答實際上的困難，或理論上的困難而得來的。年輕入世的時候，總得有一兩個不大容易解決的問題在腦子裡，時時向你挑戰，時時笑你不能對付它，不能奈何它，時時引誘你去想它。
+只要你有問題跟着你，你就不會懶惰了，你就會繼續有智識上的長進了。
+學堂裡的書，你帶不走；儀器，你帶不走；先生，他們不能跟你去，但是問題可以跟你走到天邊！有了問題，沒有書，你自會省吃省穿去買書；沒有儀器，你自會賣田賣地去買儀器！沒有好先生，你自會去找好師友；沒有資料，你自會上天下地去找資料。
+各位青年朋友，你今天離開學校，夾袋裡準備了幾個問題跟着你走？
+第二味藥，叫作「興趣散」。這就是說：每個人進入社會，總得多發展一點專門職業以外的興趣 &amp;mdash; 「業餘」的興趣。
+你們多數是學工程的，當然不愁找不到喫飯的職業，但四年前你們選擇的專門職業，真是你們自己的自由意志嗎？你們現在還感覺你們手裡的文憑真可以代表你們每個人終身的志願、終身的興趣嗎？&amp;mdash; 換句話說，你們今天不懊悔嗎？明年今天還不會懊悔嗎？
+你們在這四年裡，沒有發現什麼新的、業餘的興趣嗎？在這四年裡，沒有發現自己在本行以外的才能嗎？
+總而言之，一個人應該有他的職業，又應該有他的非職業的玩意兒。不是為喫飯而是心裡喜歡做的，用閒暇時間做的 &amp;mdash; 這種非職業的玩意兒，可以使他的生活更有趣、更快樂、更有意思。有時候，一個人的業餘活動也許比他的職業還更重要。
+英國十九世紀的兩個哲學家，一個是彌爾（J.S. Mill），他的職業是東印度公司的秘書，他的業餘工作使他在哲學上、經濟學上、政治思想史上，都有很大的貢獻。一個是斯賓塞（Hervert Spencer），他是一個測量工程師，他的業餘工作使他成為一個很有勢力的思想家。
+英國的大政治家丘吉爾，政治是他的終身職業，但他的業餘興趣很多，他在文學、歷史兩方面，都有大成就；他用餘力作畫，成績也很好。
+今天到自由中國的貴賓，美國大總統艾森豪先生，他的終身職業是軍事，人都知道他最愛打高爾夫球，但我們知道他的油畫也很有工夫。
+各位青年朋友，你們的專門職業是不用愁的了，你們的業餘興趣是什麼？你們能做的，愛做的業餘活動是什麼？
+第三味藥，我叫它作「信心湯」。這就是說：你總得有一點信心將。
+我們生存在這個年代，正是我們要培養我們的信心的時候，沒有信心，我們真要發狂自殺了。
+我們的信心只有一句話：「努力不會白費」，沒有一點努力是沒有結果的。
+對你們學工程的青年人，我還用多舉例來說明這種信心嗎？工程師的人生哲學自然建築在「努力不白費」的定律的基石之上。
+我只舉這短短幾十年裡大家都知道的兩個例子：
+一個是亨利福特（Henry Ford），這個人沒有受過大學教育，他小時半工半讀，只讀了幾年書。十六歲就在一小機器店裡工作，每週工錢半美金，晚上還得去幫別家做夜工。
+五十七年前（1903）他三十九歲，他創立Ford Motor Co.（福特汽車公司），原定資本十萬元，只招得兩萬八千元。
+五年之後（1908），他造成了他的最出名的Model T汽車，用全力製造這一種車子。
+1913年&amp;mdash;我已在大學三年級了，福特先生創立他的第一副「裝配線」（Assembly line）。
+1914年，&amp;mdash;四十六年前，&amp;mdash;他就能夠完全用「裝配線」的原理來製造他的汽車了。同時（1914）他宣布他的汽車工人每天只工作八點鐘，比別處工人少一點鐘&amp;mdash;而每天最低工錢五元美金，比別人多一倍。
+他的汽車開始是九百五十元一部，他逐年減低賣價，從九百五十元直減到三百六十元&amp;mdash;第一次世界大戰之後，減到二百九十元一部。
+他的公司，在創辦時（1903）只有兩萬八千元的資本，&amp;mdash;到二十三年之後（1926）已值得十億美金了！已成了全世界最大的汽車公司了。1915年，他造了一百萬部汽車，1928年，他造了一千五百萬部車。
+他的「裝配線」的原則在二十年裡造成了全世界的「工業新革命」。
+福特的汽車在五十年中征服全世界的歷史還不能叫我們發生「努力不白費」的信心嗎？
+第二個例子是航空工程與航空工業的歷史。
+也是五十七年前&amp;mdash;1903年12月17日，正是我十二整歲的生日&amp;mdash;那一天，在北加羅林那州的海邊Kitty Hawk沙灘上，兩個修理腳踏車的匠人，兄弟兩人，用他們自己製造的一隻飛機，在沙灘上試起飛，弟弟叫Owille Wright，他飛起了十二秒鐘。哥哥叫Wilbur Wright，他飛起了五十九秒鐘。
+那是人類製造飛機飛在空中的第一次成功&amp;mdash;現在那一天（12月17日）是全美國慶祝的「航空日」&amp;mdash;但當時並沒有人注意到那兩個弟兄的試驗，但這兩個沒有受過大學教育的腳踏車修理匠人，他們並不失望，他們繼續試飛，繼續改良他們的飛機，一直到四年半之後（1908年5月），才有重要的報紙來報導那兩個人的試飛。那時候，他們已能在空中飛三十八分鐘了！
+這四十年中，航空工程的大發展，航空工業的大發展，這是你們學工程的人都知道的，航空工業在最近三十年裡已成了世界最大工業的一種。
+我第一次看見飛機是在1912年。我第一次坐飛機是在1930年（30年前）。我第一次飛過太平洋是在二十三年前（1937）；第一次飛過大西洋是在十五年前（1945年），當我第一次飛渡太平洋的時候，從香港到舊金山總共費了七天！去年我第一次坐Jet機，從舊金山到紐約，五個半鐘點飛了三千英里！下月初，我又得飛過太平洋，當天中午起飛，當天晚上就到美國西岸了！
+五十七年前，Kitty Hawk沙灘上兩個腳踏車修理匠人自造的一個飛機居然在空中飛起了十二秒鐘，那十二秒鐘的飛行就給人類打開了一個新的時代&amp;mdash;打開了人類的航空時代。
+這不夠叫我們深信「努力不會自費」的人生觀嗎？
+古人說：「信心可以移山」（Faith moves mountains），又說：「功不唐捐」（唐是空的意思），又說：「只要功夫深，生鐵磨成繡花針。」
+青年的朋友，你們有這種信心沒有？</description>
     </item>
     
     <item>
@@ -68,7 +105,10 @@ Receipt Tree和Transaction Tree均是和交易相关的树形结构，一个区�
       <pubDate>Sat, 09 Oct 2021 11:30:23 +0200</pubDate>
       
       <guid>/post/fastbft/</guid>
-      <description>&lt;p&gt;一篇论文小笔记，而已。&lt;/p&gt;</description>
+      <description>一篇论文小笔记，而已。
+FastBFT是一种新型的BFT算法，其最大特定是通过TEE的使用，直接排除了拜占庭节点作恶的可能性，剩下的节点错误只可能宕机，或者网络失联。因此，网络的节点数量要求由$3f+1$变为$2f+1$，其中$f$是最大容错节点的数量，网络的容错率由原来的$1/3$上升为$1/2$。并且，作者们另辟蹊径，用秘密分享(Secret Sharing)机制替代原来的数字签名算法，来确认网络中的多数节点对结果的共识。秘密的生成、分发和恢复所需的计算量要显著小于数字签名的产生和验证过程，进一步提高了共识的速度。再通过平衡树状网络拓扑结构，还能将通信负载均摊到所有活跃节点上，能减少主节点因为消息过载而引起的无法服务的可能性。
+假设每笔交易长度为256Byte，在网络规模为199个节点的情况下，FastBFT原型能够实现每秒钟超过100000笔交易的网络吞吐量。
+这里是原论文的阅读笔记，这里是TEE的简单介绍。</description>
     </item>
     
     <item>
@@ -77,9 +117,7 @@ Receipt Tree和Transaction Tree均是和交易相关的树形结构，一个区�
       <pubDate>Fri, 06 Aug 2021 11:31:19 +0200</pubDate>
       
       <guid>/post/rro-intro/</guid>
-      <description>&lt;blockquote&gt;
-&lt;p&gt;最近在读《罗伯特议事规则》，瞥见孙中山因此书作序言，便手录在此。&lt;/p&gt;
-&lt;/blockquote&gt;</description>
+      <description></description>
     </item>
     
     <item>
@@ -88,7 +126,7 @@ Receipt Tree和Transaction Tree均是和交易相关的树形结构，一个区�
       <pubDate>Mon, 05 Jul 2021 20:52:56 +0200</pubDate>
       
       <guid>/post/byz/</guid>
-      <description>&lt;p&gt;得益于无数聪明的头脑，对于区块链行业发展的思考和探索正在朝着两个方向迈进，有人在想象并期待着区块链之上能够出现更多安全而且可靠的DAPP，为数字资产的流动赋予无与伦比的自由和速度；也有人在深刻思索着区块链之下的共识机制，审视着人类协作活动的最基础性原理，以求得一条最为直接而且可信的通往共识之路，并改变人类组织的管理模式。&lt;/p&gt;</description>
+      <description></description>
     </item>
     
     <item>
@@ -97,8 +135,7 @@ Receipt Tree和Transaction Tree均是和交易相关的树形结构，一个区�
       <pubDate>Thu, 06 May 2021 22:58:30 +0200</pubDate>
       
       <guid>/post/flyclient02/</guid>
-      <description>&lt;p&gt;在前一篇文章，我们详细解释了基于不变难度的超轻节点如何验证区块的有效性以及其验证结果正确概率的模型。这个模型的前提是基于理想状态设定的，能够帮助读者更容易理解超轻节点的工作流程和其背后的数学原理，但在真实的区块链行业，基于PoW的共识算法会随着参与网络竞争的节点数量和运算能力改变而周期性调整难度目标。这意味着，节点必须检查区块的PoW是否满足难度调整函数。&lt;/p&gt;
-&lt;p&gt;在本篇文章，我们将首先介绍中本聪为比特币网络设置的难度调整函数，然后用更形式化的方法为读者解释难度调整函数，最后说明在可变难度下超轻节点如何检查区块的PoW。&lt;/p&gt;</description>
+      <description></description>
     </item>
     
     <item>
@@ -107,7 +144,7 @@ Receipt Tree和Transaction Tree均是和交易相关的树形结构，一个区�
       <pubDate>Fri, 12 Mar 2021 22:28:03 +0200</pubDate>
       
       <guid>/post/flyclient01/</guid>
-      <description>&lt;p&gt;为了验证交易的合法性，加密货币例如比特币和以太坊，要求节点必须验证区块链的有效性。节点在接入加密货币网络之初，需要花费数小时以及相当大的磁盘空间来下载、验证和存储所有区块。然而一些客户端由于缺乏必要的资源(带宽、存储)，无法独立验证交易，必须依赖全节点。比特币和以太坊均提供了一种名为SPV客户端的方法，SPV客户端仅仅验证和保存所有的区块头。然而，仅仅保存区块头的存储要求也是随着链长的增长而线性增长。至2021年1月为止，以太坊网络的SPV客户端需要存储的区块头数据已经逼近 6 GB。对于资源更受限的 IoT 设备，其存储上限可能都无法达到上述要求。&lt;/p&gt;</description>
+      <description></description>
     </item>
     
     <item>
@@ -116,7 +153,7 @@ Receipt Tree和Transaction Tree均是和交易相关的树形结构，一个区�
       <pubDate>Wed, 10 Mar 2021 22:15:27 +0200</pubDate>
       
       <guid>/post/rlp/</guid>
-      <description>&lt;p&gt;递归式长度前缀(Recursive Length Prefix)是以太坊用来对数据进行序列化和反序列的编码规则，这里是参考以太网维基[^1]的一篇小小笔记。&lt;/p&gt;</description>
+      <description></description>
     </item>
     
     <item>
@@ -125,8 +162,7 @@ Receipt Tree和Transaction Tree均是和交易相关的树形结构，一个区�
       <pubDate>Fri, 05 Feb 2021 22:11:59 +0200</pubDate>
       
       <guid>/post/mmr-intro/</guid>
-      <description>&lt;p&gt;梅克尔树被发明的初衷，是为了给大量的数据做一个简短的声明，即使数据被拆成若干个部分保存，也能通过梅克尔树来判断最后组合起来的整体的正确性。因为如果某一部分数据被修改或者遭受损坏，最后就无法得到与之前相同的根哈希。&lt;/p&gt;
-&lt;p&gt;不难理解，能够这么做的前提是已知所有的数据，才能使用梅克尔树。但在区块链领域，每一种链一直都在产生新的区块。2012年，比特币核心开发者Peter Todd遇到了类似的问题。在为一堆不停增长的数据求根哈希的时候，他需要找到一种办法来方便快捷地向梅克尔树上新增叶子节点，同时保证求取根的过程尽量简单，于是他发明了梅克尔山脉(Merkle Mountain Ranges, )——一种专为不停增长的数据整体求根哈希的结构。本文将详细介绍梅克尔山脉及其应用。&lt;/p&gt;</description>
+      <description></description>
     </item>
     
     <item>
@@ -135,7 +171,7 @@ Receipt Tree和Transaction Tree均是和交易相关的树形结构，一个区�
       <pubDate>Thu, 14 Jan 2021 22:08:24 +0200</pubDate>
       
       <guid>/post/merkle-tree02/</guid>
-      <description>&lt;p&gt;在前一篇文章里，笔者介绍了如何使用梅克尔树给一个区块里的所有交易生成一个哈希，作为树根存储在区块头，以及解释了当交易数量不足时，为什么需要引入的冗余信息来「凑齐」一棵完整二叉树，最后说明了比特币网络如何避免由于冗余信息所引起的潜在双花攻击。&lt;/p&gt;</description>
+      <description></description>
     </item>
     
     <item>
@@ -144,7 +180,7 @@ Receipt Tree和Transaction Tree均是和交易相关的树形结构，一个区�
       <pubDate>Mon, 11 Jan 2021 17:33:21 +0800</pubDate>
       
       <guid>/post/merkle-tree01/</guid>
-      <description>&lt;p&gt;双花攻击是任何一种数字货币都需要解决的问题，如果是真实的物理货币，天然可以避免双花攻击，因为攻击者口袋里的钱币花出去了，就真实地离开了自己。而数字货币，其实是一串特殊的字符串，可以无限复制，如何使被复制的信息不再有效，就成了解决双花问题的关键。即使是中国央行推出的数字人民币系统DC/EP，也在一定程度上面临双花问题。&lt;/p&gt;</description>
+      <description></description>
     </item>
     
     <item>
@@ -169,7 +205,7 @@ Receipt Tree和Transaction Tree均是和交易相关的树形结构，一个区�
       <pubDate>Thu, 29 Oct 2020 23:14:15 +0100</pubDate>
       
       <guid>/post/scope-linkage/</guid>
-      <description>&lt;p&gt;这是一篇关于&lt;code&gt;C++&lt;/code&gt;变量的作用域与链接性的笔记，整理了各种相关概念以备疏忘。&lt;/p&gt;</description>
+      <description></description>
     </item>
     
     <item>
@@ -178,9 +214,7 @@ Receipt Tree和Transaction Tree均是和交易相关的树形结构，一个区�
       <pubDate>Sun, 18 Oct 2020 21:24:07 +0200</pubDate>
       
       <guid>/post/formal-security/</guid>
-      <description>&lt;p&gt;在不久之前，密码学还不能被称作一门学科，顶多是一种手艺。在古典密码学时代，密码系统的安全仅仅取决于设计者和攻击者的创造力和技巧，人们并不能证明一种密码系统的安全性究竟几何？也没有对密码系统的诸多元件有清晰而明确的定义。&lt;/p&gt;
-&lt;p&gt;密码学真正成为一门系统而逻辑严密的学科，源自二战时，交战双方终于意识到通信的安全性对于战局的决定性影响力。德国佬的Enigma机器曾使盟军头痛不已，直到图灵和波兰数学家的合作才终于破译德军的军事情报信息。由战争带来的对于安全通信的需求，在战后的冷战时代未曾消减，密码学的理论研究终于大放异彩。今天，几乎所有关于密码理论的基本概念都源自那个令人不安的时代。&lt;/p&gt;
-&lt;p&gt;本篇小文将介绍现代密码系统的几种安全模型，及其相互关系。&lt;/p&gt;</description>
+      <description></description>
     </item>
     
     <item>
@@ -189,7 +223,7 @@ Receipt Tree和Transaction Tree均是和交易相关的树形结构，一个区�
       <pubDate>Tue, 06 Oct 2020 11:49:35 +0200</pubDate>
       
       <guid>/post/cbc-fake-cipher/</guid>
-      <description>&lt;p&gt;之前的&lt;a href=&#34;https://www.zlog-in/post/cbc-padding/&#34;&gt;小文&lt;/a&gt;详细介绍了如何利用&lt;code&gt;Oracle&lt;/code&gt;实现对CBC的填充攻击，从而解出明文内容。此篇小文将解释如何利用这一对明文密文&lt;code&gt;(m,c)&lt;/code&gt;，在不知道密钥的情况下，构造一个对合法的明文密钥&lt;code&gt;(M,C)&lt;/code&gt;。这样，攻击者便能在通信双方未能察觉之下修改通信内容，以达到自己的目的。跟前文一样，此文还是以二个消息块为例。有了前文的基础，此文直接进入主题。对CBC不了解或者不够熟悉的读者，请先翻阅前文。&lt;/p&gt;</description>
+      <description></description>
     </item>
     
     <item>
@@ -198,7 +232,7 @@ Receipt Tree和Transaction Tree均是和交易相关的树形结构，一个区�
       <pubDate>Thu, 01 Oct 2020 21:03:03 +0200</pubDate>
       
       <guid>/post/feal4/</guid>
-      <description>&lt;p&gt;FEAL4(Fast data Encryption Algorithm)由日本密码学家清水明宏和宫口庄司于1987年在日本电信电话株式会社(NTT)任职期间提出，作为一个针对DES的替代加密方案。相比较DES被设计成硬件电路的思路，FEAL4可由纯软件实现，得益于较少的加密轮数(4轮)，其执行速度相当快。本文首先介绍FEAL4以及DES所使用的Feistel加密结构，根据FEAL4所使用的F函数，分析F输入及输出之间的线性关系。然后解释，如何利用该线性关系配合较少的明文密文对，攻击者可以快速破解密钥。&lt;/p&gt;</description>
+      <description></description>
     </item>
     
     <item>
@@ -207,7 +241,7 @@ Receipt Tree和Transaction Tree均是和交易相关的树形结构，一个区�
       <pubDate>Sat, 19 Sep 2020 20:53:58 +0200</pubDate>
       
       <guid>/post/cbc-padding/</guid>
-      <description>&lt;p&gt;CBC(Cipher Block Chaining)是一种块加密，所谓块，就是一段固定长度的数据。明文，也就是待加密的数据，被分割成若干个块，然后分别加密每一个块。如果最后一个块未被填满，则需要额外的数据填充其中，然后加密。在本文首先介绍CBC加密系统的工作流程，然后就其采用的填充标准&lt;a href=&#34;https://tools.ietf.org/html/rfc2315#section-10.3&#34;&gt;PKCS#7&lt;/a&gt;详细说明一种攻击方法。&lt;/p&gt;</description>
+      <description></description>
     </item>
     
     <item>
@@ -216,7 +250,7 @@ Receipt Tree和Transaction Tree均是和交易相关的树形结构，一个区�
       <pubDate>Tue, 08 Sep 2020 12:56:50 +0200</pubDate>
       
       <guid>/post/socks5/</guid>
-      <description>&lt;p&gt;最近看了一下&lt;a href=&#34;https://tools.ietf.org/html/rfc1928&#34;&gt;&lt;code&gt;SOCKS5&lt;/code&gt;&lt;/a&gt;协议，一个小巧方便的代理协议，这里是一些笔记。&lt;/p&gt;</description>
+      <description></description>
     </item>
     
     <item>
@@ -225,7 +259,7 @@ Receipt Tree和Transaction Tree均是和交易相关的树形结构，一个区�
       <pubDate>Tue, 25 Aug 2020 22:25:43 +0200</pubDate>
       
       <guid>/post/exponential-large-number/</guid>
-      <description>幂运算(Exponentiation)又称指数运算，写作\(c= m^e \)，即\(c\)等于\(e\)个\(m\)相乘。当\(m\)或者\(e\)的数值不大的时候，可以通过重复的乘法运算来获得\(c\)。当\(m\)和\(e\)都是一个大数的时候，比如说512位长。尽管有了计算机，显然对\(m\)重复\(e\)次乘法运算的效率不高。那么该怎样快速进行大数幂运算呢？</description>
+      <description></description>
     </item>
     
     <item>
@@ -234,7 +268,7 @@ Receipt Tree和Transaction Tree均是和交易相关的树形结构，一个区�
       <pubDate>Thu, 20 Aug 2020 10:09:33 +0200</pubDate>
       
       <guid>/post/rsa-padding/</guid>
-      <description>&lt;p&gt;在实际应用的RSA算法里面，消息都必须经过填充以后才会被加密，以拒绝同态攻击。在RFC8017的&lt;a href=&#34;https://tools.ietf.org/html/rfc8017#section-7.2.1&#34;&gt;7.2.1&lt;/a&gt;节，详细介绍了RSA的加密过程。本文稍微简化了加密流程，以求更能直观解释填充攻击的原理。想要了解RSA算法更多细节的同学，请参阅RFC8017文档。&lt;/p&gt;</description>
+      <description></description>
     </item>
     
     <item>
@@ -243,7 +277,7 @@ Receipt Tree和Transaction Tree均是和交易相关的树形结构，一个区�
       <pubDate>Wed, 05 Aug 2020 13:35:37 +0200</pubDate>
       
       <guid>/post/polly-cracker-attack/</guid>
-      <description>在前文介绍了非对称加密系统Polly Cracker，就像naive RSA一样，它也不是一个安全的加密系统。例如，在已知一对明文密文\((m, c)\),攻击者可以构造出来一个新的明文密文对\((m+m&#39;, c+m&#39;)\)，因为\((c + m&#39;)(\sigma) = c(\sigma) + m&#39; = m + m&#39;\)。但本文将要讨论的问题要比这个严重的多：攻击者可以通过构造特殊的密文，直接解出来Polly Cracker的密钥。</description>
+      <description></description>
     </item>
     
     <item>
@@ -252,7 +286,7 @@ Receipt Tree和Transaction Tree均是和交易相关的树形结构，一个区�
       <pubDate>Fri, 31 Jul 2020 21:24:29 +0200</pubDate>
       
       <guid>/post/polly-cracker/</guid>
-      <description>&lt;p&gt;现代加密系统的安全性建立在计算数学难题之上，比如RSA基于质因数分解，DH基于DLog计算。本文介绍的加密系统Polly Cracker则是基于组合多项式求解。为了更好地理解Polly Cracker的原理，首先来熟悉一下需要用到的数学知识。&lt;/p&gt;</description>
+      <description></description>
     </item>
     
     <item>
@@ -261,7 +295,7 @@ Receipt Tree和Transaction Tree均是和交易相关的树形结构，一个区�
       <pubDate>Sat, 11 Jul 2020 11:23:56 +0200</pubDate>
       
       <guid>/post/vigenere-attack/</guid>
-      <description>&lt;p&gt;在介绍Vigenere密码之前，先介绍一个更为简单的密码系统：凯撒密码(Caeser Cipher)。据称，当年凯撒曾用这种方法和手下的将领进行通信，传达指挥命令。凯撒密码是一种替换加密技术，即明文中所有字母都在字母表上向后或者向前偏移一个固定的距离，被替换成密文。当这个距离是3的时候，即称作凯撒密码。&lt;/p&gt;</description>
+      <description></description>
     </item>
     
   </channel>

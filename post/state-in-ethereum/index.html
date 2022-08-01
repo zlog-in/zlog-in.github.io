@@ -90,7 +90,7 @@
 <p>可以这样理解状态树：所有的以太坊账户(<code>key</code>)以及它们的状态(<code>value</code>)构成了一棵MPT，状态根就是对作为整体的以太坊的一次快照。因为每一个区块头均包含一个状态根，所以称区块触发了以太坊的状态变更。</p>
 <p>Receipt Tree和Transaction Tree均是和交易相关的树形结构，一个区块体所包含的所有交易构成一棵Transaction Tree(通常是Merkle Tree)，其根哈希(<code>transaction root</code>)保存在区块头，作为该区块内所有交易内容的存在性证明。而Receipt Tree负责保存一个区块内所有交易的执行结果，包括了消耗的燃气，记录的日志，交易结束后的状态等等，其根哈希(<code>receipt root</code>)同样保存在区块头，作为该区块内所有交易的执行证明。</p>
 <p>每一个区块都记录了一棵独立的Transaction Tree和Receipt Tree，区块一旦入链，其<code>root</code>将不再改变；而所有的区块共同维护着一个State Tree，随着区块链的增长，其<code>root</code>在每个区块高度上记录着以太坊的状态变化。</p>
-<p>另外一棵隐藏在状态树下的Storage Tree是用来记录智能合约的存储状态的变化，每一个合约地址在状态树上的<code>value</code>中均有一个<code>storage root</code>，记录着合约在每次交易之后的存储变化。合约存储的数据保存在以太坊的数据库中，不同的以太坊实现可以采用不同的数据库技术。例如，Go-Ethereum使用leveldb，而Parity使用了rocksdb。通过查询隐藏在State Root里面的<code>storage root</code>，每一个智能合约的每一次对数据库内容的修改都能得到所有节点的确认，实现了以太坊的分布式存储。</p>
+<p>另外一棵隐藏在状态树下的Storage Tree是用来记录智能合约的存储状态的变化。每一个合约地址在状态树上的<code>value</code>中均有一个<code>storage root</code>，记录着合约在每次交易之后的存储变化。合约存储的数据保存在以太坊的数据库中，不同的以太坊实现可以采用不同的数据库技术。例如，Go-Ethereum使用leveldb，而Parity使用了rocksdb。通过查询隐藏在State Root里面的<code>storage root</code>，每一个智能合约的每一次对数据库内容的修改都能得到所有节点的确认，实现了以太坊的分布式存储。</p>
 <p>在这里我们简单描述了，四种树形结构帮助实现了以太坊的去中心化共识，在存储、执行(Transaction, Receipt)和状态三个层次上，Trie都能够用来对信息的确认和回溯。而具体的树形结构和对其的各种操作方法并非本文的重点，但是它们对于以太坊的开发者至关重要，值得学习。</p>
 
 
