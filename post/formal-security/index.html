@@ -30,7 +30,7 @@
   };
   </script>
 <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-<meta name="generator" content="Hugo 0.92.2" />
+<meta name="generator" content="Hugo 0.115.4">
  
   
   <body>
@@ -99,8 +99,8 @@
 |  --------------&gt; |
 |        c         |c=Enc(k,mb)
 | &lt;--------------  |
-|        b'        |
-|  --------------&gt; |b=b' ?
+|        b&#39;        |
+|  --------------&gt; |b=b&#39; ?
 </code></pre><ol start="2">
 <li>RoR(Real or Random)：不可辨别随机性。攻击者从明文空间<code>S</code>里选择一条明文<code>m</code>，并将二者发送给挑战者。挑战者随机在<code>S</code>中再抽选一条明文<code>x</code>，决定加密<code>m</code>或者<code>x</code>，将加密结果<code>c</code>返回给攻击者。如果攻击者无法判断挑战者加密的是<code>m</code>还是<code>x</code>，则挑战者胜利。称该密码系统具有不可辨别随机型；</li>
 </ol>
@@ -109,8 +109,8 @@
 |  --------------&gt; |
 |        c         |c=Enc(k,m) if b=0       
 | &lt;--------------  |c=Enc(k,x) if b=1   x &lt;== S
-|        b'        |
-|  --------------&gt; |b=b' ?
+|        b&#39;        |
+|  --------------&gt; |b=b&#39; ?
 </code></pre><ol start="3">
 <li>NM(Non-Malleability)：不可延展性。攻击者直接将明文空间<code>S</code>告知挑战者，挑战者从中选择两条明文<code>x0,x1</code>，加密<code>x0</code>并将结果<code>y</code>返回给攻击者。攻击者修改<code>y</code>为<code>y'</code>，定义一种二元关系<code>R</code>，例如<code>不相等</code>，挑战者对<code>y'</code>进行解密计算得到结果<code>x'</code>。如果<code>x0</code>与<code>x‘</code>满足关系<code>R</code>的概率小于获等于<code>x1</code>与<code>x‘</code>满足关系<code>R</code>的概率，例如<code>P(x0 != x') &lt; P(x1 != x')</code>，则挑战者胜利。称该系统具有不可延展性。</li>
 </ol>
@@ -119,8 +119,8 @@
      |  --------------&gt; |
      |        y         |x0,x1 &lt;== S
      | &lt;--------------  |y=Enc(k,x0)
-     |       R, y'      |
-y'!=y|  --------------&gt; |x'=Dec(k,y') ==&gt; P(R(x0,x')) &gt; P(R(x1,x')) ?
+     |       R, y&#39;      |
+y&#39;!=y|  --------------&gt; |x&#39;=Dec(k,y&#39;) ==&gt; P(R(x0,x&#39;)) &gt; P(R(x1,x&#39;)) ?
 </code></pre><h2 id="它们的谱系">它们的谱系</h2>
 <p>现在有了三种类型的攻击者，以及密码学家所追求的三个安全目标。于是，有了如下的关系</p>
 <p><img src="/image/security_concepts.png" alt="img"></p>
@@ -141,7 +141,7 @@ y'!=y|  --------------&gt; |x'=Dec(k,y') ==&gt; P(R(x0,x')) &gt; P(R(x1,x')) ?
         <br>
         <a href="/about">Zhān</a>
         &copy;
-        <a href="/">2022 </a>
+        <a href="/">2023 </a>
        
         <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" ><img alt="Creative Commons Licence" style="margin: auto;" src="https://i.creativecommons.org/l/by-nc/4.0/88x31.png" /></a>
 

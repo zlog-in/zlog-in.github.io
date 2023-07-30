@@ -30,7 +30,7 @@
   };
   </script>
 <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-<meta name="generator" content="Hugo 0.92.2" />
+<meta name="generator" content="Hugo 0.115.4">
  
   
   <body>
@@ -98,7 +98,7 @@
 <p>中本聪设计了一种区块结构，其区块头的某个字段就是梅克尔树根。梅克尔树根源自区块里记录的每一笔交易，交易可以理解成转账，例如类似「A转给B某某数额的比特币」的格式。将有着固定格式的一笔转账记录做序列化之后，就能作为输入tx，交由哈希函数运算，得到的结果就是叶子节点的标签<code>L</code>。</p>
 <pre tabindex="0"><code>L = Hash(tx)
 </code></pre><p>而每二个叶子节点的哈希，便可以串联起来作为输入，得到父节点的哈希<code>P</code>。</p>
-<pre tabindex="0"><code>P = Hash(L0+L1)         // '+' means concatenation
+<pre tabindex="0"><code>P = Hash(L0+L1)         // &#39;+&#39; means concatenation
 </code></pre><p>区块可以记录的交易内容长度有限，在中本聪的设计里，严格限制了一个区块内所有交易的总长不超过1MB。而交易的长度又随交易的复杂度而变化，可以简单成理解成越复杂的交易，其内容越长。为了有效利用区块，挣更多的手续费，矿工们总是希望尽可能往区块里面记录更多的交易。</p>
 
 观察梅克尔树的结构，可以发现其总是一棵满二叉树，这意味着叶子节点的数量总为 \(2^n\)。当待记录的交易数量不足 \(2^n\)，又或者等于 \(2^n\) 时所有交易的总长度超过1MB限制，此时区块能够记录的交易数量不能恰好等于一棵满二叉树的叶子数量。这种情况出现时，该怎么计算梅克尔树根呢？
@@ -121,20 +121,20 @@
 <p>在计算梅克尔树根的时候，中本聪选择了SHA256作为每个节点的哈希函数。更准确地说，是二次SHA256。即对输入做两次哈希运算，得到32字节的结果即是节点哈希，二次哈希运算可以抵御潜在的长度扩充攻击(Length Extension Attack)。</p>
 <pre tabindex="0"><code>Hash(tx) = SHA256(SHA256(tx))
 </code></pre><p>当得到根节点以后，区块头就可以用其表示该区块包含的所有交易记录。一个很直觉的问题是，为什么梅克尔树根就能表示所有交易，该如何证明？笔者将在下一篇小文里面解释，如何验证一笔交易确实包含在某棵树梅克尔树下，以及说明为什么梅克尔树是一种高效的数据结构。</p>
-<section class="footnotes" role="doc-endnotes">
+<div class="footnotes" role="doc-endnotes">
 <hr>
 <ol>
-<li id="fn:1" role="doc-endnote">
+<li id="fn:1">
 <p><a href="https://bitcoin.org/bitcoin.pdf">比特币原始论文</a>&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
-<li id="fn:2" role="doc-endnote">
+<li id="fn:2">
 <p><a href="https://patentimages.storage.googleapis.com/69/ab/d9/2ff9f94fada6ea/US4309569.pdf">梅克尔树原始专利文件</a>&#160;<a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
-<li id="fn:3" role="doc-endnote">
+<li id="fn:3">
 <p>本文首发于分布科技Onchain的<a href="https://mp.weixin.qq.com/s/hwewwKHCWkZToy9BVZNJww">公众号</a>上，笔者现将原文贴在自己的博客上以作备份&#160;<a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 </ol>
-</section>
+</div>
 
 
       
@@ -151,7 +151,7 @@
         <br>
         <a href="/about">Zhān</a>
         &copy;
-        <a href="/">2022 </a>
+        <a href="/">2023 </a>
        
         <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" ><img alt="Creative Commons Licence" style="margin: auto;" src="https://i.creativecommons.org/l/by-nc/4.0/88x31.png" /></a>
 
