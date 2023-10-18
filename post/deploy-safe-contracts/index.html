@@ -91,7 +91,7 @@
 <ul>
 <li>A deterministic deployment factory with presigned transaction: <a href="https://github.com/safe-global/safe-singleton-factory">https://github.com/safe-global/safe-singleton-factory</a>. This repo is called <code>Safe Singleton Factory</code>, which is a contract can deploy Safe contracts with deterministic addresses by using <code>create2</code> opcode.</li>
 <li>A serie of Safe contracts to be deployed through the <code>Safe Singleton Factory</code>: <a href="https://github.com/safe-global/safe-contracts">https://github.com/safe-global/safe-contracts</a>. They will act as the components to deploy a Safe multi-sig and provide the functionalities for the Safe multi-sig.</li>
-<li>A repository to publish the addresses of deployed Safe contract on different blockchains: <a href="https://github.com/safe-global/safe-deployments">https://github.com/safe-global/safe-deployments</a>.</li>
+<li>A repository to publish the addresses of deployed Safe contracts on different blockchains: <a href="https://github.com/safe-global/safe-deployments">https://github.com/safe-global/safe-deployments</a>.</li>
 </ul>
 <h2 id="deploy-safe-single-factory">Deploy Safe Single Factory</h2>
 <p>Through a contract which can call <code>create2</code> opcode to deploy contracts, we can deploy a contract with a deterministic address, due to</p>
@@ -141,7 +141,7 @@ to publish a presigned transaction for a given blockchain.</p>
 	&#34;transaction&#34;: &#34;0xf8a58085174876e800830186a08080b853604580600e600039806000f350fe7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe03601600081602082378035828234f58015156039578182fd5b8082525050506014600cf31ba02222222222222222222222222222222222222222222222222222222222222222a02222222222222222222222222222222222222222222222222222222222222222&#34;,
 	&#34;address&#34;: &#34;0x4e59b44847b379578588920ca78fbf26c0b4956c&#34;
 }
-</code></pre><p>Through this presigned transaction, we can deploy the <code>Safe Singleton Factory</code> on the target blockchain with the address = <code>0x4e59b44847b379578588920ca78fbf26c0b4956c</code>. And of course, you should transfer some native token to the signer address <code>0x3fab184622dc19b6109349b94811493bf2a45362</code> and set proper RPC url in <code>.env</code> file before you can submit this transaction.</p>
+</code></pre><p>Through this presigned transaction, we can deploy the <code>Safe Singleton Factory</code> on the target blockchain with the address = <code>0x4e59b...4956c</code>. And of course, you should transfer some native token to the signer address <code>0x3fab1...45362</code> and set proper RPC url in <code>.env</code> file before you can submit this transaction.</p>
 <p>Some RPC provider doesn&rsquo;t support transaction without chain ID included, you need choose a proper one, or you can set a local node to submit the transaction.</p>
 <h2 id="deploy-safe-contracts">Deploy Safe Contracts</h2>
 <p>After the <code>Singleton Factory</code> is deployed on the target blockchain, we can deploy Safe contracts through it. All Safe contracts are included in <a href="https://github.com/safe-global/safe-contracts">this repo</a>, and the version <code>1.3.0</code> is most popular one. You should first checkout to the <code>v1.3.0-libs.0</code> branch, and then run <code>yarn install</code> to install the dependencies.</p>
@@ -171,11 +171,11 @@ Verification status for GnosisSafe: SUCCESS
 <p>Once the ten contracts are deployed on the target blockchain, you should publish the addresses of them on the <a href="https://github.com/safe-global/safe-deployments">Safe Deployments repo</a> through a <a href="https://github.com/safe-global/safe-deployments/pull/292">PR request</a>.</p>
 <p>Becuase there are two ways to deploy the <code>Singleton Factory</code> contract, so you can find there are two different addresses for each Safe contract, such as this <code>ProxyFactory</code> <a href="https://github.com/safe-global/safe-deployments/blob/main/src/assets/v1.3.0/proxy_factory.json">address file</a> due to the deterministica deployment.</p>
 <pre tabindex="0"><code>safe_contract_address = hash(0xFF, singleton_factory_address, salt, bytecode)
-</code></pre><p>Once your PR has been merged into this repo, other projects now can deploy Safe Multisig contracts through these Safe contracts on the your blockchain.</p>
+</code></pre><p>Once your PR has been merged into this repo, other projects now can deploy Safe multi-sig contracts through these Safe contracts on the your blockchain.</p>
 <p>Good luck and happy building!</p>
 <h2 id="summary">Summary</h2>
 <p>In this article, we explained how to deploy Safe contracts on a blockchain. The entry point <code>Signleton Factory</code> contract is most critical part to deploy Safe contracts deterministically on a blockchain. There are two ways to deploy the <code>Singleton Factory</code> contract on a blockchain, one is to request a presigned transaction from Safe team, and the other is to deploy the <code>Singleton Factory</code> contract by yourself. After the <code>Singleton Factory</code> contract is deployed, you can deploy Safe contracts through it. Finally, you should publish the addresses of deployed Safe contracts on the Safe Deployments repo.</p>
-<p>Next article, we will show you how to deploy Safe Multisig contracts on a blockchain through the deployed Safe contracts, and introduce how to interact with Safe Multisig contract to execute onchain actions.</p>
+<p>Next article, we will show you how to deploy Safe multi-sig contracts on a blockchain through the deployed Safe contracts, and introduce how to interact with Safe multi-sig contract to execute onchain actions.</p>
 
 
       
