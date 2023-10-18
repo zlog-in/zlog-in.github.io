@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en-us">
+ 
+
+
+
+
+
+    
+
+  
+<meta charset="utf-8" />
+
+  <title>How to Deploy Safe Contracts - Zlog</title>
+
+
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="stylesheet" href="/css/latex.css" />
+<link rel="stylesheet" href="/css/main.css" />
+<link rel="stylesheet" href="https://latex.now.sh/style.css">
+<script>
+  MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']]
+    },
+    svg: {
+      fontCache: 'global'
+    }
+  };
+  </script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<meta name="generator" content="Hugo 0.115.4">
+ 
+  
+  <body>
+
+
+
+
+
+
+<header>  
+  <nav class="navbar">
+  <div class="nav">
+    
+
+    <ul class="nav-links">
+      
+    </ul>
+  </div>
+</nav>
+  <div class="intro-header">
+    <div class="container">
+      <div class="post-heading">
+        
+          <h1>How to Deploy Safe Contracts</h1>
+          
+        
+
+      </div>
+    </div>
+  </div>
+
+
+</header>
+<div id="content">
+  <div class="container" role="main">
+    <article class="article" class="blog-post">
+      <div class="postmeta">
+        <span class="meta-post">
+  <i class="fa fa-calendar-alt"></i>Oct 9, 2023
+  
+</span>
+      </div>
+      <br>
+      
+    <p>Multi-sig wallets are a great way to secure your funds, they are also a safe way to interact with your smart contract to call some sensitive functions. This post will show you how to deploy Safe contracts to enable multi-sig for a blockchain.</p>
+<p>To deploy a Safe multi-sig contract on a blockchain, several Safe contracts are necessary to be deployed first. They are:</p>
+<ul>
+<li><code>GnosisSafeProxyFactory</code></li>
+<li><code>GnosisSafe</code> and <code>GnosisSafeL2</code></li>
+<li><code>DefaultCallbackHandler</code> and <code>CompatibilityFallbackHandler</code></li>
+<li><code>MultiSend</code> and <code>MultiSendCallOnly</code></li>
+<li><code>CreateCall</code></li>
+<li><code>SignMessageLib</code></li>
+<li><code>SimulateTxAccessor</code></li>
+</ul>
+<h2 id="three-repositories">Three Repositories</h2>
+<p>Safe (privious Gnosis Safe) provides three different repositories to deploy Safe contracts on a blockchains:</p>
+<ul>
+<li>A deterministic deployment factory with presigned transaction: <a href="https://github.com/safe-global/safe-singleton-factory">https://github.com/safe-global/safe-singleton-factory</a>. This repo is called <code>Safe Singleton Factory</code>, which is a contract can deploy Safe contracts with deterministic addresses by using <code>create2</code> opcode.</li>
+<li>A serie of Safe contracts to be deployed through the <code>Safe Singleton Factory</code>: <a href="https://github.com/safe-global/safe-contracts">https://github.com/safe-global/safe-contracts</a>. They will act as the components to deploy a Safe multi-sig and provide the functionalities for the Safe multi-sig.</li>
+<li>A repository to publish the addresses of deployed Safe contract on different blockchains: <a href="https://github.com/safe-global/safe-deployments">https://github.com/safe-global/safe-deployments</a>.</li>
+</ul>
+<h2 id="deploy-safe-single-factory">Deploy Safe Single Factory</h2>
+<p>Through a contract which can call <code>create2</code> opcode to deploy contracts, we can deploy a contract with a deterministic address, due to</p>
+<pre tabindex="0"><code>new_contract_address = hash(0xFF, single_factory_address, salt, bytecode)
+</code></pre><p>That means no matter when the transaction is issued, as long as the singleton factory address and the salt are fixed, the address is only determined by the bytecode of the deployed contract. Therefore, we can deploy the same contract on different blockchains with the same address.</p>
+<p>To ensure that the Safe contracts on different blockchains have the same address, the <code>Safe Singleton Factory</code> is deployed on each blockchain firstly with the same nonce through a normal contract deployment transaction. Then the Safe contracts are deployed through the <code>Safe Singleton Factory</code> by calling <code>create2</code> opcode on each blockchain .</p>
+<p>There are two ways to deployed the <code>Safe Singleton Factory</code> on a blockchain:</p>
+<ul>
+<li>Deploy the <code>Safe Singleton Factory</code> with the help from Safe team, they can issue a transction on each blockchain to deploy the <code>Safe Singleton Factory</code> with the same address (the same nonce and bytecode);</li>
+<li>Deploy the <code>Safe Singleton Factory</code> by yourself. You can deploy the <code>Safe Singleton Factory</code> on a blockchain by using a presigned transaction without chain ID included, which is provided in this repo <a href="https://github.com/Arachnid/deterministic-deployment-proxy">https://github.com/Arachnid/deterministic-deployment-proxy</a>.</li>
+</ul>
+<h3 id="entrance-a-safe-preisgned-transaction">Entrance A: Safe Preisgned Transaction</h3>
+<p>To get a presigned transaction from Safe team to deploy the <code>Safe Singleton Factory</code> on a blockchain, an issue should be opened on the <a href="https://github.com/safe-global/safe-singleton-factory"><code>Safe Singleton Factory</code> repo</a> and provide <a href="https://github.com/safe-global/safe-singleton-factory/issues/216">necessary information</a>
+to publish a presigned transaction for a given blockchain.</p>
+<p>Safe team requires the following information to publish a presigned transaction:</p>
+<ul>
+<li>The blockchain name</li>
+<li>The blockchain ID</li>
+<li>The link to chainlist.org for the blockchain</li>
+<li>RPC url for the blockchain</li>
+<li>Explorer url for the blockchain</li>
+<li>Necessary native token transfer to the signer address <code>0xE1CB04A0fA36DdD16a06ea828007E35e1a3cBC37</code></li>
+</ul>
+<p>The presigned transaction issued by Safe team is obeying EIP-155, which requires the chain ID to be singed within transaction to protect replay attck. The chain ID is the ID of the target blockchain, which can be found on <a href="https://chainlist.org/">chainlist.org</a>.</p>
+<p>Safe team will periodically publish a presigned transaction on the <code>artifacts</code> folder in the <code>Safe Singleton Factory</code> repo for the given blockchain. For example, the presigned transaction for the <code>base</code> blockchain is <a href="https://github.com/safe-global/safe-singleton-factory/tree/main/artifacts/8453">published</a> as</p>
+<pre tabindex="0"><code>{
+	&#34;gasPrice&#34;: 200000000,
+	&#34;gasLimit&#34;: 100000,
+	&#34;signerAddress&#34;: &#34;0xE1CB04A0fA36DdD16a06ea828007E35e1a3cBC37&#34;,
+	&#34;transaction&#34;: &#34;0xf8a680840bebc200830186a08080b853604580600e600039806000f350fe7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe03601600081602082378035828234f58015156039578182fd5b8082525050506014600cf382422ea08dd745c4f66575e8d66550978dd6fd6d7f15236dc7bcc0360cfa2abd090c6a82a06b53e59bc854a90820624342e9aaa6b9fac224f1efe90a8466ce6e03d65c9bb1&#34;,
+	&#34;address&#34;: &#34;0x914d7Fec6aaC8cd542e72Bca78B30650d45643d7&#34;
+}
+</code></pre><p>The presigned transaction can be submitted to deploy the <code>Safe Singleton Factory</code> contract on the target blockchain. The signer of this transaction is <code>0xE1CB04A0fA36DdD16a06ea828007E35e1a3cBC37</code>, and this presigned transaction is always the very first transaction of this account on the target blockchain, that means <code>nonce=0</code>.</p>
+<p>Before you can submit the transaction successfully, amount of native gas token on the target blockchain must be <a href="https://base.blockscout.com/tx/0x31d0baaf99c28f601af83c4e803e49d8852019997a7a1c6a42084934ac38ea2c">transfered</a> to the signer address. Usually, <code>0.001</code> is enough to <a href="https://base.blockscout.com/tx/0x2ab3e1c7074f06af46e9518c10e3b80633bd7c244453609082e851079ce89136">execute</a> this presigned transaction.</p>
+<p>After token transfered, please set a proper RPC url for the target blockchain in the <code>.env</code> file</p>
+<pre tabindex="0"><code>RPC=&#34;an available RPC url for the target blockchain&#34;
+</code></pre><p>And run <code>yarn submit</code> to relay the presigned transaction to the RPC node of the target blockchain. The <code>Safe Singleton Factory</code> contract will be <a href="https://base.blockscout.com/tx/0x2ab3e1c7074f06af46e9518c10e3b80633bd7c244453609082e851079ce89136">deployed</a> on the target blockchain with the same address as other blockchains.</p>
+<p>Bingo, you got the entry point to deploy Safe contracts deterministically on your chain.</p>
+<h3 id="entrance-b-universal-preisgned-transaction">Entrance B: Universal Preisgned Transaction</h3>
+<p>For some reason, the Safe team cannot always respose quickly to the request for deploying the <code>Safe Singleton Factory</code> on a blockchain. In this case, you can deploy the <code>Safe Singleton Factory</code> by yourself, which is called here as <code>Universal Presigned Transaction</code>.</p>
+<p>Before EIP-155, the chain ID is not included in the transaction signature, which means the same transaction can be replayed on different blockchains. This is a security issue, because the transaction on one blockchain can be replayed on another blockchain, which may cause unexpected result, such as stealing token. And the Safe team also decide to sign transaction with chain ID included, but there is an open <code>Singleton Facotry</code> contract can be deployed on different blockchains with the same address</p>
+<p>To do so, we need a presigned transaction without chainID included, which is published on <a href="https://github.com/Arachnid/deterministic-deployment-proxy">this repository</a>. You can create a <code>deployment.json</code> file under the <code>/artifacts/&lt;chainID&gt;/</code> folder and paste the presigned transaction into it. For example, the <code>deployment.json</code> file for the Orderly mainnet is under /artifacts/291/</p>
+<pre tabindex="0"><code>{
+	&#34;gasPrice&#34;: 100,
+	&#34;gasLimit&#34;: 100000,
+	&#34;signerAddress&#34;: &#34;0x3fab184622dc19b6109349b94811493bf2a45362&#34;,
+	&#34;transaction&#34;: &#34;0xf8a58085174876e800830186a08080b853604580600e600039806000f350fe7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe03601600081602082378035828234f58015156039578182fd5b8082525050506014600cf31ba02222222222222222222222222222222222222222222222222222222222222222a02222222222222222222222222222222222222222222222222222222222222222&#34;,
+	&#34;address&#34;: &#34;0x4e59b44847b379578588920ca78fbf26c0b4956c&#34;
+}
+</code></pre><p>Through this presigned transaction, we can deploy the <code>Safe Singleton Factory</code> on the target blockchain with the address = <code>0x4e59b44847b379578588920ca78fbf26c0b4956c</code>. And of course, you should transfer some native token to the signer address <code>0x3fab184622dc19b6109349b94811493bf2a45362</code> and set proper RPC url in <code>.env</code> file before you can submit this transaction.</p>
+<p>Some RPC provider doesn&rsquo;t support transaction without chain ID included, you need choose a proper one, or you can set a local node to submit the transaction.</p>
+<h2 id="deploy-safe-contracts">Deploy Safe Contracts</h2>
+<p>After the <code>Singleton Factory</code> is deployed on the target blockchain, we can deploy Safe contracts through it. All Safe contracts are included in <a href="https://github.com/safe-global/safe-contracts">this repo</a>, and the version <code>1.3.0</code> is most popular one. You should first checkout to the <code>v1.3.0-libs.0</code> branch, and then run <code>yarn install</code> to install the dependencies.</p>
+<p>If you request a presigned transaction from Safe team, the <code>deployment.json</code> file is downloaded automatically into <code>node_modules/@gnosis.pm/safe-singleton-factory/artifacts/&lt;chainID&gt;/</code> folder after <code>yarn install</code>. If you deployed the <code>singleton factory</code> by yourself, you should copy the <code>deployment.json</code> file into the <code>node_modules/@gnosis.pm/safe-singleton-factory/artifacts/&lt;Target chainID&gt;/</code>.</p>
+<p>And set the private key in <code>.evn</code> file and  proper network configuration into <code>network</code> filed of <code>hardhat.config.ts</code>, such as</p>
+<pre tabindex="0"><code>network: {
+	 orderly:{
+      ...sharedNetworkConfig,
+      url: &#34;https://rpc.orderly.network&#34;
+    }
+}
+</code></pre><p>Then, execute the following command to deploy Safe contracts on the target blockchain</p>
+<pre tabindex="0"><code>yarn deploy-all &lt;network&gt;
+</code></pre><p>If you are lucky, you will get the following output</p>
+<pre tabindex="0"><code>Verification status for SimulateTxAccessor: FAILURE
+Verification status for GnosisSafeProxyFactory: SUCCESS
+Verification status for DefaultCallbackHandler: SUCCESS
+Verification status for CompatibilityFallbackHandler: SUCCESS
+Verification status for CreateCall: SUCCESS
+Verification status for MultiSend: FAILURE
+Verification status for MultiSendCallOnly: SUCCESS
+Verification status for SignMessageLib: SUCCESS
+Verification status for GnosisSafeL2: SUCCESS
+Verification status for GnosisSafe: SUCCESS
+</code></pre><p>Now, you can find the deployed Safe contracts on the target blockchain and the addresses are the same as other blockchains, if both <code>Singleton Factory</code> contracts are deployed with the same way (Entrance A or Entrance B).</p>
+<h2 id="publish-safe-contracts">Publish Safe Contracts</h2>
+<p>Once the ten contracts are deployed on the target blockchain, you should publish the addresses of them on the <a href="https://github.com/safe-global/safe-deployments">Safe Deployments repo</a> through a <a href="https://github.com/safe-global/safe-deployments/pull/292">PR request</a>.</p>
+<p>Becuase there are two ways to deploy the <code>Singleton Factory</code> contract, so you can find there are two different addresses for each Safe contract, such as this <code>FactoryProxy</code> <a href="https://github.com/safe-global/safe-deployments/blob/main/src/assets/v1.3.0/gnosis_safe.json">address file</a> due to the deterministica deployment.</p>
+<pre tabindex="0"><code>safe_contract_address = hash(0xFF, singleton_factory_address, salt, bytecode)
+</code></pre><p>Once your PR has been merged into this repo, other projects now can deploy Safe Multisig contracts through these Safe contracts on the your blockchain.</p>
+<p>Good luck and happy building!</p>
+
+
+      
+      
+    
+    </article>
+    
+  </div>
+
+        </div><footer>
+  <div class="container">
+    <p class="credits copyright">
+      <p class="credits theme-by">
+        <br>
+        <a href="/about">Zhān</a>
+        &copy;
+        <a href="/">2023 </a>
+       
+        <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" ><img alt="Creative Commons Licence" style="margin: auto;" src="https://i.creativecommons.org/l/by-nc/4.0/88x31.png" /></a>
+
+      </p>
+  </div>
+</footer></body>
+</html>
