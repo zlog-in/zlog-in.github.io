@@ -173,6 +173,9 @@ Verification status for GnosisSafe: SUCCESS
 <pre tabindex="0"><code>safe_contract_address = hash(0xFF, singleton_factory_address, salt, bytecode)
 </code></pre><p>Once your PR has been merged into this repo, other projects now can deploy Safe Multisig contracts through these Safe contracts on the your blockchain.</p>
 <p>Good luck and happy building!</p>
+<h2 id="summary">Summary</h2>
+<p>In this article, we explained how to deploy Safe contracts on a blockchain. The entry point <code>Signleton Factory</code> contract is most critical part to deploy Safe contracts deterministically on a blockchain. There are two ways to deploy the <code>Singleton Factory</code> contract on a blockchain, one is to request a presigned transaction from Safe team, and the other is to deploy the <code>Singleton Factory</code> contract by yourself. After the <code>Singleton Factory</code> contract is deployed, you can deploy Safe contracts through it. Finally, you should publish the addresses of deployed Safe contracts on the Safe Deployments repo.</p>
+<p>Next article, we will show you how to deploy Safe Multisig contracts on a blockchain through the deployed Safe contracts, and introduce how to interact with Safe Multisig contract to execute onchain actions.</p>
 
 
       
