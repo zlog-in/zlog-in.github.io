@@ -169,7 +169,7 @@ Verification status for GnosisSafe: SUCCESS
 </code></pre><p>Now, you can find the deployed Safe contracts on the target blockchain and the addresses are the same as other blockchains, if both <code>Singleton Factory</code> contracts are deployed with the same way (Entrance A or Entrance B).</p>
 <h2 id="publish-safe-contracts">Publish Safe Contracts</h2>
 <p>Once the ten contracts are deployed on the target blockchain, you should publish the addresses of them on the <a href="https://github.com/safe-global/safe-deployments">Safe Deployments repo</a> through a <a href="https://github.com/safe-global/safe-deployments/pull/292">PR request</a>.</p>
-<p>Becuase there are two ways to deploy the <code>Singleton Factory</code> contract, so you can find there are two different addresses for each Safe contract, such as this <code>FactoryProxy</code> <a href="https://github.com/safe-global/safe-deployments/blob/main/src/assets/v1.3.0/gnosis_safe.json">address file</a> due to the deterministica deployment.</p>
+<p>Becuase there are two ways to deploy the <code>Singleton Factory</code> contract, so you can find there are two different addresses for each Safe contract, such as this <code>ProxyFactory</code> <a href="https://github.com/safe-global/safe-deployments/blob/main/src/assets/v1.3.0/proxy_factory.json">address file</a> due to the deterministica deployment.</p>
 <pre tabindex="0"><code>safe_contract_address = hash(0xFF, singleton_factory_address, salt, bytecode)
 </code></pre><p>Once your PR has been merged into this repo, other projects now can deploy Safe Multisig contracts through these Safe contracts on the your blockchain.</p>
 <p>Good luck and happy building!</p>
