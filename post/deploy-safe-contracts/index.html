@@ -98,7 +98,7 @@
 <pre tabindex="0"><code>new_contract_address = hash(0xFF, single_factory_address, salt, bytecode)
 </code></pre><p>That means no matter when the transaction is issued, as long as the singleton factory address and the salt are fixed, the address is only determined by the bytecode of the deployed contract. Therefore, we can deploy the same contract on different blockchains with the same address.</p>
 <p>To ensure that the Safe contracts on different blockchains have the same address, the <code>Safe Singleton Factory</code> is deployed on each blockchain firstly with the same nonce through a normal contract deployment transaction. Then the Safe contracts are deployed through the <code>Safe Singleton Factory</code> by calling <code>create2</code> opcode on each blockchain .</p>
-<p>There are two ways to deployed the <code>Safe Singleton Factory</code> on a blockchain:</p>
+<p>There are two ways to deploy the <code>Safe Singleton Factory</code> on a blockchain:</p>
 <ul>
 <li>Deploy the <code>Safe Singleton Factory</code> with the help from Safe team, they can issue a transction on each blockchain to deploy the <code>Safe Singleton Factory</code> with the same address (the same nonce and bytecode);</li>
 <li>Deploy the <code>Safe Singleton Factory</code> by yourself. You can deploy the <code>Safe Singleton Factory</code> on a blockchain by using a presigned transaction without chain ID included, which is provided in this repo <a href="https://github.com/Arachnid/deterministic-deployment-proxy">https://github.com/Arachnid/deterministic-deployment-proxy</a>.</li>
@@ -166,7 +166,57 @@ Verification status for MultiSendCallOnly: SUCCESS
 Verification status for SignMessageLib: SUCCESS
 Verification status for GnosisSafeL2: SUCCESS
 Verification status for GnosisSafe: SUCCESS
-</code></pre><p>Now, you can find the deployed Safe contracts on the target blockchain and the addresses are the same as other blockchains, if both <code>Singleton Factory</code> contracts are deployed with the same way (Entrance A or Entrance B).</p>
+</code></pre><p>Now, you can find the deployed Safe contracts on the target blockchain and the addresses are the same as other blockchains, if both <code>Singleton Factory</code> contracts are deployed with the same way (Entrance A or Entrance B). For entrance B, the addresses are listed here below:</p>
+<table>
+<thead>
+<tr>
+<th>Contract Name</th>
+<th>Contract Address</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>GnosisSafeProxyFactory</code></td>
+<td><code>0xa6B71E26C5e0845f74c812102Ca7114b6a896AB2</code></td>
+</tr>
+<tr>
+<td><code>GnosisSafe</code></td>
+<td><code>0xd9Db270c1B5E3Bd161E8c8503c55cEABeE709552</code></td>
+</tr>
+<tr>
+<td><code>GnosisSafeL2</code></td>
+<td><code>0x3E5c63644E683549055b9Be8653de26E0B4CD36E</code></td>
+</tr>
+<tr>
+<td><code>DefaultCallbackHandler</code></td>
+<td><code>0x1AC114C2099aFAf5261731655Dc6c306bFcd4Db</code></td>
+</tr>
+<tr>
+<td><code>CompatibilityFallbackHandler</code></td>
+<td><code>0xf48f2B2d2a534e402487b3ee7C18c33Aec0Fe5e4</code></td>
+</tr>
+<tr>
+<td><code>MultiSend</code></td>
+<td><code>0xA238CBeb142c10Ef7Ad8442C6D1f9E89e07e7761</code></td>
+</tr>
+<tr>
+<td><code>MultiSendCallOnly</code></td>
+<td><code>0x40A2aCCbd92BCA938b02010E17A5b8929b49130D</code></td>
+</tr>
+<tr>
+<td><code>CreateCall</code></td>
+<td><code>0x7cbB62EaA69F79e6873cD1ecB2392971036cFAa4</code></td>
+</tr>
+<tr>
+<td><code>SignMessageLib</code></td>
+<td><code>0xA65387F16B013cf2Af4605Ad8aA5ec25a2cbA3a2</code></td>
+</tr>
+<tr>
+<td><code>SimulateTxAccessor</code></td>
+<td><code>0x59AD6735bCd8152B84860Cb256dD9e96b85F69Da</code></td>
+</tr>
+</tbody>
+</table>
 <h2 id="publish-safe-contracts">Publish Safe Contracts</h2>
 <p>Once the ten contracts are deployed on the target blockchain, you should publish the addresses of them on the <a href="https://github.com/safe-global/safe-deployments">Safe Deployments repo</a> through a <a href="https://github.com/safe-global/safe-deployments/pull/292">PR request</a>.</p>
 <p>Becuase there are two ways to deploy the <code>Singleton Factory</code> contract, so you can find there are two different addresses for each Safe contract, such as this <code>ProxyFactory</code> <a href="https://github.com/safe-global/safe-deployments/blob/main/src/assets/v1.3.0/proxy_factory.json">address file</a> due to the deterministica deployment.</p>
