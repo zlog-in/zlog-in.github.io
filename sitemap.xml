@@ -3,12 +3,15 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>/</loc>
-    <lastmod>2023-10-09T20:29:14+02:00</lastmod>
+    <lastmod>2024-01-25T10:35:35+01:00</lastmod>
   </url><url>
-    <loc>/post/deploy-safe-contracts/</loc>
-    <lastmod>2023-10-09T20:29:14+02:00</lastmod>
+    <loc>/post/eip712-message-usage/</loc>
+    <lastmod>2024-01-25T10:35:35+01:00</lastmod>
   </url><url>
     <loc>/post/</loc>
+    <lastmod>2024-01-25T10:35:35+01:00</lastmod>
+  </url><url>
+    <loc>/post/deploy-safe-contracts/</loc>
     <lastmod>2023-10-09T20:29:14+02:00</lastmod>
   </url><url>
     <loc>/post/cat-to-germany/</loc>

@@ -6,8 +6,15 @@
     <description>Recent content in Posts on Zlog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 09 Oct 2023 20:29:14 +0200</lastBuildDate>
+    <lastBuildDate>Thu, 25 Jan 2024 10:35:35 +0100</lastBuildDate>
     <atom:link href="/post/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>EIP-712 Message: Orderly Usage</title>
+      <link>/post/eip712-message-usage/</link>
+      <pubDate>Thu, 25 Jan 2024 10:35:35 +0100</pubDate>
+      <guid>/post/eip712-message-usage/</guid>
+      <description></description>
+    </item>
     <item>
       <title>How to Deploy Safe Contracts</title>
       <link>/post/deploy-safe-contracts/</link>

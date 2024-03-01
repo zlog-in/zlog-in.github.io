@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en-us">
+ 
+
+
+
+
+
+    
+
+  
+<meta charset="utf-8" />
+
+  <title>EIP-712 Message: Orderly Usage - Zlog</title>
+
+
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="stylesheet" href="/css/latex.css" />
+<link rel="stylesheet" href="/css/main.css" />
+<link rel="stylesheet" href="https://latex.now.sh/style.css">
+<script>
+  MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']]
+    },
+    svg: {
+      fontCache: 'global'
+    }
+  };
+  </script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<meta name="generator" content="Hugo 0.122.0">
+ 
+  
+  <body>
+
+
+
+
+
+
+<header>  
+  <nav class="navbar">
+  <div class="nav">
+    
+
+    <ul class="nav-links">
+      
+    </ul>
+  </div>
+</nav>
+  <div class="intro-header">
+    <div class="container">
+      <div class="post-heading">
+        
+          <h1>EIP-712 Message: Orderly Usage</h1>
+          
+        
+
+      </div>
+    </div>
+  </div>
+
+
+</header>
+<div id="content">
+  <div class="container" role="main">
+    <article class="article" class="blog-post">
+      <div class="postmeta">
+        <span class="meta-post">
+  <i class="fa fa-calendar-alt"></i>Jan 25, 2024
+  
+</span>
+      </div>
+      <br>
+      
+    <p>EVM-capitable chains obey the same rules for cryptographic computations, such as hash functions and digital signatures. The <a href="https://eips.ethereum.org/EIPS/eip-712">EIP-712</a> message is a standard for signing typed data, which is widely used in the Ethereum ecosystem. This article will introduce the usage of EIP-712 message for Orderly Network.</p>
+<h2 id="eip-712-types-definition">EIP-712 Types Definition</h2>
+<p>Unlike the transaction signatures, which are verified onchain to validate the transaction, the EIP-712 typed data is used to sign offchain messages. The typed data is a JSON object that describes the data structure to be signed. The typed formatted message is signed by the user&rsquo;s private key, and the signature is then verified either by the contract or the offchain component to authenticate the signer&rsquo;s identity.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;EIP712Domain&#34;</span><span style="color:#f92672">:</span> [
+</span></span><span style="display:flex;"><span>            { <span style="color:#a6e22e">name</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;name&#34;</span>, <span style="color:#a6e22e">type</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;string&#34;</span> },
+</span></span><span style="display:flex;"><span>            { <span style="color:#a6e22e">name</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;version&#34;</span>, <span style="color:#a6e22e">type</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;string&#34;</span> },
+</span></span><span style="display:flex;"><span>            { <span style="color:#a6e22e">name</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;chainId&#34;</span>, <span style="color:#a6e22e">type</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;uint256&#34;</span> },
+</span></span><span style="display:flex;"><span>            { <span style="color:#a6e22e">name</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;verifyingContract&#34;</span>, <span style="color:#a6e22e">type</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;address&#34;</span> },
+</span></span><span style="display:flex;"><span>        ],
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;Registration&#34;</span><span style="color:#f92672">:</span> [
+</span></span><span style="display:flex;"><span>            {<span style="color:#a6e22e">name</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;brokerId&#34;</span>, <span style="color:#a6e22e">type</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;string&#34;</span>},
+</span></span><span style="display:flex;"><span>            {<span style="color:#a6e22e">name</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;chainId&#34;</span>, <span style="color:#a6e22e">type</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;uint256&#34;</span>},
+</span></span><span style="display:flex;"><span>            {<span style="color:#a6e22e">name</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;timestamp&#34;</span>, <span style="color:#a6e22e">type</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;uint64&#34;</span>},
+</span></span><span style="display:flex;"><span>            {<span style="color:#a6e22e">name</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;registrationNonce&#34;</span>, <span style="color:#a6e22e">type</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;uint256&#34;</span>}
+</span></span><span style="display:flex;"><span>        ],
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Shown above is an example of the EIP-712 types definition. The <code>EIP712Domain</code> is a common structure that is shared by all EIP-712 typed data structure.</p>
+<ul>
+<li><code>name</code> is the name of the domain, such as <code>Orderly Network</code>.</li>
+<li><code>version</code> is the version of the typed data structure, such as <code>1.0</code>.</li>
+<li><code>chainId</code> is the chain id of linked network, such as <code>1</code> for Ethereum mainnet.</li>
+<li><code>verifyingContract</code> is the address of the contract that will verify the signature, if the signature is verified offchain, the default value is <code>0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC</code>.</li>
+</ul>
+<p>The <code>Registration</code> is a specific message type that is used to register an account under a broker on the Orderly Network.</p>
+<ul>
+<li><code>brokerId</code> is used to identify the broker.</li>
+<li><code>chainId</code> is the chain id of the linked network.</li>
+<li><code>timestamp</code> is used to detect an expired  registration message by the verifying service.</li>
+<li><code>registrationNonce</code> is used to prevent DDoS attack, working like an access token.</li>
+</ul>
+<h2 id="eip-712-message-structure">EIP-712 Message Structure</h2>
+<p>Before signing the message, the message should be formatted according to the defined EIP-712 type message. A complete EIP-712 typed message is a JSON object that contains the following fields:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">eip712Message</span> <span style="color:#f92672">=</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;domain&#34;</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;name&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;Orderly Network&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;version&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;1.0&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;chainId&#34;</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">4460</span>,   <span style="color:#75715e">// the chainId of the connected network by Metamask
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#e6db74">&#34;verifyingContract&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC&#34;</span>  <span style="color:#75715e">// to indicate the signanature is verified offchain
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        },
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;message&#34;</span><span style="color:#f92672">:</span>{
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;brokerId&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;woofi_pro&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;chainId&#34;</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">4460</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;timestamp&#34;</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">1685973017064</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;registrationNonce&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;983740230482834645859323&#34;</span>
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;primaryType&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;Registration&#34;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;types&#34;</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;EIP712Domain&#34;</span><span style="color:#f92672">:</span> [
+</span></span><span style="display:flex;"><span>                { <span style="color:#a6e22e">name</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;name&#34;</span>, <span style="color:#a6e22e">type</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;string&#34;</span> },
+</span></span><span style="display:flex;"><span>                { <span style="color:#a6e22e">name</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;version&#34;</span>, <span style="color:#a6e22e">type</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;string&#34;</span> },
+</span></span><span style="display:flex;"><span>                { <span style="color:#a6e22e">name</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;chainId&#34;</span>, <span style="color:#a6e22e">type</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;uint256&#34;</span> },
+</span></span><span style="display:flex;"><span>                { <span style="color:#a6e22e">name</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;verifyingContract&#34;</span>, <span style="color:#a6e22e">type</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;address&#34;</span> },
+</span></span><span style="display:flex;"><span>            ],
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;Registration&#34;</span><span style="color:#f92672">:</span> [
+</span></span><span style="display:flex;"><span>                {<span style="color:#a6e22e">name</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;brokerId&#34;</span>, <span style="color:#a6e22e">type</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;string&#34;</span>},
+</span></span><span style="display:flex;"><span>                {<span style="color:#a6e22e">name</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;chainId&#34;</span>, <span style="color:#a6e22e">type</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;uint256&#34;</span>},
+</span></span><span style="display:flex;"><span>                {<span style="color:#a6e22e">name</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;timestamp&#34;</span>, <span style="color:#a6e22e">type</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;uint64&#34;</span>},
+</span></span><span style="display:flex;"><span>                {<span style="color:#a6e22e">name</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;registrationNonce&#34;</span>, <span style="color:#a6e22e">type</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;uint256&#34;</span>}
+</span></span><span style="display:flex;"><span>            ]
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }    
+</span></span></code></pre></div><ul>
+<li>The field <code>types</code> is the core of the EIP-712 message, which defines the types of the message.</li>
+<li>The <code>primaryType</code> is the name of the message type, which is used to identify the message type in the signature.</li>
+<li><code>domain</code> and <code>message</code> are the fields to contain the data for <code>EIP712Domain</code> type and defined <code>primaryType</code> type, here is the <code>Registration</code> type.</li>
+</ul>
+<h2 id="eip-712-message-signing">EIP-712 Message Signing</h2>
+<p>The message is signed by the user&rsquo;s private key, and the signature is then verified by the contract or the offchain component to authenticate the signer&rsquo;s identity. There are several tools to provide the signing function for EIP-712 message, such as <code>ethers.js</code> and <code>web3.js</code>. Here is an example of using <code>ethers.js</code> to sign the message:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">wallet</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">ethers</span>.<span style="color:#a6e22e">Wallet</span>(<span style="color:#a6e22e">privateKey</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">domain</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">eip712Message</span>[<span style="color:#e6db74">&#39;domain&#39;</span>];
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">message</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">eip712Message</span>[<span style="color:#e6db74">&#39;message&#39;</span>];
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">types</span> <span style="color:#f92672">=</span> {
+</span></span><span style="display:flex;"><span>    [<span style="color:#a6e22e">eip712Message</span>[<span style="color:#e6db74">&#34;primaryType&#34;</span>]]<span style="color:#f92672">:</span> <span style="color:#a6e22e">eip712Message</span>[<span style="color:#e6db74">&#39;types&#39;</span>][<span style="color:#a6e22e">eip712Message</span>[<span style="color:#e6db74">&#34;primaryType&#34;</span>]]
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// the above types is equivalent to the following content
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">// const types = {
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//   Registration: [
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//     { name: &#39;brokerId&#39;, type: &#39;string&#39; },
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//     { name: &#39;chainId&#39;, type: &#39;uint256&#39; },
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//     { name: &#39;timestamp&#39;, type: &#39;uint64&#39; },
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//     { name: &#39;registrationNonce&#39;, type: &#39;uint256&#39; }
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//   ]
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">// }
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">signature</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">wallet</span>.<span style="color:#a6e22e">signTypedData</span>(<span style="color:#a6e22e">domain</span>, <span style="color:#a6e22e">types</span>, <span style="color:#a6e22e">message</span>);
+</span></span></code></pre></div><p>Of course, injected wallets like Metamask also provide the signing function for EIP-712 message. The user can sign the message with the private key of the connected account.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">method</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;eth_signTypedData_v4&#39;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">params</span> <span style="color:#f92672">=</span> [window.<span style="color:#a6e22e">userWalletAddress</span>, <span style="color:#a6e22e">JSON</span>.<span style="color:#a6e22e">stringify</span>(<span style="color:#a6e22e">eip712Message</span>)];
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">signature</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">await</span> window.<span style="color:#a6e22e">ethereum</span>.<span style="color:#a6e22e">request</span>({ <span style="color:#a6e22e">method</span>, <span style="color:#a6e22e">params</span> });
+</span></span></code></pre></div><h2 id="eip-712-message-verification">EIP-712 Message Verification</h2>
+<p>The signature of the EIP-712 message can be verified by the contract or the offchain component. If the signature is verified offchain, the <code>verifyingContract</code> field in the <code>domain</code> object should be set to <code>0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC</code>. The offchain component can use the <code>ethers.js</code> library to verify the signature.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">domain</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">eip712Message</span>[<span style="color:#e6db74">&#39;domain&#39;</span>];
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">message</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">eip712Message</span>[<span style="color:#e6db74">&#39;message&#39;</span>];
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">types</span> <span style="color:#f92672">=</span> {
+</span></span><span style="display:flex;"><span>    [<span style="color:#a6e22e">eip712Message</span>[<span style="color:#e6db74">&#34;primaryType&#34;</span>]]<span style="color:#f92672">:</span> <span style="color:#a6e22e">eip712Message</span>[<span style="color:#e6db74">&#39;types&#39;</span>][<span style="color:#a6e22e">eip712Message</span>[<span style="color:#e6db74">&#34;primaryType&#34;</span>]]
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">recoveredAddress</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">ethers</span>.<span style="color:#a6e22e">verifyTypedData</span>(<span style="color:#a6e22e">domain</span>, <span style="color:#a6e22e">types</span>, <span style="color:#a6e22e">message</span>, <span style="color:#a6e22e">signature</span>);
+</span></span></code></pre></div><p>If the signature is supposed to be verified onchain, the <code>verifyingContract</code> field in the <code>domain</code> object should be set to the address of the contract that will execute the verification. The contract can use the <code>ecrecover</code> function to verify the signature.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-solidity" data-lang="solidity"><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">RegistrationData</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">string</span> brokerId;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">uint256</span> chainId;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">uint64</span> timestamp;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">uint256</span> registrationNonce;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">uint8</span> v;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">bytes32</span> r;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">bytes32</span> s;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">address</span> signer;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">function</span> <span style="color:#a6e22e">verifyRegitraion</span>(RegistrationData <span style="color:#66d9ef">memory</span> data) <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">view</span> <span style="color:#66d9ef">return</span> (<span style="color:#66d9ef">bool</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">bytes32</span> typeDomainHash <span style="color:#f92672">=</span> keccak256(<span style="color:#e6db74">&#34;EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">bytes32</span> eip712DomainHash <span style="color:#f92672">=</span> keccak256(abi.encode(typeHash, keccak256(<span style="color:#66d9ef">bytes</span>(<span style="color:#e6db74">&#34;Orderly Network&#34;</span>)), keccak256(<span style="color:#66d9ef">bytes</span>(<span style="color:#e6db74">&#34;1.0&#34;</span>)), block.chainId, <span style="color:#66d9ef">address</span>(this)));
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">bytes32</span> typeStrucHash <span style="color:#f92672">=</span> keccak256(
+</span></span><span style="display:flex;"><span>                abi.encode(
+</span></span><span style="display:flex;"><span>                    keccak256(<span style="color:#e6db74">&#34;Registration(string brokerId,uint256 chainId,uint64 timestamp,uint256 registrationNonce,uint8 v,bytes32 r,bytes32 s,address signer)&#34;</span>),
+</span></span><span style="display:flex;"><span>                    keccak256(abi.encodePacked(data.brokerId)),
+</span></span><span style="display:flex;"><span>                    data.chainId,
+</span></span><span style="display:flex;"><span>                    data.timestamp,
+</span></span><span style="display:flex;"><span>                    data.registrationNonce
+</span></span><span style="display:flex;"><span>                )
+</span></span><span style="display:flex;"><span>            );
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">bytes32</span> hash <span style="color:#f92672">=</span> keccak256(abi.encodePacked(<span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\x19\x01</span><span style="color:#e6db74">&#34;</span>, eip712DomainHash, hashStruct));
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> ECDSA.recover(hash, data.v, data.r, data.s) <span style="color:#f92672">==</span> signer;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="conclusion">Conclusion</h2>
+<p>In this article, the usage of EIP-712 message is explained by giveing an example of registering an account on Orderly Network. The EIP-712 message is a standard for signing typed data, which is widely used in the Ethereum ecosystem. The EIP-712 message is used to sign offchain messages, and the signature is then verified either by the contract or the offchain component to authenticate the signer&rsquo;s identity. The EIP-712 message is a powerful tool for the offchain component to verify the user&rsquo;s identity and the integrity of the message.</p>
+
+
+      
+      
+    
+    </article>
+    
+  </div>
+
+        </div><footer>
+  <div class="container">
+    <p class="credits copyright">
+      <p class="credits theme-by">
+        <br>
+        <a href="/about">Zhān</a>
+        &copy;
+        <a href="/">2024 </a>
+       
+        <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" ><img alt="Creative Commons Licence" style="margin: auto;" src="https://i.creativecommons.org/l/by-nc/4.0/88x31.png" /></a>
+
+      </p>
+  </div>
+</footer></body>
+</html>
