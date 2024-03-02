@@ -194,7 +194,7 @@ function verifyRegitraion(RegistrationData memory data) public view return (bool
 
     bytes32 typeStrucHash = keccak256(
                 abi.encode(
-                    keccak256(&#34;Registration(string brokerId,uint256 chainId,uint64 timestamp,uint256 registrationNonce,uint8 v,bytes32 r,bytes32 s,address signer)&#34;),
+                    keccak256(&#34;Registration(string brokerId,uint256 chainId,uint64 timestamp,uint256 registrationNonce)&#34;),
                     keccak256(abi.encodePacked(data.brokerId)),
                     data.chainId,
                     data.timestamp,
