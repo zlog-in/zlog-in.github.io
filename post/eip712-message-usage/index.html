@@ -75,7 +75,7 @@
       </div>
       <br>
       
-    <p>EVM-capitable chains obey the same rules for cryptographic computations, such as hash functions and digital signatures. The <a href="https://eips.ethereum.org/EIPS/eip-712">EIP-712</a> message is a standard for signing typed data, which is widely used in the Ethereum ecosystem. This article will introduce the usage of EIP-712 message for Orderly Network.</p>
+    <p>EVM-compatible chains obey the same rules for cryptographic computations, such as hash functions and digital signatures. The <a href="https://eips.ethereum.org/EIPS/eip-712">EIP-712</a> message is a standard for signing typed data, which is widely used in the Ethereum ecosystem. This article will introduce the usage of EIP-712 message for Orderly Network.</p>
 <h2 id="eip-712-types-definition">EIP-712 Types Definition</h2>
 <p>Unlike the transaction signatures, which are verified onchain to validate the transaction, the EIP-712 typed data is used to sign offchain messages. The typed data is a JSON object that describes the data structure to be signed. The typed formatted message is signed by the user&rsquo;s private key, and the signature is then verified either by the contract or the offchain component to authenticate the signer&rsquo;s identity.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span>{
