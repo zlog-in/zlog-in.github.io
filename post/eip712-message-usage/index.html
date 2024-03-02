@@ -189,9 +189,7 @@
 
 function verifyRegitraion(RegistrationData memory data) public view return (bool) {
     bytes32 typeDomainHash = keccak256(&#34;EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)&#34;);
-
     bytes32 eip712DomainHash = keccak256(abi.encode(typeHash, keccak256(bytes(&#34;Orderly Network&#34;)), keccak256(bytes(&#34;1.0&#34;)), block.chainId, address(this)));
-
     bytes32 typeStructHash = keccak256(
                 abi.encode(
                     keccak256(&#34;Registration(string brokerId,uint256 chainId,uint64 timestamp,uint256 registrationNonce)&#34;),
