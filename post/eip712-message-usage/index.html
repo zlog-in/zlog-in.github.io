@@ -176,36 +176,35 @@
 </span></span><span style="display:flex;"><span>};
 </span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">recoveredAddress</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">ethers</span>.<span style="color:#a6e22e">verifyTypedData</span>(<span style="color:#a6e22e">domain</span>, <span style="color:#a6e22e">types</span>, <span style="color:#a6e22e">message</span>, <span style="color:#a6e22e">signature</span>);
 </span></span></code></pre></div><p>If the signature is supposed to be verified onchain, the <code>verifyingContract</code> field in the <code>domain</code> object should be set to the address of the contract that will execute the verification. The contract can use the <code>ecrecover</code> function to verify the signature.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-solidity" data-lang="solidity"><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">RegistrationData</span> {
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">string</span> brokerId;
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">uint256</span> chainId;
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">uint64</span> timestamp;
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">uint256</span> registrationNonce;
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">uint8</span> v;
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">bytes32</span> r;
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">bytes32</span> s;
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">address</span> signer;
-</span></span><span style="display:flex;"><span>}
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">function</span> <span style="color:#a6e22e">verifyRegitraion</span>(RegistrationData <span style="color:#66d9ef">memory</span> data) <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">view</span> <span style="color:#66d9ef">return</span> (<span style="color:#66d9ef">bool</span>) {
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">bytes32</span> typeDomainHash <span style="color:#f92672">=</span> keccak256(<span style="color:#e6db74">&#34;EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)&#34;</span>);
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">bytes32</span> eip712DomainHash <span style="color:#f92672">=</span> keccak256(abi.encode(typeHash, keccak256(<span style="color:#66d9ef">bytes</span>(<span style="color:#e6db74">&#34;Orderly Network&#34;</span>)), keccak256(<span style="color:#66d9ef">bytes</span>(<span style="color:#e6db74">&#34;1.0&#34;</span>)), block.chainId, <span style="color:#66d9ef">address</span>(this)));
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">bytes32</span> typeStrucHash <span style="color:#f92672">=</span> keccak256(
-</span></span><span style="display:flex;"><span>                abi.encode(
-</span></span><span style="display:flex;"><span>                    keccak256(<span style="color:#e6db74">&#34;Registration(string brokerId,uint256 chainId,uint64 timestamp,uint256 registrationNonce,uint8 v,bytes32 r,bytes32 s,address signer)&#34;</span>),
-</span></span><span style="display:flex;"><span>                    keccak256(abi.encodePacked(data.brokerId)),
-</span></span><span style="display:flex;"><span>                    data.chainId,
-</span></span><span style="display:flex;"><span>                    data.timestamp,
-</span></span><span style="display:flex;"><span>                    data.registrationNonce
-</span></span><span style="display:flex;"><span>                )
-</span></span><span style="display:flex;"><span>            );
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">bytes32</span> hash <span style="color:#f92672">=</span> keccak256(abi.encodePacked(<span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\x19\x01</span><span style="color:#e6db74">&#34;</span>, eip712DomainHash, hashStruct));
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> ECDSA.recover(hash, data.v, data.r, data.s) <span style="color:#f92672">==</span> signer;
-</span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><h2 id="conclusion">Conclusion</h2>
+<pre tabindex="0"><code>struct RegistrationData {
+    string brokerId;
+    uint256 chainId;
+    uint64 timestamp;
+    uint256 registrationNonce;
+    uint8 v;
+    bytes32 r;
+    bytes32 s;
+    address signer;
+}
+
+function verifyRegitraion(RegistrationData memory data) public view return (bool) {
+    bytes32 typeDomainHash = keccak256(&#34;EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)&#34;);
+
+    bytes32 eip712DomainHash = keccak256(abi.encode(typeHash, keccak256(bytes(&#34;Orderly Network&#34;)), keccak256(bytes(&#34;1.0&#34;)), block.chainId, address(this)));
+
+    bytes32 typeStrucHash = keccak256(
+                abi.encode(
+                    keccak256(&#34;Registration(string brokerId,uint256 chainId,uint64 timestamp,uint256 registrationNonce,uint8 v,bytes32 r,bytes32 s,address signer)&#34;),
+                    keccak256(abi.encodePacked(data.brokerId)),
+                    data.chainId,
+                    data.timestamp,
+                    data.registrationNonce
+                )
+            );
+    bytes32 hash = keccak256(abi.encodePacked(&#34;\x19\x01&#34;, eip712DomainHash, hashStruct));
+    return ECDSA.recover(hash, data.v, data.r, data.s) == signer;
+}
+</code></pre><h2 id="conclusion">Conclusion</h2>
 <p>In this article, the usage of EIP-712 message is explained by giveing an example of registering an account on Orderly Network. The EIP-712 message is a standard for signing typed data, which is widely used in the Ethereum ecosystem. The EIP-712 message is used to sign offchain messages, and the signature is then verified either by the contract or the offchain component to authenticate the signer&rsquo;s identity. The EIP-712 message is a powerful tool for the offchain component to verify the user&rsquo;s identity and the integrity of the message.</p>
 
 
