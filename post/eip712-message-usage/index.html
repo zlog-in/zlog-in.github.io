@@ -163,6 +163,9 @@
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
 </span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">signature</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">wallet</span>.<span style="color:#a6e22e">signTypedData</span>(<span style="color:#a6e22e">domain</span>, <span style="color:#a6e22e">types</span>, <span style="color:#a6e22e">message</span>);
 </span></span></code></pre></div><p>Of course, injected wallets like Metamask also provide the signing function for EIP-712 message. The user can sign the message with the private key of the connected account.</p>
+<blockquote>
+<p>To test more signing functionalities, you can try this <a href="https://metamask.github.io/test-dapp/#signTypedDataV4">demo page</a> provided by Metamask.</p>
+</blockquote>
 <p><img src="/image/712registration.png" alt="img"></p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">method</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;eth_signTypedData_v4&#39;</span>;
 </span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">params</span> <span style="color:#f92672">=</span> [window.<span style="color:#a6e22e">userWalletAddress</span>, <span style="color:#a6e22e">JSON</span>.<span style="color:#a6e22e">stringify</span>(<span style="color:#a6e22e">eip712Message</span>)];
@@ -220,7 +223,7 @@ function verifyRegitraion(RegistrationData memory data) public view return (bool
         <br>
         <a href="/about">Zhān</a>
         &copy;
-        <a href="/">2024 </a>
+        <a href="/">2025 </a>
        
         <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" ><img alt="Creative Commons Licence" style="margin: auto;" src="https://i.creativecommons.org/l/by-nc/4.0/88x31.png" /></a>
 
