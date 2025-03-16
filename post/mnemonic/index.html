@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en-us">
+ 
+
+
+
+
+
+    
+
+  
+<meta charset="utf-8" />
+
+  <title>什么是助记词? - Zlog</title>
+
+
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="stylesheet" href="/css/latex.css" />
+<link rel="stylesheet" href="/css/main.css" />
+<link rel="stylesheet" href="https://latex.now.sh/style.css">
+<script>
+  MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']]
+    },
+    svg: {
+      fontCache: 'global'
+    }
+  };
+  </script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<meta name="generator" content="Hugo 0.122.0">
+ 
+  
+  <body>
+
+
+
+
+
+
+<header>  
+  <nav class="navbar">
+  <div class="nav">
+    
+
+    <ul class="nav-links">
+      
+    </ul>
+  </div>
+</nav>
+  <div class="intro-header">
+    <div class="container">
+      <div class="post-heading">
+        
+          <h1>什么是助记词?</h1>
+          
+        
+
+      </div>
+    </div>
+  </div>
+
+
+</header>
+<div id="content">
+  <div class="container" role="main">
+    <article class="article" class="blog-post">
+      <div class="postmeta">
+        <span class="meta-post">
+  <i class="fa fa-calendar-alt"></i>Mar 9, 2025
+  
+</span>
+      </div>
+      <br>
+      
+    <p>助记词（Mnemonic）是一种编码方式，通过将随机生成的【比特流】编码为【单词序列】，方便人类记忆。</p>
+<p>举个例子，这是一份随机生成的助记词序列 (‼️千万别用作主网私钥‼️)</p>
+<pre tabindex="0"><code>churn hire action decline avocado banner host kangaroo chat coffee thumb muscle brass ladder urban reform window jar poet letter artwork fiscal pony present
+</code></pre><p>由算法通过采样随机熵而生成的私钥，是一串形如 <code>01010101...101010</code> 的比特流。用户在生成私钥时，可以指定私钥长度，通常有 128 位、256 位、乃至 512 等。</p>
+<p>在其他条件相同的情况下，私钥长度越长，则密钥被暴力破解的难度越大，也意味着安全性越高。目前主流的比特币钱包，默认的私钥长度为256位。</p>
+<p>人类几乎不可能长久地记忆长达 256 位的比特流，即使是借助特定编码格式，例如 Base58，也很难做到。</p>
+<p>因此，助记词将比特流编码为单词序列，方便人类记忆。</p>
+<p>以下，笔者将介绍助记词的生成过程。</p>
+<p>密钥生成算法在生成私钥时，需要外界提供某种随机性来源，以此来作为输入，保证私钥的随机性。描述这种随机性强弱的参数，被称为<strong>熵</strong> （Entropy，缩写 <code>ENT</code>）。熵越大，随机性越强。在本文中，熵是用户指定的私钥长度。</p>
+<p>假设用户指定熵为 <code>ENT</code>，则密钥生成算法会生成一个长度为 <code>ENT</code> 比特的随机比特流，称之为私钥 （SecretKey，缩写 <code>SK</code>）。定义私钥的<strong>校验和</strong>（Checksum，缩写 <code>CS</code>）为私钥的 SHA256 哈希值的前 <code>ENT/32</code> 比特。</p>
+<p>将私钥和校验和拼接，得到一个更长的比特流，其长度为 <code>ENT + CS</code>。</p>
+<p>准备一份常见单词表，其内容是 2048 (2^11) 个常见单词，并指定每个单词的索引（Index: <code>0000000000000000</code> - <code>1111111111111111</code>）。</p>
+<p>将比特流按每 <strong>11</strong> 比特进行小组划分，并根据每个小组的索引值，从常见单词表中找到对应的单词。</p>
+<p>将所有单词拼接起来，成为助记词序列。</p>
+<p>至此，我们得到了一份便于人类记忆的助记词。</p>
+<p>最后，总结相关公式：</p>
+<pre tabindex="0"><code>CS = ENT / 32
+MS = (ENT + CS) / 11
+
+|  ENT  | CS | ENT+CS |  MS  |
++-------+----+--------+------+
+|  128  |  4 |   132  |  12  |
+|  160  |  5 |   165  |  15  |
+|  192  |  6 |   198  |  18  |
+|  224  |  7 |   231  |  21  |
+|  256  |  8 |   264  |  24  |
+|  512  | 16 |   528  |  48  |
+</code></pre><p>注意：在区实际应用中，助记词并不严格等于账号/地址的私钥，而被称之为主私钥 （Master Key）。然后，通过一种派生规则，推导出一系列子私钥，作为真实的链上ID。</p>
+<p>这里有一份 <a href="/pdf/bip39_wordlist.pdf">A4</a> 标准打印的单词表，小小一页纸张，便囊括了所有区块链的财富密码。但你无从破解，这便是密码学的力量。</p>
+<p>一些有用的资源：</p>
+<ul>
+<li><a href="https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki">BIP39 文档</a></li>
+<li><a href="https://github.com/bitcoin/bips/blob/master/bip-0039/bip-0039-wordlists.md">BIP39 单词表</a></li>
+<li><a href="https://particl.github.io/bip39/bip39-standalone.html#english">助记词在线工具</a></li>
+</ul>
+
+
+      
+      
+      <div class="post-comment">
+        
+<div id="gitalk-container"></div>
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+<script>
+  const gitalk = new Gitalk({
+    clientID: '28369b07e2360baae2e7',
+    clientSecret: '4c94169b822196a74a4c07354c0c2a9acee5779b',
+    repo: 'zlog-in.github.io',
+    owner: 'zlog-in',
+    admin: ['zlog-in'],
+    id: location.pathname, 
+    distractionFreeMode: false 
+  });
+  (function() {
+    if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+      document.getElementById('gitalk-container').innerHTML = 'Gitalk comments not available by default when the website is previewed locally.';
+      return;
+    }
+    gitalk.render('gitalk-container');
+  })();
+</script>
+
+
+
+      </div>
+     
+    
+    </article>
+    
+  </div>
+
+        </div><footer>
+  <div class="container">
+    <p class="credits copyright">
+      <p class="credits theme-by">
+        <br>
+        <a href="/about">Zhān</a>
+        &copy;
+        <a href="/">2025 </a>
+       
+        <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" ><img alt="Creative Commons Licence" style="margin: auto;" src="https://i.creativecommons.org/l/by-nc/4.0/88x31.png" /></a>
+
+      </p>
+  </div>
+</footer></body>
+</html>
