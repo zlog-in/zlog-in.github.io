@@ -6,8 +6,15 @@
     <description>Recent content on Zlog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 09 Mar 2025 19:32:53 +0100</lastBuildDate>
+    <lastBuildDate>Sat, 15 Mar 2025 22:33:56 +0100</lastBuildDate>
     <atom:link href="/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>什么是货币？</title>
+      <link>/post/money/</link>
+      <pubDate>Sat, 15 Mar 2025 22:33:56 +0100</pubDate>
+      <guid>/post/money/</guid>
+      <description></description>
+    </item>
     <item>
       <title>What is Mnemonic?</title>
       <link>/post/mnemonic-en/</link>
@@ -223,7 +230,7 @@
       <link>/about/</link>
       <pubDate>Tue, 28 Jul 2020 00:00:00 +0000</pubDate>
       <guid>/about/</guid>
-      <description>I&amp;rsquo;m Zion, full-time remote employee for Orderly Network, focus on cryptocurrency and blockchain.&#xA;我叫占(zhān)文，从 UESTC 和 KIT 毕业，信息安全方向的硕士。对密码学和区块链感兴趣，喜欢跑步。&#xA;Know more about me on:&#xA;GitHub Twitter E-Mail CV-Site If you want to say something to Zion, feel free to comment here.</description>
+      <description>I&amp;rsquo;m Zion, full-time remote employee for Orderly Network, focus on cryptocurrency and blockchain.&#xA;我叫占(zhān)文，对密码学和区块链感兴趣，喜欢跑步、听播客，有两只猫咪。&#xA;Know more about me on:&#xA;GitHub Twitter E-Mail CV-Site If you want to say something to Zion, feel free to comment here.</description>
     </item>
     <item>
       <title>Vigenere密码破解</title>
