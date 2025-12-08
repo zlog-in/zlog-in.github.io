@@ -6,8 +6,22 @@
     <description>Recent content on Zlog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 15 Mar 2025 22:33:56 +0100</lastBuildDate>
+    <lastBuildDate>Mon, 08 Dec 2025 20:33:15 +0100</lastBuildDate>
     <atom:link href="/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>两次分享</title>
+      <link>/post/blockchain101/</link>
+      <pubDate>Mon, 08 Dec 2025 20:33:15 +0100</pubDate>
+      <guid>/post/blockchain101/</guid>
+      <description>前不久，我在深圳的办公室做了两次 101 级别的入门分享，听众是一群即将毕业的实习生和刚入职的新人同事。&#xA;鉴于只有两次机会，每次分享时间也就 1 个小时左右，我决定把内容浓缩到最基础的链概念和原理，避免涉及技术细节。&#xA;两次分享的主题是区块链基础与智能合同基础，我把分享的材料上传到了 GitHub 上，感兴趣的朋友可以前往查看：&#xA;[Blockchain 101](/pdf/blockchain101.pdf） [Smart Contract 101](/pdf/smartcontract101.pdf） </description>
+    </item>
+    <item>
+      <title>未完成的记录</title>
+      <link>/post/unfinished/</link>
+      <pubDate>Sat, 14 Jun 2025 21:27:58 +0200</pubDate>
+      <guid>/post/unfinished/</guid>
+      <description></description>
+    </item>
     <item>
       <title>什么是货币？</title>
       <link>/post/money/</link>
@@ -230,7 +244,7 @@
       <link>/about/</link>
       <pubDate>Tue, 28 Jul 2020 00:00:00 +0000</pubDate>
       <guid>/about/</guid>
-      <description>I&amp;rsquo;m Zion, full-time remote employee for Orderly Network, focus on cryptocurrency and blockchain.&#xA;我叫占(zhān)文，对密码学和区块链感兴趣，喜欢跑步、阅读。&#xA;Know more about me on:&#xA;GitHub Twitter E-Mail CV-Site If you want to say something to Zion, feel free to comment here.</description>
+      <description>I&amp;rsquo;m Zion, full-time remote employee for Orderly Network, focus on cryptocurrency and blockchain.&#xA;我叫占(zhān)文，对密码学和区块链感兴趣，喜欢跑步、听播客，有一只猫咪。&#xA;Know more about me on:&#xA;GitHub Twitter E-Mail CV-Site If you want to say something to Zion, feel free to comment here.</description>
     </item>
     <item>
       <title>Vigenere密码破解</title>
