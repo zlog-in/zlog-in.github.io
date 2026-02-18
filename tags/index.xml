@@ -6,6 +6,42 @@
     <description>Recent content in Tags on Zlog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
+    <lastBuildDate>Wed, 18 Feb 2026 18:00:00 +0100</lastBuildDate>
     <atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>ethereum</title>
+      <link>/tags/ethereum/</link>
+      <pubDate>Wed, 18 Feb 2026 18:00:00 +0100</pubDate>
+      <guid>/tags/ethereum/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>proxy</title>
+      <link>/tags/proxy/</link>
+      <pubDate>Wed, 18 Feb 2026 18:00:00 +0100</pubDate>
+      <guid>/tags/proxy/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>security</title>
+      <link>/tags/security/</link>
+      <pubDate>Wed, 18 Feb 2026 18:00:00 +0100</pubDate>
+      <guid>/tags/security/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>smart-contract</title>
+      <link>/tags/smart-contract/</link>
+      <pubDate>Wed, 18 Feb 2026 18:00:00 +0100</pubDate>
+      <guid>/tags/smart-contract/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>solidity</title>
+      <link>/tags/solidity/</link>
+      <pubDate>Wed, 18 Feb 2026 18:00:00 +0100</pubDate>
+      <guid>/tags/solidity/</guid>
+      <description></description>
+    </item>
   </channel>
 </rss>

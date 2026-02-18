@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>ethereum on Zlog</title>
+    <link>/tags/ethereum/</link>
+    <description>Recent content in ethereum on Zlog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 18 Feb 2026 18:00:00 +0100</lastBuildDate>
+    <atom:link href="/tags/ethereum/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>可升级合约：Transparent vs UUPS，存储布局与安全陷阱</title>
+      <link>/post/upgradeable-contracts/</link>
+      <pubDate>Wed, 18 Feb 2026 18:00:00 +0100</pubDate>
+      <guid>/post/upgradeable-contracts/</guid>
+      <description>&lt;p&gt;智能合约一旦部署，代码便不可更改——这是区块链的基本特性。但现实中的软件总会有 bug 需要修复、功能需要迭代。可升级合约（Upgradeable Contracts）通过代理模式（Proxy Pattern）绕过了这一限制，让合约的逻辑可以被替换，同时保留所有状态数据。&lt;/p&gt;&#xA;&lt;p&gt;本文将深入对比两种主流的代理升级模式——Transparent Proxy 和 UUPS，剖析它们各自的存储布局设计，以及在初始化和升级过程中容易踩到的安全陷阱。&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>
