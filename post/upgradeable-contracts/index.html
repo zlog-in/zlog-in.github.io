@@ -161,32 +161,32 @@
 <li>Implementation 必须继承 <code>UUPSUpgradeable</code> 并实现 <code>_authorizeUpgrade()</code> 来做权限检查</li>
 </ul>
 <h3 id="代码示例">代码示例</h3>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-solidity" data-lang="solidity"><span style="display:flex;"><span><span style="color:#75715e">// SPDX-License-Identifier: MIT
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">pragma solidity</span> <span style="color:#f92672">^</span><span style="color:#ae81ff">0</span>.<span style="color:#ae81ff">8</span>.<span style="color:#ae81ff">20</span>;
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-solidity" data-lang="solidity"><span style="display:flex;"><span><span style="color:#998;font-style:italic">// SPDX-License-Identifier: MIT
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span><span style="color:#000;font-weight:bold">pragma solidity</span> <span style="color:#000;font-weight:bold">^</span><span style="color:#099">0</span>.<span style="color:#099">8</span>.<span style="color:#099">20</span>;
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> <span style="color:#e6db74">&#34;@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol&#34;</span>;
-</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> <span style="color:#e6db74">&#34;@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol&#34;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#000;font-weight:bold">import</span> <span style="color:#d14">&#34;@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol&#34;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#000;font-weight:bold">import</span> <span style="color:#d14">&#34;@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol&#34;</span>;
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">contract</span> <span style="color:#a6e22e">MyContractV1</span> <span style="color:#66d9ef">is</span> UUPSUpgradeable, OwnableUpgradeable {
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">uint256</span> <span style="color:#66d9ef">public</span> value;
+</span></span><span style="display:flex;"><span><span style="color:#000;font-weight:bold">contract</span> <span style="color:#458;font-weight:bold">MyContractV1</span> <span style="color:#000;font-weight:bold">is</span> UUPSUpgradeable, OwnableUpgradeable {
+</span></span><span style="display:flex;"><span>    <span style="color:#458;font-weight:bold">uint256</span> <span style="color:#000;font-weight:bold">public</span> <span style="color:#0086b3">value</span>;
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// @custom:oz-upgrades-unsafe-allow constructor
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">constructor</span>() {
-</span></span><span style="display:flex;"><span>        _disableInitializers();  <span style="color:#75715e">// 禁止在 Implementation 上直接调用 initialize
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#998;font-style:italic">/// @custom:oz-upgrades-unsafe-allow constructor
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span>    <span style="color:#000;font-weight:bold">constructor</span>() {
+</span></span><span style="display:flex;"><span>        _disableInitializers();  <span style="color:#998;font-style:italic">// 禁止在 Implementation 上直接调用 initialize
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span>    }
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">initialize</span>(<span style="color:#66d9ef">address</span> initialOwner) <span style="color:#66d9ef">public</span> initializer {
+</span></span><span style="display:flex;"><span>    <span style="color:#000;font-weight:bold">function</span> <span style="color:#900;font-weight:bold">initialize</span>(<span style="color:#458;font-weight:bold">address</span> initialOwner) <span style="color:#000;font-weight:bold">public</span> initializer {
 </span></span><span style="display:flex;"><span>        __Ownable_init(initialOwner);
 </span></span><span style="display:flex;"><span>        __UUPSUpgradeable_init();
-</span></span><span style="display:flex;"><span>        value <span style="color:#f92672">=</span> <span style="color:#ae81ff">42</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#0086b3">value</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">42</span>;
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">setValue</span>(<span style="color:#66d9ef">uint256</span> _value) <span style="color:#66d9ef">external</span> {
-</span></span><span style="display:flex;"><span>        value <span style="color:#f92672">=</span> _value;
+</span></span><span style="display:flex;"><span>    <span style="color:#000;font-weight:bold">function</span> <span style="color:#900;font-weight:bold">setValue</span>(<span style="color:#458;font-weight:bold">uint256</span> _value) <span style="color:#000;font-weight:bold">external</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#0086b3">value</span> <span style="color:#000;font-weight:bold">=</span> _value;
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 必须实现：谁有权升级？
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">_authorizeUpgrade</span>(<span style="color:#66d9ef">address</span> newImplementation) <span style="color:#66d9ef">internal</span> <span style="color:#66d9ef">override</span> onlyOwner {}
+</span></span><span style="display:flex;"><span>    <span style="color:#998;font-style:italic">// 必须实现：谁有权升级？
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span>    <span style="color:#000;font-weight:bold">function</span> <span style="color:#900;font-weight:bold">_authorizeUpgrade</span>(<span style="color:#458;font-weight:bold">address</span> newImplementation) <span style="color:#000;font-weight:bold">internal</span> <span style="color:#000;font-weight:bold">override</span> onlyOwner {}
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><h3 id="优缺点-1">优缺点</h3>
 <table>
@@ -284,63 +284,63 @@ slot 2: 第三个变量
 </code></pre><p>Proxy 合约需要存储 Implementation 地址、Admin 地址等管理数据。如果这些数据和 Implementation 的变量占用同一个 slot，就会发生冲突——互相覆盖彼此的数据。</p>
 <h3 id="eip-1967-标准化的管理-slot">EIP-1967: 标准化的管理 Slot</h3>
 <p><a href="https://eips.ethereum.org/EIPS/eip-1967">EIP-1967</a> 定义了几个<strong>固定的、极不可能冲突的 slot</strong>来存储 Proxy 的管理数据：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-solidity" data-lang="solidity"><span style="display:flex;"><span><span style="color:#75715e">// Implementation 地址
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e">// keccak256(&#34;eip1967.proxy.implementation&#34;) - 1
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">bytes32</span> <span style="color:#66d9ef">constant</span> IMPLEMENTATION_SLOT <span style="color:#f92672">=</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#ae81ff">0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc</span>;
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-solidity" data-lang="solidity"><span style="display:flex;"><span><span style="color:#998;font-style:italic">// Implementation 地址
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic">// keccak256(&#34;eip1967.proxy.implementation&#34;) - 1
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span><span style="color:#458;font-weight:bold">bytes32</span> <span style="color:#000;font-weight:bold">constant</span> IMPLEMENTATION_SLOT <span style="color:#000;font-weight:bold">=</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#099">0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc</span>;
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">// Admin 地址
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e">// keccak256(&#34;eip1967.proxy.admin&#34;) - 1
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">bytes32</span> <span style="color:#66d9ef">constant</span> ADMIN_SLOT <span style="color:#f92672">=</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#ae81ff">0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103</span>;
+</span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic">// Admin 地址
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic">// keccak256(&#34;eip1967.proxy.admin&#34;) - 1
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span><span style="color:#458;font-weight:bold">bytes32</span> <span style="color:#000;font-weight:bold">constant</span> ADMIN_SLOT <span style="color:#000;font-weight:bold">=</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#099">0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103</span>;
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">// Beacon 地址
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e">// keccak256(&#34;eip1967.proxy.beacon&#34;) - 1
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">bytes32</span> <span style="color:#66d9ef">constant</span> BEACON_SLOT <span style="color:#f92672">=</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#ae81ff">0xa3f0ad74e5423aebfd80d3ef4346578335a9a72aeaee59ff6cb3582b35133d50</span>;
+</span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic">// Beacon 地址
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic">// keccak256(&#34;eip1967.proxy.beacon&#34;) - 1
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span><span style="color:#458;font-weight:bold">bytes32</span> <span style="color:#000;font-weight:bold">constant</span> BEACON_SLOT <span style="color:#000;font-weight:bold">=</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#099">0xa3f0ad74e5423aebfd80d3ef4346578335a9a72aeaee59ff6cb3582b35133d50</span>;
 </span></span></code></pre></div><p>这些 slot 位于存储空间的&quot;荒野&quot;中（通过 keccak256 计算再减 1），实际上不可能与 Solidity 的顺序存储冲突。减 1 是为了防止 slot 恰好落在某个 mapping 的存储位置上（mapping 的 value 存储在 <code>keccak256(key . slot)</code> 处）。</p>
 <h3 id="storage-gap继承链的保护垫">Storage Gap：继承链的保护垫</h3>
 <p>当 Implementation 使用继承时，存储布局会更加复杂。考虑以下场景：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-solidity" data-lang="solidity"><span style="display:flex;"><span><span style="color:#66d9ef">contract</span> <span style="color:#a6e22e">Base</span> {
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">uint256</span> <span style="color:#66d9ef">public</span> x;     <span style="color:#75715e">// slot 0
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">uint256</span> <span style="color:#66d9ef">public</span> y;     <span style="color:#75715e">// slot 1
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-solidity" data-lang="solidity"><span style="display:flex;"><span><span style="color:#000;font-weight:bold">contract</span> <span style="color:#458;font-weight:bold">Base</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#458;font-weight:bold">uint256</span> <span style="color:#000;font-weight:bold">public</span> x;     <span style="color:#998;font-style:italic">// slot 0
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span>    <span style="color:#458;font-weight:bold">uint256</span> <span style="color:#000;font-weight:bold">public</span> y;     <span style="color:#998;font-style:italic">// slot 1
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span>}
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">contract</span> <span style="color:#a6e22e">MyContractV1</span> <span style="color:#66d9ef">is</span> Base {
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">uint256</span> <span style="color:#66d9ef">public</span> z;     <span style="color:#75715e">// slot 2
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span><span style="display:flex;"><span><span style="color:#000;font-weight:bold">contract</span> <span style="color:#458;font-weight:bold">MyContractV1</span> <span style="color:#000;font-weight:bold">is</span> Base {
+</span></span><span style="display:flex;"><span>    <span style="color:#458;font-weight:bold">uint256</span> <span style="color:#000;font-weight:bold">public</span> z;     <span style="color:#998;font-style:italic">// slot 2
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span>}
 </span></span></code></pre></div><p>如果 V2 需要在 <code>Base</code> 中新增一个变量：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-solidity" data-lang="solidity"><span style="display:flex;"><span><span style="color:#66d9ef">contract</span> <span style="color:#a6e22e">BaseV2</span> {
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">uint256</span> <span style="color:#66d9ef">public</span> x;     <span style="color:#75715e">// slot 0
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">uint256</span> <span style="color:#66d9ef">public</span> y;     <span style="color:#75715e">// slot 1
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">uint256</span> <span style="color:#66d9ef">public</span> w;     <span style="color:#75715e">// slot 2  &lt;-- 新增！
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-solidity" data-lang="solidity"><span style="display:flex;"><span><span style="color:#000;font-weight:bold">contract</span> <span style="color:#458;font-weight:bold">BaseV2</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#458;font-weight:bold">uint256</span> <span style="color:#000;font-weight:bold">public</span> x;     <span style="color:#998;font-style:italic">// slot 0
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span>    <span style="color:#458;font-weight:bold">uint256</span> <span style="color:#000;font-weight:bold">public</span> y;     <span style="color:#998;font-style:italic">// slot 1
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span>    <span style="color:#458;font-weight:bold">uint256</span> <span style="color:#000;font-weight:bold">public</span> w;     <span style="color:#998;font-style:italic">// slot 2  &lt;-- 新增！
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span>}
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">contract</span> <span style="color:#a6e22e">MyContractV2</span> <span style="color:#66d9ef">is</span> BaseV2 {
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">uint256</span> <span style="color:#66d9ef">public</span> z;     <span style="color:#75715e">// slot 3  &lt;-- 原来在 slot 2，现在被挤到 slot 3！
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span><span style="display:flex;"><span><span style="color:#000;font-weight:bold">contract</span> <span style="color:#458;font-weight:bold">MyContractV2</span> <span style="color:#000;font-weight:bold">is</span> BaseV2 {
+</span></span><span style="display:flex;"><span>    <span style="color:#458;font-weight:bold">uint256</span> <span style="color:#000;font-weight:bold">public</span> z;     <span style="color:#998;font-style:italic">// slot 3  &lt;-- 原来在 slot 2，现在被挤到 slot 3！
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span>}
 </span></span></code></pre></div><p><code>z</code> 的 slot 从 2 变成了 3，读到的将是旧的 <code>w</code> 的位置的数据（可能是 0）——数据错乱！</p>
 <p><strong>Storage Gap</strong> 的解决方案：在基类中预留一段空闲的 slot：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-solidity" data-lang="solidity"><span style="display:flex;"><span><span style="color:#66d9ef">contract</span> <span style="color:#a6e22e">Base</span> {
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">uint256</span> <span style="color:#66d9ef">public</span> x;                   <span style="color:#75715e">// slot 0
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">uint256</span> <span style="color:#66d9ef">public</span> y;                   <span style="color:#75715e">// slot 1
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">uint256</span>[<span style="color:#ae81ff">48</span>] <span style="color:#66d9ef">private</span> __gap;          <span style="color:#75715e">// slots 2-49（预留 48 个 slot）
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-solidity" data-lang="solidity"><span style="display:flex;"><span><span style="color:#000;font-weight:bold">contract</span> <span style="color:#458;font-weight:bold">Base</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#458;font-weight:bold">uint256</span> <span style="color:#000;font-weight:bold">public</span> x;                   <span style="color:#998;font-style:italic">// slot 0
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span>    <span style="color:#458;font-weight:bold">uint256</span> <span style="color:#000;font-weight:bold">public</span> y;                   <span style="color:#998;font-style:italic">// slot 1
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span>    <span style="color:#458;font-weight:bold">uint256</span>[<span style="color:#099">48</span>] <span style="color:#000;font-weight:bold">private</span> __gap;          <span style="color:#998;font-style:italic">// slots 2-49（预留 48 个 slot）
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span>}
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">contract</span> <span style="color:#a6e22e">MyContractV1</span> <span style="color:#66d9ef">is</span> Base {
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">uint256</span> <span style="color:#66d9ef">public</span> z;                   <span style="color:#75715e">// slot 50
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span><span style="display:flex;"><span><span style="color:#000;font-weight:bold">contract</span> <span style="color:#458;font-weight:bold">MyContractV1</span> <span style="color:#000;font-weight:bold">is</span> Base {
+</span></span><span style="display:flex;"><span>    <span style="color:#458;font-weight:bold">uint256</span> <span style="color:#000;font-weight:bold">public</span> z;                   <span style="color:#998;font-style:italic">// slot 50
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span>}
 </span></span></code></pre></div><p>当需要在 Base 中新增变量时，缩小 <code>__gap</code>：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-solidity" data-lang="solidity"><span style="display:flex;"><span><span style="color:#66d9ef">contract</span> <span style="color:#a6e22e">BaseV2</span> {
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">uint256</span> <span style="color:#66d9ef">public</span> x;                   <span style="color:#75715e">// slot 0
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">uint256</span> <span style="color:#66d9ef">public</span> y;                   <span style="color:#75715e">// slot 1
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">uint256</span> <span style="color:#66d9ef">public</span> w;                   <span style="color:#75715e">// slot 2   &lt;-- 新增
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">uint256</span>[<span style="color:#ae81ff">47</span>] <span style="color:#66d9ef">private</span> __gap;          <span style="color:#75715e">// slots 3-49（缩小为 47）
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-solidity" data-lang="solidity"><span style="display:flex;"><span><span style="color:#000;font-weight:bold">contract</span> <span style="color:#458;font-weight:bold">BaseV2</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#458;font-weight:bold">uint256</span> <span style="color:#000;font-weight:bold">public</span> x;                   <span style="color:#998;font-style:italic">// slot 0
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span>    <span style="color:#458;font-weight:bold">uint256</span> <span style="color:#000;font-weight:bold">public</span> y;                   <span style="color:#998;font-style:italic">// slot 1
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span>    <span style="color:#458;font-weight:bold">uint256</span> <span style="color:#000;font-weight:bold">public</span> w;                   <span style="color:#998;font-style:italic">// slot 2   &lt;-- 新增
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span>    <span style="color:#458;font-weight:bold">uint256</span>[<span style="color:#099">47</span>] <span style="color:#000;font-weight:bold">private</span> __gap;          <span style="color:#998;font-style:italic">// slots 3-49（缩小为 47）
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span>}
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">contract</span> <span style="color:#a6e22e">MyContractV2</span> <span style="color:#66d9ef">is</span> BaseV2 {
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">uint256</span> <span style="color:#66d9ef">public</span> z;                   <span style="color:#75715e">// slot 50  &lt;-- 位置不变！
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span><span style="display:flex;"><span><span style="color:#000;font-weight:bold">contract</span> <span style="color:#458;font-weight:bold">MyContractV2</span> <span style="color:#000;font-weight:bold">is</span> BaseV2 {
+</span></span><span style="display:flex;"><span>    <span style="color:#458;font-weight:bold">uint256</span> <span style="color:#000;font-weight:bold">public</span> z;                   <span style="color:#998;font-style:italic">// slot 50  &lt;-- 位置不变！
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span>}
 </span></span></code></pre></div><p><code>z</code> 仍然在 slot 50，数据安全。OpenZeppelin 的可升级合约库中大量使用了这一模式，通常预留 50 个 slot（<code>uint256[50] private __gap</code>）。</p>
 <h3 id="局限性">局限性</h3>
 <p>Storage Gap 虽然实用，但有明显不足：</p>
@@ -354,31 +354,31 @@ slot 2: 第三个变量
 <p><a href="https://eips.ethereum.org/EIPS/eip-7201">ERC-7201</a> 提出了一种更优雅的离散存储方案——<strong>命名空间存储（Namespaced Storage）</strong>，彻底解决了 Storage Gap 的问题。</p>
 <h3 id="核心思想">核心思想</h3>
 <p>不再从 slot 0 开始顺序排列变量，而是将每个合约（或模块）的变量放在一个<strong>通过哈希计算的、独立的存储区域</strong>。</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-solidity" data-lang="solidity"><span style="display:flex;"><span><span style="color:#66d9ef">contract</span> <span style="color:#a6e22e">MyContractV1</span> {
-</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// @custom:storage-location erc7201:mycontract.storage
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">MainStorage</span> {
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">uint256</span> value;
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">mapping</span>(<span style="color:#66d9ef">address</span> <span style="color:#f92672">=&gt;</span> <span style="color:#66d9ef">uint256</span>) balances;
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-solidity" data-lang="solidity"><span style="display:flex;"><span><span style="color:#000;font-weight:bold">contract</span> <span style="color:#458;font-weight:bold">MyContractV1</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#998;font-style:italic">/// @custom:storage-location erc7201:mycontract.storage
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span>    <span style="color:#000;font-weight:bold">struct</span> <span style="color:#458;font-weight:bold">MainStorage</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#458;font-weight:bold">uint256</span> <span style="color:#0086b3">value</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#000;font-weight:bold">mapping</span>(<span style="color:#458;font-weight:bold">address</span> <span style="color:#000;font-weight:bold">=&gt;</span> <span style="color:#458;font-weight:bold">uint256</span>) balances;
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// keccak256(abi.encode(uint256(keccak256(&#34;mycontract.storage&#34;)) - 1))
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#75715e">//   &amp; ~bytes32(uint256(0xff))
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">bytes32</span> <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">constant</span> MAIN_STORAGE_LOCATION <span style="color:#f92672">=</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">0</span>x...;
+</span></span><span style="display:flex;"><span>    <span style="color:#998;font-style:italic">// keccak256(abi.encode(uint256(keccak256(&#34;mycontract.storage&#34;)) - 1))
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span>    <span style="color:#998;font-style:italic">//   &amp; ~bytes32(uint256(0xff))
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span>    <span style="color:#458;font-weight:bold">bytes32</span> <span style="color:#000;font-weight:bold">private</span> <span style="color:#000;font-weight:bold">constant</span> MAIN_STORAGE_LOCATION <span style="color:#000;font-weight:bold">=</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#099">0</span>x...;
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">_getMainStorage</span>() <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">pure</span> <span style="color:#66d9ef">returns</span> (MainStorage <span style="color:#66d9ef">storage</span> s) {
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">bytes32</span> location <span style="color:#f92672">=</span> MAIN_STORAGE_LOCATION;
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">assembly</span> {
-</span></span><span style="display:flex;"><span>            s<span style="color:#960050;background-color:#1e0010">.</span>slot <span style="color:#f92672">:=</span> location
+</span></span><span style="display:flex;"><span>    <span style="color:#000;font-weight:bold">function</span> <span style="color:#900;font-weight:bold">_getMainStorage</span>() <span style="color:#000;font-weight:bold">private</span> <span style="color:#000;font-weight:bold">pure</span> <span style="color:#000;font-weight:bold">returns</span> (MainStorage <span style="color:#000;font-weight:bold">storage</span> s) {
+</span></span><span style="display:flex;"><span>        <span style="color:#458;font-weight:bold">bytes32</span> location <span style="color:#000;font-weight:bold">=</span> MAIN_STORAGE_LOCATION;
+</span></span><span style="display:flex;"><span>        <span style="color:#000;font-weight:bold">assembly</span> {
+</span></span><span style="display:flex;"><span>            s<span style="color:#a61717;background-color:#e3d2d2">.</span>slot <span style="color:#000;font-weight:bold">:=</span> location
 </span></span><span style="display:flex;"><span>        }
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">getValue</span>() <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">view</span> <span style="color:#66d9ef">returns</span> (<span style="color:#66d9ef">uint256</span>) {
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> _getMainStorage().value;
+</span></span><span style="display:flex;"><span>    <span style="color:#000;font-weight:bold">function</span> <span style="color:#900;font-weight:bold">getValue</span>() <span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">view</span> <span style="color:#000;font-weight:bold">returns</span> (<span style="color:#458;font-weight:bold">uint256</span>) {
+</span></span><span style="display:flex;"><span>        <span style="color:#000;font-weight:bold">return</span> _getMainStorage().<span style="color:#0086b3">value</span>;
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">setValue</span>(<span style="color:#66d9ef">uint256</span> _value) <span style="color:#66d9ef">external</span> {
-</span></span><span style="display:flex;"><span>        _getMainStorage().value <span style="color:#f92672">=</span> _value;
+</span></span><span style="display:flex;"><span>    <span style="color:#000;font-weight:bold">function</span> <span style="color:#900;font-weight:bold">setValue</span>(<span style="color:#458;font-weight:bold">uint256</span> _value) <span style="color:#000;font-weight:bold">external</span> {
+</span></span><span style="display:flex;"><span>        _getMainStorage().<span style="color:#0086b3">value</span> <span style="color:#000;font-weight:bold">=</span> _value;
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><h3 id="与-storage-gap-对比">与 Storage Gap 对比</h3>
@@ -425,24 +425,24 @@ slot 2: 第三个变量
 </table>
 <h3 id="openzeppelin-v5-的实践">OpenZeppelin v5 的实践</h3>
 <p>OpenZeppelin Contracts v5 已全面转向 ERC-7201。例如 <code>OwnableUpgradeable</code>：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-solidity" data-lang="solidity"><span style="display:flex;"><span><span style="color:#66d9ef">abstract</span> <span style="color:#66d9ef">contract</span> <span style="color:#a6e22e">OwnableUpgradeable</span> <span style="color:#66d9ef">is</span> Initializable, ContextUpgradeable {
-</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// @custom:storage-location erc7201:openzeppelin.storage.Ownable
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">OwnableStorage</span> {
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">address</span> _owner;
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-solidity" data-lang="solidity"><span style="display:flex;"><span><span style="color:#000;font-weight:bold">abstract</span> <span style="color:#000;font-weight:bold">contract</span> <span style="color:#458;font-weight:bold">OwnableUpgradeable</span> <span style="color:#000;font-weight:bold">is</span> Initializable, ContextUpgradeable {
+</span></span><span style="display:flex;"><span>    <span style="color:#998;font-style:italic">/// @custom:storage-location erc7201:openzeppelin.storage.Ownable
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span>    <span style="color:#000;font-weight:bold">struct</span> <span style="color:#458;font-weight:bold">OwnableStorage</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#458;font-weight:bold">address</span> _owner;
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// keccak256(abi.encode(uint256(keccak256(&#34;openzeppelin.storage.Ownable&#34;)) - 1))
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#75715e">//   &amp; ~bytes32(uint256(0xff))
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">bytes32</span> <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">constant</span> OwnableStorageLocation <span style="color:#f92672">=</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">0x9016d09d72d40fdae2fd8ceac6b6234c7706214fd39c1cd1e609a0528c199300</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#998;font-style:italic">// keccak256(abi.encode(uint256(keccak256(&#34;openzeppelin.storage.Ownable&#34;)) - 1))
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span>    <span style="color:#998;font-style:italic">//   &amp; ~bytes32(uint256(0xff))
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span>    <span style="color:#458;font-weight:bold">bytes32</span> <span style="color:#000;font-weight:bold">private</span> <span style="color:#000;font-weight:bold">constant</span> OwnableStorageLocation <span style="color:#000;font-weight:bold">=</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#099">0x9016d09d72d40fdae2fd8ceac6b6234c7706214fd39c1cd1e609a0528c199300</span>;
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">_getOwnableStorage</span>() <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">pure</span> <span style="color:#66d9ef">returns</span> (OwnableStorage <span style="color:#66d9ef">storage</span> <span style="color:#960050;background-color:#1e0010">$</span>) {
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">assembly</span> {
-</span></span><span style="display:flex;"><span>            <span style="color:#960050;background-color:#1e0010">$.</span>slot <span style="color:#f92672">:=</span> OwnableStorageLocation
+</span></span><span style="display:flex;"><span>    <span style="color:#000;font-weight:bold">function</span> <span style="color:#900;font-weight:bold">_getOwnableStorage</span>() <span style="color:#000;font-weight:bold">private</span> <span style="color:#000;font-weight:bold">pure</span> <span style="color:#000;font-weight:bold">returns</span> (OwnableStorage <span style="color:#000;font-weight:bold">storage</span> <span style="color:#a61717;background-color:#e3d2d2">$</span>) {
+</span></span><span style="display:flex;"><span>        <span style="color:#000;font-weight:bold">assembly</span> {
+</span></span><span style="display:flex;"><span>            <span style="color:#a61717;background-color:#e3d2d2">$.</span>slot <span style="color:#000;font-weight:bold">:=</span> OwnableStorageLocation
 </span></span><span style="display:flex;"><span>        }
 </span></span><span style="display:flex;"><span>    }
-</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// ...
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span><span style="display:flex;"><span>    <span style="color:#998;font-style:italic">// ...
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span>}
 </span></span></code></pre></div><p>每个模块的存储被隔离在自己的命名空间里，<strong>无论继承顺序如何变化，都不会冲突</strong>。</p>
 <h2 id="初始化安全constructor-的替代品">初始化安全：constructor 的替代品</h2>
 <p>可升级合约<strong>不能使用 <code>constructor</code></strong>。因为 <code>constructor</code> 在部署时执行，它修改的是 Implementation 合约自身的存储，而不是 Proxy 的存储。用户通过 Proxy 交互时，<code>constructor</code> 设置的值不存在。</p>
@@ -450,26 +450,26 @@ slot 2: 第三个变量
 <h3 id="陷阱-1initialize-被抢跑">陷阱 1：initialize 被抢跑</h3>
 <p><code>initialize()</code> 是一个普通的 <code>public</code> 函数，任何人都可以调用。如果部署 Proxy 后没有立即调用 <code>initialize()</code>，攻击者可以抢先调用，将自己设为 owner。</p>
 <p><strong>正确做法</strong>：在部署 Proxy 时通过 <code>data</code> 参数在同一笔交易中调用 <code>initialize()</code>：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-solidity" data-lang="solidity"><span style="display:flex;"><span><span style="color:#75715e">// 部署时就初始化，原子操作，不可被抢跑
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">new</span> ERC1967Proxy(
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-solidity" data-lang="solidity"><span style="display:flex;"><span><span style="color:#998;font-style:italic">// 部署时就初始化，原子操作，不可被抢跑
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span><span style="color:#000;font-weight:bold">new</span> ERC1967Proxy(
 </span></span><span style="display:flex;"><span>    implementation,
-</span></span><span style="display:flex;"><span>    abi.encodeCall(MyContract.initialize, (msg.sender))
+</span></span><span style="display:flex;"><span>    <span style="color:#0086b3">abi</span>.encodeCall(MyContract.initialize, (<span style="color:#0086b3">msg</span>.<span style="color:#0086b3">sender</span>))
 </span></span><span style="display:flex;"><span>);
 </span></span></code></pre></div><h3 id="陷阱-2implementation-合约未锁定">陷阱 2：Implementation 合约未锁定</h3>
 <p>攻击者可以直接对 Implementation 合约（不通过 Proxy）调用 <code>initialize()</code>，将自己设为 Implementation 的 owner。然后利用这个身份执行 <code>selfdestruct</code>（在 Cancun 升级前）或其他破坏性操作。</p>
 <p><strong>正确做法</strong>：在 Implementation 的 <code>constructor</code> 中禁用所有 initializer：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-solidity" data-lang="solidity"><span style="display:flex;"><span><span style="color:#75715e">/// @custom:oz-upgrades-unsafe-allow constructor
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">constructor</span>() {
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-solidity" data-lang="solidity"><span style="display:flex;"><span><span style="color:#998;font-style:italic">/// @custom:oz-upgrades-unsafe-allow constructor
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span><span style="color:#000;font-weight:bold">constructor</span>() {
 </span></span><span style="display:flex;"><span>    _disableInitializers();
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>这确保 Implementation 合约本身永远无法被初始化。</p>
 <h3 id="陷阱-3reinitializer-的版本管理">陷阱 3：reinitializer 的版本管理</h3>
 <p>升级时可能需要执行新的初始化逻辑。OpenZeppelin 提供了 <code>reinitializer(n)</code> 修饰符：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-solidity" data-lang="solidity"><span style="display:flex;"><span><span style="color:#66d9ef">contract</span> <span style="color:#a6e22e">MyContractV2</span> <span style="color:#66d9ef">is</span> MyContractV1 {
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">uint256</span> <span style="color:#66d9ef">public</span> newValue;
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-solidity" data-lang="solidity"><span style="display:flex;"><span><span style="color:#000;font-weight:bold">contract</span> <span style="color:#458;font-weight:bold">MyContractV2</span> <span style="color:#000;font-weight:bold">is</span> MyContractV1 {
+</span></span><span style="display:flex;"><span>    <span style="color:#458;font-weight:bold">uint256</span> <span style="color:#000;font-weight:bold">public</span> newValue;
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">initializeV2</span>(<span style="color:#66d9ef">uint256</span> _newValue) <span style="color:#66d9ef">public</span> reinitializer(<span style="color:#ae81ff">2</span>) {
-</span></span><span style="display:flex;"><span>        newValue <span style="color:#f92672">=</span> _newValue;
+</span></span><span style="display:flex;"><span>    <span style="color:#000;font-weight:bold">function</span> <span style="color:#900;font-weight:bold">initializeV2</span>(<span style="color:#458;font-weight:bold">uint256</span> _newValue) <span style="color:#000;font-weight:bold">public</span> reinitializer(<span style="color:#099">2</span>) {
+</span></span><span style="display:flex;"><span>        newValue <span style="color:#000;font-weight:bold">=</span> _newValue;
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p><code>reinitializer(2)</code> 确保这个函数只能在版本 2 时执行一次。如果忘记递增版本号，或者用错了 <code>initializer</code>（只允许版本 1），初始化可能失败或被跳过。</p>
@@ -503,11 +503,11 @@ slot 2: 第三个变量
 </li>
 <li>
 <p><strong><code>_authorizeUpgrade()</code> 权限错误</strong>：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-solidity" data-lang="solidity"><span style="display:flex;"><span><span style="color:#75715e">// 危险！任何人都能升级！
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">function</span> <span style="color:#a6e22e">_authorizeUpgrade</span>(<span style="color:#66d9ef">address</span>) <span style="color:#66d9ef">internal</span> <span style="color:#66d9ef">override</span> {}
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-solidity" data-lang="solidity"><span style="display:flex;"><span><span style="color:#998;font-style:italic">// 危险！任何人都能升级！
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span><span style="color:#000;font-weight:bold">function</span> <span style="color:#900;font-weight:bold">_authorizeUpgrade</span>(<span style="color:#458;font-weight:bold">address</span>) <span style="color:#000;font-weight:bold">internal</span> <span style="color:#000;font-weight:bold">override</span> {}
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">// 正确：限制为 owner
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">function</span> <span style="color:#a6e22e">_authorizeUpgrade</span>(<span style="color:#66d9ef">address</span>) <span style="color:#66d9ef">internal</span> <span style="color:#66d9ef">override</span> onlyOwner {}
+</span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic">// 正确：限制为 owner
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span><span style="color:#000;font-weight:bold">function</span> <span style="color:#900;font-weight:bold">_authorizeUpgrade</span>(<span style="color:#458;font-weight:bold">address</span>) <span style="color:#000;font-weight:bold">internal</span> <span style="color:#000;font-weight:bold">override</span> onlyOwner {}
 </span></span></code></pre></div></li>
 <li>
 <p><strong>升级到错误的地址</strong>：<code>upgradeTo()</code> 不验证新地址是否是有效的合约。升级到 EOA 或不兼容的合约会导致 Proxy 永久损坏。OpenZeppelin 的实现会检查新地址的 <code>proxiableUUID()</code>，但自定义实现需格外小心。</p>
