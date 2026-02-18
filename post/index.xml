@@ -65,6 +65,13 @@
       <description></description>
     </item>
     <item>
+      <title>Bitcoin Address: P2PKH and P2SH</title>
+      <link>/post/bitcoin-address/</link>
+      <pubDate>Sat, 02 Mar 2024 11:09:16 +0100</pubDate>
+      <guid>/post/bitcoin-address/</guid>
+      <description></description>
+    </item>
+    <item>
       <title>EIP-712 Message: Orderly Usage</title>
       <link>/post/eip712-message-usage/</link>
       <pubDate>Thu, 25 Jan 2024 10:35:35 +0100</pubDate>

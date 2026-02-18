@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en-us">
+ 
+
+
+
+
+
+    
+
+  
+<meta charset="utf-8" />
+
+  <title>Bitcoin Address: P2PKH and P2SH - Zlog</title>
+
+
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="stylesheet" href="/css/latex.css" />
+<link rel="stylesheet" href="/css/main.css" />
+<link rel="stylesheet" href="https://latex.now.sh/style.css">
+<script>
+  MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']]
+    },
+    svg: {
+      fontCache: 'global'
+    }
+  };
+  </script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<meta name="generator" content="Hugo 0.122.0">
+ 
+  
+  <body>
+
+
+
+
+
+
+<header>  
+  <nav class="navbar">
+  <div class="nav">
+    
+
+    <ul class="nav-links">
+      
+    </ul>
+  </div>
+</nav>
+  <div class="intro-header">
+    <div class="container">
+      <div class="post-heading">
+        
+          <h1>Bitcoin Address: P2PKH and P2SH</h1>
+          
+        
+
+      </div>
+    </div>
+  </div>
+
+
+</header>
+<div id="content">
+  <div class="container" role="main">
+    <article class="article" class="blog-post">
+      <div class="postmeta">
+        <span class="meta-post">
+  <i class="fa fa-calendar-alt"></i>Mar 2, 2024
+  
+</span>
+      </div>
+      <br>
+      
+    <p>Bitcoin address is an encoded string that is used to receive Bitcoin. Unlike the account system of EVM-compatible chains, Bitcoin uses the UTXO model, which defined the bitcoin transaction format and the address format. In this article, I will introduce the format of Bitcoin transaction and explain how the Bitcoin address is derived from the transaction output.</p>
+<h2 id="utxo-model">UTXO Model</h2>
+<p>UTXO (Unspent Transaction Output) is the core concept of Bitcoin transaction. To know what is UTXO, we need to understand the Bitcoin transaction format. A Bitcoin transaction is the process of consuming UTXOs and creating new UTXOs. The transaction is a data structure that contains input and output fields. The input field references the UTXO that is going to be consumed, and the output field creates new UTXOs.</p>
+<p>A simplified Bitcoin transaction looks like this:</p>
+<pre tabindex="0"><code>Transaction {
+    inputs: [
+        {
+            txid:      &#34;a1b2c3...def0&#34;,   // reference to a previous tx
+            vout:      0,                  // index of the output in that tx
+            scriptSig: &#34;&lt;signature&gt; &lt;pubkey&gt;&#34;
+        }
+    ],
+    outputs: [
+        {
+            value:        0.5,             // amount in BTC
+            scriptPubKey: &#34;OP_DUP OP_HASH160 &lt;pubKeyHash&gt; OP_EQUALVERIFY OP_CHECKSIG&#34;
+        },
+        {
+            value:        0.3,             // change back to sender
+            scriptPubKey: &#34;OP_DUP OP_HASH160 &lt;pubKeyHash&gt; OP_EQUALVERIFY OP_CHECKSIG&#34;
+        }
+    ]
+}
+</code></pre><p>Each <strong>output</strong> contains two things: an amount (<code>value</code>) and a locking script (<code>scriptPubKey</code>). The locking script defines the conditions that must be met to spend this output. Once an output is created and confirmed on the blockchain, it becomes a UTXO — it sits there, waiting to be consumed by a future transaction.</p>
+<p>Each <strong>input</strong> references a previous UTXO (by <code>txid</code> and <code>vout</code>) and provides an unlocking script (<code>scriptSig</code>) that satisfies the conditions of the referenced output&rsquo;s locking script.</p>
+<p>The key insight is: <strong>there are no &ldquo;accounts&rdquo; or &ldquo;balances&rdquo; in Bitcoin</strong>. Your balance is simply the sum of all UTXOs whose locking scripts you can unlock with your private key.</p>
+<h2 id="transaction-process">Transaction Process</h2>
+<p>When Alice wants to send 0.5 BTC to Bob, the following happens:</p>
+<pre tabindex="0"><code>Alice&#39;s wallet scans UTXOs
+    |
+    v
+Finds a UTXO worth 0.8 BTC locked to Alice&#39;s public key hash
+    |
+    v
+Constructs a transaction:
+    Input:  reference to the 0.8 BTC UTXO + Alice&#39;s signature
+    Output 1: 0.5 BTC locked to Bob&#39;s public key hash
+    Output 2: 0.3 BTC locked to Alice&#39;s public key hash (change)
+    (the remaining 0.0x BTC goes to miners as fee)
+    |
+    v
+Broadcast to the Bitcoin network
+    |
+    v
+Miners validate the transaction and include it in a block
+    |
+    v
+The 0.8 BTC UTXO is now spent (removed from UTXO set)
+Two new UTXOs are created: 0.5 BTC for Bob, 0.3 BTC for Alice
+</code></pre><p>Notice that a UTXO must be consumed entirely — you cannot spend &ldquo;part of&rdquo; a UTXO. This is why change outputs exist. If Alice has a 0.8 BTC UTXO and wants to send 0.5 BTC, she must consume the entire 0.8 BTC UTXO and create a change output of 0.3 BTC back to herself.</p>
+<h2 id="script-execution">Script Execution</h2>
+<p>Bitcoin uses a stack-based scripting language called <strong>Bitcoin Script</strong> to define and verify spending conditions. The validation process concatenates the unlocking script (<code>scriptSig</code>) and the locking script (<code>scriptPubKey</code>), then executes them on a stack machine.</p>
+<p>For a standard P2PKH transaction, the combined script looks like this:</p>
+<pre tabindex="0"><code>scriptSig:    &lt;sig&gt; &lt;pubKey&gt;
+scriptPubKey: OP_DUP OP_HASH160 &lt;pubKeyHash&gt; OP_EQUALVERIFY OP_CHECKSIG
+</code></pre><p>The execution proceeds step by step:</p>
+<pre tabindex="0"><code>Step 1: Push &lt;sig&gt; onto the stack
+Stack: [ sig ]
+
+Step 2: Push &lt;pubKey&gt; onto the stack
+Stack: [ sig, pubKey ]
+
+Step 3: OP_DUP — duplicate the top element
+Stack: [ sig, pubKey, pubKey ]
+
+Step 4: OP_HASH160 — pop top, push RIPEMD160(SHA256(top))
+Stack: [ sig, pubKey, hash(pubKey) ]
+
+Step 5: Push &lt;pubKeyHash&gt; (from the locking script)
+Stack: [ sig, pubKey, hash(pubKey), pubKeyHash ]
+
+Step 6: OP_EQUALVERIFY — pop two, check equality, fail if not equal
+Stack: [ sig, pubKey ]
+(This verifies: &#34;is this public key the one that was locked to?&#34;)
+
+Step 7: OP_CHECKSIG — pop sig and pubKey, verify signature
+Stack: [ true ]
+(This verifies: &#34;does this signature match this public key?&#34;)
+
+Result: if the stack top is `true`, the transaction is valid.
+</code></pre><p>The beauty of this design is that the locking script does not contain the public key itself — only a hash of it. The spender must provide the actual public key in the unlocking script, and the script engine verifies that it hashes to the expected value. This provides an extra layer of security: even if ECDSA is broken in the future, the attacker still needs to find a public key that hashes to the same value (a preimage attack on RIPEMD160(SHA256(x))).</p>
+<h2 id="p2pkh-address">P2PKH Address</h2>
+<p>P2PKH (Pay-to-Public-Key-Hash) is the most classic Bitcoin address format, starting with <code>1</code>. It encodes the hash of a public key into a human-readable string.</p>
+<h3 id="derivation-process">Derivation Process</h3>
+<pre tabindex="0"><code>Private Key (256-bit random number)
+    |
+    | Elliptic Curve Multiplication (secp256k1)
+    v
+Public Key (65 bytes uncompressed, or 33 bytes compressed)
+    |
+    | SHA-256
+    v
+SHA-256 Hash (32 bytes)
+    |
+    | RIPEMD-160
+    v
+Public Key Hash (20 bytes)
+    |
+    | Add version prefix: 0x00 (mainnet) or 0x6f (testnet)
+    v
+Versioned Payload (21 bytes)
+    |
+    | Double SHA-256, take first 4 bytes as checksum
+    v
+Payload + Checksum (25 bytes)
+    |
+    | Base58 Encoding
+    v
+P2PKH Address (e.g., &#34;1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa&#34;)
+</code></pre><p>The double hashing (SHA-256 then RIPEMD-160) is commonly referred to as <strong>HASH160</strong> in Bitcoin. It reduces the public key from 33/65 bytes down to 20 bytes, making addresses shorter while maintaining sufficient collision resistance.</p>
+<h3 id="why-base58">Why Base58?</h3>
+<p>Bitcoin uses Base58Check encoding instead of the more common Base64 or hexadecimal. Base58 removes characters that are visually ambiguous:</p>
+<table>
+<thead>
+<tr>
+<th>Removed</th>
+<th>Reason</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>0</code> (zero)</td>
+<td>Confused with <code>O</code></td>
+</tr>
+<tr>
+<td><code>O</code> (uppercase o)</td>
+<td>Confused with <code>0</code></td>
+</tr>
+<tr>
+<td><code>I</code> (uppercase i)</td>
+<td>Confused with <code>l</code></td>
+</tr>
+<tr>
+<td><code>l</code> (lowercase L)</td>
+<td>Confused with <code>I</code></td>
+</tr>
+<tr>
+<td><code>+</code>, <code>/</code></td>
+<td>Not URL-safe, problematic in file systems</td>
+</tr>
+</tbody>
+</table>
+<p>The 4-byte checksum appended before encoding allows wallets to detect typos. If you accidentally change a character in a Bitcoin address, the checksum verification will almost certainly fail, preventing you from sending coins to a wrong address.</p>
+<h3 id="locking-script">Locking Script</h3>
+<p>When someone sends BTC to a P2PKH address, the transaction output contains:</p>
+<pre tabindex="0"><code>scriptPubKey: OP_DUP OP_HASH160 &lt;pubKeyHash&gt; OP_EQUALVERIFY OP_CHECKSIG
+</code></pre><p>The <code>&lt;pubKeyHash&gt;</code> is the 20-byte HASH160 of the recipient&rsquo;s public key — exactly the data encoded inside the Base58 address (minus the version byte and checksum).</p>
+<h2 id="p2sh-address">P2SH Address</h2>
+<p>P2SH (Pay-to-Script-Hash) is a more flexible address format, starting with <code>3</code>. Instead of locking funds to a public key hash, it locks funds to the hash of an arbitrary script. This enables complex spending conditions like multi-signature wallets.</p>
+<h3 id="the-problem-p2sh-solves">The Problem P2SH Solves</h3>
+<p>Before P2SH, if Alice wanted to set up a 2-of-3 multisig, the full multisig script would need to appear in the <strong>sender&rsquo;s</strong> transaction output:</p>
+<pre tabindex="0"><code>scriptPubKey: OP_2 &lt;pubKey1&gt; &lt;pubKey2&gt; &lt;pubKey3&gt; OP_3 OP_CHECKMULTISIG
+</code></pre><p>This has several problems:</p>
+<ol>
+<li><strong>Burden on the sender</strong>: the sender needs to know and include the full multisig script</li>
+<li><strong>Larger transaction size</strong>: the full script is stored in the output, increasing fees</li>
+<li><strong>No standard address format</strong>: there is no way to encode a multisig condition as a simple address string</li>
+</ol>
+<p>P2SH (<a href="https://github.com/bitcoin/bips/blob/master/bip-0016.mediawiki">BIP-16</a>) solves all of these by hashing the script first:</p>
+<h3 id="how-p2sh-works">How P2SH Works</h3>
+<pre tabindex="0"><code>Step 1: Alice creates a redeem script (the actual spending condition)
+
+    redeemScript: OP_2 &lt;pubKey1&gt; &lt;pubKey2&gt; &lt;pubKey3&gt; OP_3 OP_CHECKMULTISIG
+
+Step 2: Hash the redeem script
+
+    scriptHash = HASH160(redeemScript)    // 20 bytes
+
+Step 3: The locking script simply checks the hash
+
+    scriptPubKey: OP_HASH160 &lt;scriptHash&gt; OP_EQUAL
+
+Step 4: Encode as a P2SH address (version prefix 0x05)
+
+    Address: &#34;3J98t1WpEZ73CNmQviecrnyiWrnqRhWNLy&#34;
+</code></pre><p>Now the sender only needs to know the P2SH address — they don&rsquo;t need to know the underlying multisig script at all. The complexity is hidden from the sender.</p>
+<h3 id="spending-from-p2sh">Spending from P2SH</h3>
+<p>When Alice (or rather, 2 of the 3 key holders) wants to spend the funds:</p>
+<pre tabindex="0"><code>scriptSig: OP_0 &lt;sig1&gt; &lt;sig2&gt; &lt;serialized redeemScript&gt;
+</code></pre><p>The Bitcoin script engine validates this in two phases:</p>
+<pre tabindex="0"><code>Phase 1: Verify the script hash matches
+
+    Hash the provided redeemScript
+    Compare with &lt;scriptHash&gt; in the locking script
+    If equal, proceed to Phase 2
+
+Phase 2: Execute the actual redeemScript
+
+    Deserialize the redeemScript
+    Execute it with the provided signatures
+    OP_2 &lt;pubKey1&gt; &lt;pubKey2&gt; &lt;pubKey3&gt; OP_3 OP_CHECKMULTISIG
+    Verify that at least 2 of 3 signatures are valid
+</code></pre><h3 id="p2pkh-vs-p2sh-comparison">P2PKH vs P2SH Comparison</h3>
+<table>
+<thead>
+<tr>
+<th>Aspect</th>
+<th>P2PKH</th>
+<th>P2SH</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Prefix</strong></td>
+<td><code>1</code></td>
+<td><code>3</code></td>
+</tr>
+<tr>
+<td><strong>Version byte</strong></td>
+<td><code>0x00</code> (mainnet)</td>
+<td><code>0x05</code> (mainnet)</td>
+</tr>
+<tr>
+<td><strong>Locks to</strong></td>
+<td>Hash of a public key</td>
+<td>Hash of a script</td>
+</tr>
+<tr>
+<td><strong>Spending requires</strong></td>
+<td>Signature + Public key</td>
+<td>Signatures + Serialized redeem script</td>
+</tr>
+<tr>
+<td><strong>Use case</strong></td>
+<td>Simple single-key payments</td>
+<td>Multi-sig, time-locks, custom conditions</td>
+</tr>
+<tr>
+<td><strong>Complexity visible to sender?</strong></td>
+<td>N/A (always simple)</td>
+<td>No — hidden behind the script hash</td>
+</tr>
+<tr>
+<td><strong>Output size</strong></td>
+<td>25 bytes</td>
+<td>23 bytes</td>
+</tr>
+<tr>
+<td><strong>Introduced</strong></td>
+<td>Genesis (2009)</td>
+<td>BIP-16 (2012)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="beyond-p2pkh-and-p2sh">Beyond P2PKH and P2SH</h2>
+<p>Bitcoin has since introduced newer address formats:</p>
+<ul>
+<li>
+<p><strong>P2WPKH</strong> (Pay-to-Witness-Public-Key-Hash): SegWit v0 equivalent of P2PKH, starting with <code>bc1q</code>. Moves the signature data to the witness field, reducing transaction weight and fees.</p>
+</li>
+<li>
+<p><strong>P2WSH</strong> (Pay-to-Witness-Script-Hash): SegWit v0 equivalent of P2SH, also starting with <code>bc1q</code>. Uses SHA-256 (32 bytes) instead of HASH160 (20 bytes) for the script hash, providing stronger collision resistance.</p>
+</li>
+<li>
+<p><strong>P2TR</strong> (Pay-to-Taproot): SegWit v1 (<a href="https://github.com/bitcoin/bips/blob/master/bip-0341.mediawiki">BIP-341</a>), starting with <code>bc1p</code>. Uses Schnorr signatures and Merkle trees to enable even more complex spending conditions while maintaining the appearance of a simple single-key spend on-chain. This is the current state-of-the-art.</p>
+</li>
+</ul>
+<p>These newer formats use <strong>Bech32/Bech32m</strong> encoding instead of Base58Check, which provides better error detection and is case-insensitive.</p>
+<p>The evolution from P2PKH to P2TR tells the story of Bitcoin&rsquo;s ongoing effort to balance simplicity, privacy, flexibility, and efficiency — all while maintaining backward compatibility with the UTXO model that Satoshi designed in 2008.</p>
+
+
+      
+      
+      <div class="post-comment">
+        
+<div id="gitalk-container"></div>
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+<script>
+  const gitalk = new Gitalk({
+    clientID: '28369b07e2360baae2e7',
+    clientSecret: '4c94169b822196a74a4c07354c0c2a9acee5779b',
+    repo: 'zlog-in.github.io',
+    owner: 'zlog-in',
+    admin: ['zlog-in'],
+    id: location.pathname, 
+    distractionFreeMode: false 
+  });
+  (function() {
+    if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+      document.getElementById('gitalk-container').innerHTML = 'Gitalk comments not available by default when the website is previewed locally.';
+      return;
+    }
+    gitalk.render('gitalk-container');
+  })();
+</script>
+
+
+
+      </div>
+     
+    
+    </article>
+    
+  </div>
+
+        </div><footer>
+  <div class="container">
+    <p class="credits copyright">
+      <p class="credits theme-by">
+        <br>
+        <a href="/about">Zhān</a>
+        &copy;
+        <a href="/">2026 </a>
+       
+        <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" ><img alt="Creative Commons Licence" style="margin: auto;" src="https://i.creativecommons.org/l/by-nc/4.0/88x31.png" /></a>
+
+      </p>
+  </div>
+</footer></body>
+</html>
