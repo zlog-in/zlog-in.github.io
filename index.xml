@@ -9,7 +9,7 @@
     <lastBuildDate>Wed, 18 Feb 2026 18:00:00 +0100</lastBuildDate>
     <atom:link href="/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>可升级合约：Transparent vs UUPS，存储布局与安全陷阱</title>
+      <title>可升级合约</title>
       <link>/post/upgradeable-contracts/</link>
       <pubDate>Wed, 18 Feb 2026 18:00:00 +0100</pubDate>
       <guid>/post/upgradeable-contracts/</guid>

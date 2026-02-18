@@ -11,7 +11,7 @@
   
 <meta charset="utf-8" />
 
-  <title>可升级合约：Transparent vs UUPS，存储布局与安全陷阱 - Zlog</title>
+  <title>可升级合约 - Zlog</title>
 
 
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -54,7 +54,7 @@
     <div class="container">
       <div class="post-heading">
         
-          <h1>可升级合约：Transparent vs UUPS，存储布局与安全陷阱</h1>
+          <h1>可升级合约</h1>
           
         
 
@@ -71,11 +71,6 @@
         <span class="meta-post">
   <i class="fa fa-calendar-alt"></i>Feb 18, 2026
   
-    <br><i class="fa fa-folder-open"></i>
-    
-      <a href="//categories/blockchain/">blockchain</a>&nbsp;
-    
-  
 </span>
       </div>
       <br>
@@ -84,26 +79,26 @@
 <p>本文将深入对比两种主流的代理升级模式——Transparent Proxy 和 UUPS，剖析它们各自的存储布局设计，以及在初始化和升级过程中容易踩到的安全陷阱。</p>
 <h2 id="代理模式基础">代理模式基础</h2>
 <p>所有代理模式的核心思想一致：将<strong>状态存储</strong>和<strong>业务逻辑</strong>分离。</p>
-<pre tabindex="0"><code>用户 --&gt; Proxy（存储状态，地址不变）
-              |
-              | delegatecall
-              v
-         Implementation（只有逻辑，可替换）
+<pre tabindex="0"><code>User --&gt; Proxy (stores state, address never changes)
+            |
+            | delegatecall
+            v
+         Implementation (logic only, replaceable)
 </code></pre><p>用户始终与 Proxy 合约交互，Proxy 的地址永远不变。当需要升级时，只需将 Proxy 指向新的 Implementation 合约地址即可。</p>
 <p>关键在于 <code>delegatecall</code>：它在 <strong>Proxy 的存储上下文</strong>中执行 Implementation 的代码。也就是说，Implementation 合约读写的 <code>storage</code> 全部落在 Proxy 上。这一点至关重要，它既是代理模式的基础，也是存储冲突等问题的根源。</p>
 <h2 id="transparent-proxy-pattern">Transparent Proxy Pattern</h2>
 <p>Transparent Proxy 由 OpenZeppelin 提出并广泛使用（<code>TransparentUpgradeableProxy</code>），其核心设计是通过<strong>调用者身份</strong>来区分&quot;管理操作&quot;和&quot;用户操作&quot;。</p>
 <h3 id="工作原理">工作原理</h3>
-<pre tabindex="0"><code>               msg.sender == admin?
-                      |
-            +---------+---------+
-            |                   |
-           YES                  NO
-            |                   |
-            v                   v
-    执行 Proxy 自身的       delegatecall 到
-    管理函数               Implementation
-    (upgrade, admin...)    (业务逻辑)
+<pre tabindex="0"><code>                msg.sender == admin?
+                       |
+             +---------+---------+
+             |                   |
+            YES                  NO
+             |                   |
+             v                   v
+      Execute Proxy&#39;s own   delegatecall to
+      admin functions        Implementation
+      (upgrade, admin...)    (business logic)
 </code></pre><ul>
 <li><strong>Admin 调用</strong>：Proxy 拦截请求，执行管理函数（如 <code>upgradeTo()</code>），不转发到 Implementation</li>
 <li><strong>非 Admin 调用</strong>：Proxy 将所有调用通过 <code>delegatecall</code> 转发给 Implementation</li>
@@ -112,15 +107,15 @@
 <p>对于普通用户来说，Proxy 是&quot;透明&quot;的——他们感知不到 Proxy 的存在，所有调用都被无条件转发到 Implementation。只有 Admin 才能&quot;看到&quot; Proxy 本身的管理接口。</p>
 <h3 id="架构">架构</h3>
 <p>在 OpenZeppelin 的最新实现中，Transparent Proxy 引入了一个独立的 <code>ProxyAdmin</code> 合约来管理升级：</p>
-<pre tabindex="0"><code>+------------------+     +------------------+     +------------------+
-|   ProxyAdmin     |     | TransparentProxy |     | Implementation   |
-|   (Owner)        |----&gt;|  (Storage)       |----&gt;|  (Logic v1)      |
-|                  |     |                  |     +------------------+
-|  upgradeTo()     |     |  fallback() {   |
-|  upgradeAndCall()|     |    delegatecall  |     +------------------+
-+------------------+     |  }              |----&gt;|  Implementation   |
-                         +------------------+     |  (Logic v2)      |
-                                                  +------------------+
+<pre tabindex="0"><code>+--------------------+   +--------------------+   +--------------------+
+|    ProxyAdmin      |   |  TransparentProxy  |   |  Implementation    |
+|    (Owner)         |--&gt;|  (Storage)         |--&gt;|  (Logic v1)        |
+|                    |   |                    |   +--------------------+
+|  upgradeTo()       |   |  fallback() {     |
+|  upgradeAndCall()  |   |    delegatecall   |   +--------------------+
++--------------------+   |  }                |--&gt;|  Implementation    |
+                         +--------------------+   |  (Logic v2)        |
+                                                  +--------------------+
 </code></pre><ul>
 <li><code>ProxyAdmin</code> 是唯一能调用升级函数的地址</li>
 <li>由于 Admin 的调用不会被转发，Admin <strong>无法</strong>调用 Implementation 的业务函数</li>
@@ -152,14 +147,14 @@
 <h2 id="uups-pattern-erc-1822">UUPS Pattern (ERC-1822)</h2>
 <p>UUPS（Universal Upgradeable Proxy Standard）将升级逻辑从 Proxy 转移到了 <strong>Implementation 合约</strong>自身。</p>
 <h3 id="工作原理-1">工作原理</h3>
-<pre tabindex="0"><code>+------------------+     +------------------+
-|   UUPS Proxy     |     | Implementation   |
-|   (极简)         |----&gt;|  (Logic + 升级)   |
-|                  |     |                  |
-|  fallback() {   |     |  upgradeTo()     |
-|    delegatecall  |     |  业务函数()       |
-|  }              |     |  _authorizeUpgrade() |
-+------------------+     +------------------+
+<pre tabindex="0"><code>+----------------------+   +------------------------+
+|    UUPS Proxy        |   |    Implementation       |
+|    (Minimal)         |--&gt;|    (Logic + Upgrade)     |
+|                      |   |                          |
+|  fallback() {        |   |  upgradeTo()             |
+|    delegatecall      |   |  businessLogic()         |
+|  }                   |   |  _authorizeUpgrade()     |
++----------------------+   +------------------------+
 </code></pre><ul>
 <li>Proxy 非常简单，几乎只有 <code>fallback()</code> 函数和存储 Implementation 地址的逻辑</li>
 <li><strong>升级函数 <code>upgradeTo()</code> 定义在 Implementation 中</strong></li>
@@ -578,20 +573,6 @@ slot 2: 第三个变量
 <p>可升级合约给了我们在不可变的区块链上迭代软件的能力，但这种灵活性伴随着巨大的责任。每一次升级都是对用户资金安全的承诺——理解这些机制和风险，才能写出值得信赖的合约。</p>
 
 
-      
-        <div class="blog-tags">
-          
-            <a href="//tags/solidity/">solidity</a>&nbsp;
-          
-            <a href="//tags/ethereum/">ethereum</a>&nbsp;
-          
-            <a href="//tags/smart-contract/">smart-contract</a>&nbsp;
-          
-            <a href="//tags/proxy/">proxy</a>&nbsp;
-          
-            <a href="//tags/security/">security</a>&nbsp;
-          
-        </div>
       
       
       <div class="post-comment">
