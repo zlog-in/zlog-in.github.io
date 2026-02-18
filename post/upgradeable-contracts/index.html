@@ -107,15 +107,15 @@
 <p>对于普通用户来说，Proxy 是&quot;透明&quot;的——他们感知不到 Proxy 的存在，所有调用都被无条件转发到 Implementation。只有 Admin 才能&quot;看到&quot; Proxy 本身的管理接口。</p>
 <h3 id="架构">架构</h3>
 <p>在 OpenZeppelin 的最新实现中，Transparent Proxy 引入了一个独立的 <code>ProxyAdmin</code> 合约来管理升级：</p>
-<pre tabindex="0"><code>+--------------------+   +--------------------+   +--------------------+
-|    ProxyAdmin      |   |  TransparentProxy  |   |  Implementation    |
-|    (Owner)         |--&gt;|  (Storage)         |--&gt;|  (Logic v1)        |
-|                    |   |                    |   +--------------------+
-|  upgradeTo()       |   |  fallback() {     |
-|  upgradeAndCall()  |   |    delegatecall   |   +--------------------+
-+--------------------+   |  }                |--&gt;|  Implementation    |
-                         +--------------------+   |  (Logic v2)        |
-                                                  +--------------------+
+<pre tabindex="0"><code>+--------------------+    +--------------------+    +--------------------+
+|    ProxyAdmin      |    | TransparentProxy   |    |  Implementation    |
+|                    |    |                    |    |  (Logic v1)        |
+|  upgradeTo()       |---&gt;|  fallback() {      |---&gt;+--------------------+
+|  upgradeAndCall()  |    |    delegatecall    |
++--------------------+    |  }                 |    +--------------------+
+                          |                    |---&gt;|  Implementation    |
+                          +--------------------+    |  (Logic v2)        |
+                                                    +--------------------+
 </code></pre><ul>
 <li><code>ProxyAdmin</code> 是唯一能调用升级函数的地址</li>
 <li>由于 Admin 的调用不会被转发，Admin <strong>无法</strong>调用 Implementation 的业务函数</li>
@@ -147,14 +147,14 @@
 <h2 id="uups-pattern-erc-1822">UUPS Pattern (ERC-1822)</h2>
 <p>UUPS（Universal Upgradeable Proxy Standard）将升级逻辑从 Proxy 转移到了 <strong>Implementation 合约</strong>自身。</p>
 <h3 id="工作原理-1">工作原理</h3>
-<pre tabindex="0"><code>+----------------------+   +------------------------+
-|    UUPS Proxy        |   |    Implementation       |
-|    (Minimal)         |--&gt;|    (Logic + Upgrade)     |
-|                      |   |                          |
-|  fallback() {        |   |  upgradeTo()             |
-|    delegatecall      |   |  businessLogic()         |
-|  }                   |   |  _authorizeUpgrade()     |
-+----------------------+   +------------------------+
+<pre tabindex="0"><code>+----------------------+    +--------------------------+
+|  UUPS Proxy          |    |  Implementation          |
+|  (Minimal)           |---&gt;|  (Logic + Upgrade)       |
+|                      |    |                          |
+|  fallback() {        |    |  upgradeTo()             |
+|    delegatecall      |    |  businessLogic()         |
+|  }                   |    |  _authorizeUpgrade()     |
++----------------------+    +--------------------------+
 </code></pre><ul>
 <li>Proxy 非常简单，几乎只有 <code>fallback()</code> 函数和存储 Implementation 地址的逻辑</li>
 <li><strong>升级函数 <code>upgradeTo()</code> 定义在 Implementation 中</strong></li>
