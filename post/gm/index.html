@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en-us">
+ 
+
+
+
+
+
+    
+
+  
+<meta charset="utf-8" />
+
+  <title>归墨 （GM） - Zlog</title>
+
+
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="stylesheet" href="/css/latex.css" />
+<link rel="stylesheet" href="/css/main.css" />
+<link rel="stylesheet" href="https://latex.now.sh/style.css">
+<script>
+  MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']]
+    },
+    svg: {
+      fontCache: 'global'
+    }
+  };
+  </script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<meta name="generator" content="Hugo 0.122.0">
+ 
+  
+  <body>
+
+
+
+
+
+
+<header>  
+  <nav class="navbar">
+  <div class="nav">
+    
+
+    <ul class="nav-links">
+      
+    </ul>
+  </div>
+</nav>
+  <div class="intro-header">
+    <div class="container">
+      <div class="post-heading">
+        
+          <h1>归墨 （GM）</h1>
+          
+        
+
+      </div>
+    </div>
+  </div>
+
+
+</header>
+<div id="content">
+  <div class="container" role="main">
+    <article class="article" class="blog-post">
+      <div class="postmeta">
+        <span class="meta-post">
+  <i class="fa fa-calendar-alt"></i>Mar 28, 2026
+  
+</span>
+      </div>
+      <br>
+      
+    <h1 id="用一段记忆保护你的私钥gm-的技术原理">用一段记忆保护你的私钥：GM 的技术原理</h1>
+<blockquote>
+<p>归墨 (Guī Mò) 意即 &ldquo;记忆归于墨迹，墨迹化为密钥。&rdquo; 首字母恰好对应 Generate Mnemonic。愿你的记忆像墨一样，落笔即定，永不褪色。</p>
+</blockquote>
+<p><strong>演示</strong>：<a href="https://gm.zlog.in">gm.zlog.in</a> | <strong>源码</strong>：<a href="https://github.com/zlog-in/gm">github.com/zlog-in/gm</a></p>
+<h2 id="引子私钥的困境">引子：私钥的困境</h2>
+<p>区块链世界有一个根本性矛盾——你的全部资产由一串私钥控制，而这串私钥你既不能忘记，也不能让别人知道。</p>
+<p>常见的保管方式各有硬伤：</p>
+<ul>
+<li><strong>抄在纸上</strong>：纸会丢、会被发现、会被水火损毁。</li>
+<li><strong>存在硬件钱包里</strong>：设备本身也会坏、会丢、会被盗。</li>
+<li><strong>加密后存云端</strong>：你需要记住加密密码——问题又回到了原点。</li>
+<li><strong>第三方托管</strong>：放弃了区块链最核心的价值，依赖信任。</li>
+</ul>
+<p>有没有一种方式，让私钥既不存在于任何物理介质上，又能在需要时被可靠地还原？</p>
+<p>GM 的思路是：<strong>把你的记忆本身变成私钥的来源。</strong></p>
+<hr>
+<h2 id="核心思想从记住密钥到记住素材">核心思想：从&quot;记住密钥&quot;到&quot;记住素材&quot;</h2>
+<p>GM 不生成随机助记词，而是把你提供的素材——一段文字、一个文件、或两者的组合——通过确定性的密码学流水线，转化为标准的 BIP39 助记词。</p>
+<p>关键词是<strong>确定性</strong>：同样的输入，永远产出同样的助记词。这意味着你不需要保存任何东西，只需要记住你输入了什么。</p>
+<p>一段对你有特殊意义的文字、一张特定的照片、一首歌的音频文件——这些东西天然地刻在你的长期记忆里。GM 把这种&quot;人对素材的记忆&quot;转化为&quot;对密钥的掌控&quot;。</p>
+<hr>
+<h2 id="完整流水线从输入到助记词">完整流水线：从输入到助记词</h2>
+<p>整个过程分三步，每一步都使用公开的、经过广泛审计的标准算法。</p>
+<h3 id="第一步输入编码">第一步：输入编码</h3>
+<pre tabindex="0"><code>文本（任何语言）──► TextEncoder（UTF-8 编码）──────┐
+                                               ├──► inputBytes
+文件（任何格式）──► FileReader（原始二进制）  ──────┘
+</code></pre><p>文本通过 UTF-8 编码转为字节，文件直接读取原始二进制。如果两者都提供，按<strong>文本在前、文件在后</strong>的固定顺序拼接。</p>
+<p>这个顺序是协议的一部分——&ldquo;hello&rdquo; + photo.jpg 和 photo.jpg + &ldquo;hello&rdquo; 会产出完全不同的助记词。用户需要记住的不仅是素材内容，还有输入方式。</p>
+<h3 id="第二步密钥派生pbkdf2-sha256">第二步：密钥派生（PBKDF2-SHA256）</h3>
+<p>这是整个流程的核心环节。</p>
+<pre tabindex="0"><code>inputBytes ──► PBKDF2-SHA256 ──► entropy（128 或 256 bit）
+
+参数：
+  哈希函数：SHA-256
+  盐值（Salt）：空
+  迭代次数：默认 1,000,000（可配置）
+  输出长度：128 bit（12 个词）或 256 bit（24 个词）
+</code></pre><p><strong>PBKDF2</strong>（Password-Based Key Derivation Function 2）是 NIST 标准化的密钥派生函数（SP 800-132）。它的工作原理是对输入反复执行 HMAC-SHA256 运算，每一轮的输出作为下一轮的输入。</p>
+<p>为什么要做一百万轮？因为这是一种<strong>计算换安全</strong>的策略。假设攻击者想暴力猜测你的输入素材，每猜一次都要执行一百万轮 SHA-256。在现代 CPU 上，单次猜测大约需要数秒。如果你的素材有足够的不可预测性，攻击者面对的搜索空间将大到绝望。</p>
+<p><strong>为什么不加盐？</strong> 传统用法中，Salt 用于防止彩虹表攻击和区分不同用户的相同密码。但 GM 的场景不同——我们需要确定性：同样的输入必须永远产出同样的结果。如果加了 Salt，用户就得同时记住输入素材和 Salt，多了一个需要保管的秘密，与&quot;只依赖记忆&quot;的初衷矛盾。</p>
+<p>这个取舍是可接受的，因为用户的输入素材（个人文字、个人文件）天然具有唯一性——它本身就起到了 Salt 的区分作用。</p>
+<h3 id="第三步bip39-助记词转换">第三步：BIP39 助记词转换</h3>
+<p>PBKDF2 的输出是一串原始字节（entropy），接下来按照 BIP39 标准将其转化为人类可读的单词序列。</p>
+<pre tabindex="0"><code>entropy（128 bit）
+    │
+    ├──► SHA-256(entropy) ──► 取前 4 bit 作为校验和
+    │
+    └──► 128 bit + 4 bit = 132 bit
+              │
+              ▼
+         每 11 bit 一组 → 12 个索引（0~2047）→ 12 个单词
+</code></pre><p>以 12 词为例：</p>
+<ol>
+<li><strong>计算校验和</strong>：对 entropy 做一次 SHA-256 哈希，取结果的前 4 bit。</li>
+<li><strong>拼接</strong>：128 bit 熵 + 4 bit 校验和 = 132 bit。</li>
+<li><strong>分段</strong>：将 132 bit 按每 11 bit 切一刀，得到 12 个数字，每个范围 0~2047。</li>
+<li><strong>查表</strong>：每个数字在 BIP39 词表（2048 个词）中找到对应的单词。</li>
+</ol>
+<p>24 词的逻辑完全相同，只是 entropy 是 256 bit，校验和取 8 bit，总共 264 bit，切成 24 段。</p>
+<p>校验和的意义在于<strong>错误检测</strong>——如果用户抄错了一个词，校验和大概率对不上，钱包软件会拒绝这组助记词。</p>
+<hr>
+<h2 id="为什么这套方案能兼顾记忆性与安全性">为什么这套方案能兼顾记忆性与安全性</h2>
+<h3 id="记忆性利用人脑的长期记忆机制">记忆性：利用人脑的长期记忆机制</h3>
+<p>人类的长期记忆对以下几类信息有天然的持久保持力：</p>
+<ul>
+<li><strong>有情感联结的内容</strong>：一段恋人之间的对话、一封重要的邮件。</li>
+<li><strong>有感官锚定的内容</strong>：一张特定的照片、一首旋律。</li>
+<li><strong>有叙事结构的内容</strong>：一个故事、一段经历的文字描述。</li>
+<li><strong>有重复接触的内容</strong>：你反复翻看的一页书、一个经常使用的文件。</li>
+</ul>
+<p>这些内容往往被存储在<strong>语义记忆</strong>和<strong>情景记忆</strong>中，衰退极慢。与之对比，12 个随机英文单词（传统 BIP39 助记词）几乎没有语义关联，依赖的是<strong>机械记忆</strong>——这是人脑最不擅长的记忆方式。</p>
+<p>GM 的设计把密钥的&quot;记忆载体&quot;从机械记忆转移到语义/情景记忆上。你不需要记住助记词本身，只需要记住&quot;我用了什么素材&quot;。</p>
+<h3 id="安全性多层防线">安全性：多层防线</h3>
+<p><strong>第一层：素材的不可预测性。</strong> 攻击者必须猜到你输入了什么。一段私人文字的信息熵远高于一个常见密码。如果素材是一个文件（比如一张照片的原始字节），搜索空间更是天文数字。</p>
+<p><strong>第二层：计算成本。</strong> 即使攻击者缩小了猜测范围，每次验证都要执行百万轮 PBKDF2。假设攻击者有一个包含 100 万条候选输入的字典：</p>
+<pre tabindex="0"><code>100 万条 × 每条约 3 秒（百万轮 PBKDF2）≈ 35 天（单核 CPU）
+</code></pre><p>这还只是最乐观的估计——攻击者不太可能把你的素材放进字典。</p>
+<p><strong>第三层：离线运行。</strong> GM 是一个纯本地的 HTML 文件，不发送任何网络请求。没有服务器端，没有数据传输，没有第三方能看到你的输入。用户可以在断网状态下使用，甚至可以在浏览器开发者工具的 Network 面板中亲自验证。</p>
+<p><strong>第四层：算法透明。</strong> 使用的每一个算法（PBKDF2、SHA-256、BIP39）都是公开标准，被全球密码学社区审计了数十年。实际的加密运算由浏览器原生的 Web Crypto API 执行——这是由浏览器厂商维护的 C/C++ 实现（Chromium 使用 BoringSSL，Firefox 使用 NSS），不是手写的 JavaScript。</p>
+<hr>
+<h2 id="一个具体的例子">一个具体的例子</h2>
+<p>假设你选择的素材是一句诗：&ldquo;人生天地间 忽如远行客&rdquo;。</p>
+<ol>
+<li>TextEncoder 将这 10 个汉字编码为 30 字节的 UTF-8 序列。</li>
+<li>这 30 字节被送入 PBKDF2，经过一百万轮 SHA-256 迭代，输出 16 字节（128 bit）的 entropy。</li>
+<li>对 entropy 做 SHA-256，取前 4 bit 作为校验和，拼接后得到 132 bit。</li>
+<li>每 11 bit 映射一个词，最终得到 12 个 BIP39 单词。</li>
+</ol>
+<p>只要你记得这句诗，在任何有浏览器的设备上打开 GM，输入它，就能还原出完全相同的助记词。</p>
+<p>如果你把这句诗搭配一张特定的照片一起输入，安全性会进一步提升——攻击者不仅要猜到你用了哪句诗，还要找到那张完全相同的照片文件。</p>
+<hr>
+<h2 id="需要注意的边界">需要注意的边界</h2>
+<h3 id="输入质量决定一切">输入质量决定一切</h3>
+<p>GM 的安全性完全取决于输入素材的不可预测性。以下是反面教材：</p>
+<ul>
+<li>&ldquo;123456&rdquo; → 几乎零安全性</li>
+<li>&ldquo;hello world&rdquo; → 约等于零</li>
+<li>你的生日 → 极易被社会工程猜到</li>
+</ul>
+<p>以下是合理的素材选择：</p>
+<ul>
+<li>一段只有你知道的个人经历描述（&gt;50 字）</li>
+<li>一个私人文件（照片、录音、文档）</li>
+<li>两者的组合</li>
+</ul>
+<h3 id="字节级精确">字节级精确</h3>
+<p>确定性意味着对输入的<strong>字节级敏感</strong>：</p>
+<ul>
+<li>&ldquo;Hello&rdquo; 和 &ldquo;hello&rdquo; 是不同的输入（H 和 h 的 UTF-8 编码不同）</li>
+<li>末尾多一个空格就是不同的输入</li>
+<li>同一张照片如果被重新压缩或转码，文件字节会改变，产出不同的结果</li>
+</ul>
+<p>使用文件作为素材时，必须确保是<strong>完全相同的文件</strong>——不是&quot;看起来一样的图片&quot;，而是&quot;字节完全一致的同一个文件&quot;。</p>
+<h3 id="迭代次数是协议的一部分">迭代次数是协议的一部分</h3>
+<p>如果你用 100 万轮生成了助记词，下次还原时也必须用 100 万轮。不同的迭代次数会产出不同的结果。这个参数和输入素材一样，是你需要记住的。</p>
+<p>建议使用默认的 100 万轮，除非你有明确的理由调整它。</p>
+<hr>
+<h2 id="正确性验证">正确性验证</h2>
+<p>GM 在每次页面加载时会自动运行 6 项密码学验证测试：</p>
+<p><strong>BIP39 官方测试向量（4 项）</strong>：使用 Trezor 仓库中的标准测试数据，验证从 entropy 到助记词的完整转换链路。例如，全零的 entropy <code>00000000000000000000000000000000</code> 必须产出 &ldquo;abandon abandon abandon &hellip; about&rdquo;。</p>
+<p><strong>PBKDF2 交叉验证（2 项）</strong>：使用 Python <code>hashlib.pbkdf2_hmac</code> 独立计算的参考值，验证浏览器的 PBKDF2 实现在相同参数下产出一致的结果。</p>
+<p>核心验证方法论：<strong>不信任自己的实现，用两个独立的环境对同样的输入计算同样的结果，交叉比对。</strong></p>
+<p>打开浏览器开发者控制台（F12 → Console），你应该看到：</p>
+<pre tabindex="0"><code>[GM] All 6 cryptographic tests passed
+   PASS  BIP39 vector 1
+   PASS  BIP39 vector 2
+   PASS  BIP39 vector 3
+   PASS  BIP39 vector 4
+   PASS  PBKDF2 (hello, 1M iter, 128bit)
+   PASS  PBKDF2 (hello, 1M iter, 256bit)
+</code></pre><hr>
+<h2 id="总结">总结</h2>
+<p>GM 的本质是一个<strong>确定性密码学转换器</strong>：</p>
+<pre tabindex="0"><code>你的记忆（文字/文件）──► 标准算法 ──► BIP39 助记词
+</code></pre><p>它不创造随机性，不存储任何东西，不连接任何网络。它只是一座桥——把人脑擅长记住的东西，转化为密码学上有效的密钥。</p>
+<p>这座桥的可靠性建立在三个支点上：</p>
+<ol>
+<li><strong>算法是公开标准</strong>——PBKDF2、SHA-256、BIP39，不依赖任何私有实现。</li>
+<li><strong>运行环境是浏览器原生 API</strong>——加密运算由操作系统级的密码学库执行，不是手写代码。</li>
+<li><strong>确定性保证</strong>——相同输入、相同参数，在任何设备、任何时间，产出相同结果。</li>
+</ol>
+<p>你要做的只有一件事：<strong>选择一个只有你能还原的输入，然后记住它。</strong></p>
+<hr>
+<h2 id="免责声明">免责声明</h2>
+<p><strong>本工具为实验性项目，仅供研究和学习用途，按原样提供，未经独立安全审计。</strong> 请勿将其用于保护您无法承受损失的资产。作者不对因使用本工具而导致的任何损失承担责任。</p>
+
+
+      
+      
+      <div class="post-comment">
+        
+<div id="gitalk-container"></div>
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+<script>
+  const gitalk = new Gitalk({
+    clientID: '28369b07e2360baae2e7',
+    clientSecret: '4c94169b822196a74a4c07354c0c2a9acee5779b',
+    repo: 'zlog-in.github.io',
+    owner: 'zlog-in',
+    admin: ['zlog-in'],
+    id: location.pathname, 
+    distractionFreeMode: false 
+  });
+  (function() {
+    if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+      document.getElementById('gitalk-container').innerHTML = 'Gitalk comments not available by default when the website is previewed locally.';
+      return;
+    }
+    gitalk.render('gitalk-container');
+  })();
+</script>
+
+
+
+      </div>
+     
+    
+    </article>
+    
+  </div>
+
+        </div><footer>
+  <div class="container">
+    <p class="credits copyright">
+      <p class="credits theme-by">
+        <br>
+        <a href="/about">Zhān</a>
+        &copy;
+        <a href="/">2026 </a>
+       
+        <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" ><img alt="Creative Commons Licence" style="margin: auto;" src="https://i.creativecommons.org/l/by-nc/4.0/88x31.png" /></a>
+
+      </p>
+  </div>
+</footer></body>
+</html>
