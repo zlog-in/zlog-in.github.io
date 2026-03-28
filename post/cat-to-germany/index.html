@@ -167,5 +167,25 @@
 
       </p>
   </div>
-</footer></body>
+</footer><script>
+        (function() {
+          function fitHeadings() {
+            var headings = document.querySelectorAll('h1, h2, h3, h4, h5, h6');
+            for (var i = 0; i < headings.length; i++) {
+              var el = headings[i];
+              el.style.fontSize = '';
+              el.style.whiteSpace = 'nowrap';
+              var parentWidth = el.parentElement.getBoundingClientRect().width;
+              if (el.scrollWidth > parentWidth) {
+                var currentSize = parseFloat(window.getComputedStyle(el).fontSize);
+                el.style.fontSize = (currentSize * parentWidth / el.scrollWidth) + 'px';
+              }
+              el.style.whiteSpace = '';
+            }
+          }
+          fitHeadings();
+          window.addEventListener('resize', fitHeadings);
+        })();
+        </script>
+    </body>
 </html>
