@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <radialGradient id="seal" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#c43a31"/>
+      <stop offset="100%" stop-color="#9b1b1b"/>
+    </radialGradient>
+  </defs>
+
+  <!-- white circular background -->
+  <circle cx="256" cy="256" r="240" fill="#fff"/>
+
+  <!-- Z — top horizontal stroke -->
+  <path d="M 120 148
+           Q 122 128, 155 124
+           L 362 116
+           Q 388 115, 390 133
+           Q 391 146, 375 152
+           L 170 156
+           Q 138 157, 120 148 Z"
+        fill="#1a1a1a"/>
+  <ellipse cx="132" cy="138" rx="15" ry="10" fill="#1a1a1a" opacity="0.25" transform="rotate(-10,132,138)"/>
+
+  <!-- Z — diagonal stroke -->
+  <path d="M 368 152
+           Q 382 154, 378 174
+           L 162 374
+           Q 144 396, 128 386
+           Q 118 378, 126 358
+           L 346 160
+           Q 358 148, 368 152 Z"
+        fill="#1a1a1a"/>
+
+  <!-- Z — bottom horizontal stroke -->
+  <path d="M 125 378
+           Q 118 366, 140 360
+           L 372 368
+           Q 398 370, 396 387
+           Q 394 402, 372 398
+           L 145 392
+           Q 122 390, 125 378 Z"
+        fill="#1a1a1a"/>
+  <ellipse cx="386" cy="386" rx="18" ry="12" fill="#1a1a1a" opacity="0.25" transform="rotate(5,386,386)"/>
+
+  <!-- ink splatter -->
+  <circle cx="140" cy="128" r="3" fill="#1a1a1a" opacity="0.18"/>
+  <circle cx="378" cy="402" r="2.5" fill="#1a1a1a" opacity="0.15"/>
+
+  <!-- red seal stamp — bottom right -->
+  <rect x="398" y="418" width="64" height="64" rx="3" fill="url(#seal)" opacity="0.88"/>
+  <!-- border of seal -->
+  <rect x="403" y="423" width="54" height="54" rx="2" fill="none" stroke="#e8d8c8" stroke-width="1.5" opacity="0.5"/>
+  <!-- "占" character in seal script style -->
+  <text x="430" y="450" font-family="serif" font-size="40" font-weight="700"
+        fill="#e8d8c8" text-anchor="middle" dominant-baseline="central"
+        opacity="0.9">文</text>
+</svg>
