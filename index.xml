@@ -6,8 +6,15 @@
     <description>Recent content on Zlog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 28 Mar 2026 20:13:21 +0100</lastBuildDate>
+    <lastBuildDate>Sun, 29 Mar 2026 00:00:00 +0000</lastBuildDate>
     <atom:link href="/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>量子计算对密码学的威胁：原理、进展与区块链的应对</title>
+      <link>/post/quantum-threat-to-crypto/</link>
+      <pubDate>Sun, 29 Mar 2026 00:00:00 +0000</pubDate>
+      <guid>/post/quantum-threat-to-crypto/</guid>
+      <description>量子计算机什么时候能破解比特币？这个问题每隔几个月就会在社交媒体上引发一轮恐慌。但恐慌往往缺乏对原理的理解——人们不清楚量子计算机到底能做什么、不能做什么，也不清楚密码学社区已经在做什么。&#xA;这篇文章试图把这件事讲清楚。我们会覆盖三个维度：&#xA;威胁原理——量子算法如何破解现有密码学 商用进展——量子硬件离&amp;quot;密码学相关&amp;quot;还有多远 防御策略——区块链社区的应对方案与时间表 所有关键结论均追踪到具体论文或标准文件。&#xA;一、量子算法对密码学的威胁 1.1 Shor 算法：非对称密码的终结者 1994 年，Peter Shor 提出了一种能在量子计算机上以多项式时间 $O((\log N)^3)$ 求解整数分解问题和离散对数问题的算法。1 这两个问题恰好是现代公钥密码学的根基：&#xA;密码体系 依赖的数学难题 Shor 算法能否攻破 RSA 大整数分解 能 ECDSA / ECDH 椭圆曲线离散对数 (ECDLP) 能 Diffie-Hellman / DSA 有限域离散对数 能 一旦足够大的量子计算机出现，当前互联网上几乎所有的密钥协商和数字签名都会失效。&#xA;但&amp;quot;足够大&amp;quot;是多大？&#xA;RSA-2048 的资源估计。 Gidney 和 Ekerå 在 2021 年的论文中给出了迄今最优的估计：使用表面码（surface code）纠错、物理错误率 $10^{-3}$ 的条件下，分解一个 2048 位 RSA 整数需要约 2000 万个物理量子比特，运行时间约 8 小时。2 这对应大约 4000 个逻辑量子比特。这比 Fowler 等人 2012 年估计的 10 亿物理比特降低了约 50 倍——降幅来自更优的电路编译和 magic state distillation 技术。</description>
+    </item>
     <item>
       <title>归墨 （GM）</title>
       <link>/post/gm/</link>

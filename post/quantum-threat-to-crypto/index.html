@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en-us">
+ 
+
+
+
+
+
+    
+
+  
+<meta charset="utf-8" />
+
+  <title>量子计算对密码学的威胁：原理、进展与区块链的应对 - Zlog</title>
+
+
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="stylesheet" href="/css/latex.css" />
+<link rel="stylesheet" href="/css/main.css" />
+<script>
+  MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']]
+    },
+    svg: {
+      fontCache: 'global'
+    }
+  };
+  </script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<meta name="generator" content="Hugo 0.122.0">
+ 
+  
+  <body>
+
+
+
+
+
+
+<header>  
+  <nav class="navbar">
+  <div class="nav">
+    
+
+    <ul class="nav-links">
+      
+    </ul>
+  </div>
+</nav>
+  <div class="intro-header">
+    <div class="container">
+      <div class="post-heading">
+        
+          <h1>量子计算对密码学的威胁：原理、进展与区块链的应对</h1>
+          
+        
+
+      </div>
+    </div>
+  </div>
+
+
+</header>
+<div id="content">
+  <div class="container" role="main">
+    <article class="article" class="blog-post">
+      <div class="postmeta">
+        <span class="meta-post">
+  <i class="fa fa-calendar-alt"></i>Mar 29, 2026
+  
+    <br><i class="fa fa-folder-open"></i>
+    
+      <a href="//categories/cryptography/">cryptography</a>&nbsp;
+    
+  
+</span>
+      </div>
+      <br>
+      
+    <p>量子计算机什么时候能破解比特币？这个问题每隔几个月就会在社交媒体上引发一轮恐慌。但恐慌往往缺乏对原理的理解——人们不清楚量子计算机<strong>到底能做什么、不能做什么</strong>，也不清楚密码学社区<strong>已经在做什么</strong>。</p>
+<p>这篇文章试图把这件事讲清楚。我们会覆盖三个维度：</p>
+<ol>
+<li><strong>威胁原理</strong>——量子算法如何破解现有密码学</li>
+<li><strong>商用进展</strong>——量子硬件离&quot;密码学相关&quot;还有多远</li>
+<li><strong>防御策略</strong>——区块链社区的应对方案与时间表</li>
+</ol>
+<p>所有关键结论均追踪到具体论文或标准文件。</p>
+<hr>
+<h2 id="一量子算法对密码学的威胁">一、量子算法对密码学的威胁</h2>
+<h3 id="11-shor-算法非对称密码的终结者">1.1 Shor 算法：非对称密码的终结者</h3>
+<p>1994 年，Peter Shor 提出了一种能在量子计算机上以多项式时间 $O((\log N)^3)$ 求解<strong>整数分解问题</strong>和<strong>离散对数问题</strong>的算法。<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup> 这两个问题恰好是现代公钥密码学的根基：</p>
+<table>
+<thead>
+<tr>
+<th>密码体系</th>
+<th>依赖的数学难题</th>
+<th>Shor 算法能否攻破</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>RSA</td>
+<td>大整数分解</td>
+<td>能</td>
+</tr>
+<tr>
+<td>ECDSA / ECDH</td>
+<td>椭圆曲线离散对数 (ECDLP)</td>
+<td>能</td>
+</tr>
+<tr>
+<td>Diffie-Hellman / DSA</td>
+<td>有限域离散对数</td>
+<td>能</td>
+</tr>
+</tbody>
+</table>
+<p>一旦足够大的量子计算机出现，<strong>当前互联网上几乎所有的密钥协商和数字签名都会失效</strong>。</p>
+<p>但&quot;足够大&quot;是多大？</p>
+<p><strong>RSA-2048 的资源估计。</strong> Gidney 和 Ekerå 在 2021 年的论文中给出了迄今最优的估计：使用表面码（surface code）纠错、物理错误率 $10^{-3}$ 的条件下，分解一个 2048 位 RSA 整数需要约 <strong>2000 万个物理量子比特</strong>，运行时间约 8 小时。<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup> 这对应大约 4000 个逻辑量子比特。这比 Fowler 等人 2012 年估计的 10 亿物理比特降低了约 50 倍——降幅来自更优的电路编译和 magic state distillation 技术。</p>
+<p><strong>ECC-256 的资源估计。</strong> 椭圆曲线密码学在同等安全级别下比 RSA 用更短的密钥，但在量子攻击面前反而更脆弱——Shor 算法对 ECDLP 的效率相对于经典安全级别更高。Roetteler 等人估计，破解一条 256 位椭圆曲线需要约 <strong>2330 个逻辑量子比特</strong>和 $1.26 \times 10^{11}$ 个 Toffoli 门。<sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup> 在物理比特层面，Universal Quantum 团队（Webber 等人, 2022）的估计是：如果要在 1 小时内完成，需要 <strong>3.17 亿物理比特</strong>；如果允许 1 天的计算时间，需要约 <strong>1300 万物理比特</strong>。<sup id="fnref:4"><a href="#fn:4" class="footnote-ref" role="doc-noteref">4</a></sup></p>
+<p>请记住这些数字——我们稍后会对比当前硬件的实际能力。</p>
+<h3 id="12-grover-算法对称密码学的半价折扣">1.2 Grover 算法：对称密码学的&quot;半价折扣&quot;</h3>
+<p>Grover 算法（1996）为无结构搜索问题提供<strong>二次加速</strong>，将暴力搜索的复杂度从 $O(N)$ 降到 $O(\sqrt{N})$。对对称密码和哈希函数的影响如下：</p>
+<table>
+<thead>
+<tr>
+<th>算法</th>
+<th>经典安全性</th>
+<th>Grover 攻击后</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>AES-128</td>
+<td>128 bit</td>
+<td>64 bit</td>
+</tr>
+<tr>
+<td>AES-256</td>
+<td>256 bit</td>
+<td>128 bit</td>
+</tr>
+<tr>
+<td>SHA-256 原像</td>
+<td>256 bit</td>
+<td>128 bit</td>
+</tr>
+<tr>
+<td>SHA-256 碰撞</td>
+<td>128 bit</td>
+<td>~85 bit (BHT 算法)</td>
+</tr>
+</tbody>
+</table>
+<p>看起来 AES-128 被&quot;腰斩&quot;到 64 bit 很危险？<strong>实际威胁极低。</strong> 原因有三：</p>
+<ol>
+<li><strong>Grover 算法不可并行化。</strong> Zalka（1999）和 Jaques 等人（2020）的分析表明，<sup id="fnref:5"><a href="#fn:5" class="footnote-ref" role="doc-noteref">5</a></sup> 对 AES-128 运行 Grover 需要顺序执行约 $2^{64}$ 次量子操作。即使量子门速度达到 GHz 级别，也需要数千年。</li>
+<li><strong>电路深度不可行。</strong> 每次 Grover oracle 调用需要数千个量子比特和大量门操作，总电路深度远超当前和近期架构的承受能力。</li>
+<li><strong>NIST 的结论。</strong> NIST 在 2024 年的后量子指南中认定，AES-256 和 SHA-256 对量子攻击具有充分的抵抗力。<sup id="fnref:6"><a href="#fn:6" class="footnote-ref" role="doc-noteref">6</a></sup></li>
+</ol>
+<p><strong>底线：</strong> Shor 算法是致命威胁，Grover 算法是可控威胁。对称密码学只需将密钥长度翻倍（用 AES-256 替代 AES-128）即可获得足够的量子抗性。真正的危机在公钥密码学。</p>
+<h3 id="13-对区块链的特殊威胁">1.3 对区块链的特殊威胁</h3>
+<p>比特币和以太坊都使用 <strong>ECDSA over secp256k1</strong>（256 位 Koblitz 曲线）进行交易签名。这意味着：</p>
+<ul>
+<li><strong>每一笔暴露了公钥的链上交易，都永久处于量子威胁之下。</strong></li>
+<li>一旦量子计算机能解 secp256k1 上的 ECDLP，攻击者就能从公钥反推私钥。</li>
+</ul>
+<p>但并非所有地址都同等脆弱。以比特币为例：</p>
+<p><strong>暴露公钥的地址（高危）：</strong></p>
+<ul>
+<li><strong>P2PK（Pay-to-Public-Key）</strong>——早期比特币使用的格式，公钥直接写在脚本中。中本聪的约 110 万 BTC 就在此类地址中。总计约 <strong>170 万 BTC</strong> 处于 P2PK 输出中。</li>
+<li><strong>复用的 P2PKH/P2SH 地址</strong>——一旦从某地址花费过，公钥就暴露在交易输入中。如果该地址再次收到资金（地址复用），新资金即面临量子风险。</li>
+</ul>
+<p><strong>相对安全的地址：</strong></p>
+<ul>
+<li><strong>未使用过的 P2PKH</strong>——地址是公钥的双重哈希 RIPEMD-160(SHA-256(pubkey))，攻击者只能看到哈希值，无法用 Shor 算法攻击。</li>
+<li><strong>P2SH、P2WPKH、P2WSH</strong>——同样使用哈希保护。</li>
+</ul>
+<p><strong>Taproot (P2TR) 的微妙之处：</strong> 在 key-path 花费路径中，经过调整的公钥（tweaked public key）直接出现在链上输出中，<strong>可能使其类似于 P2PK 的量子脆弱性</strong>。这一点在比特币开发社区仍有争论。</p>
+<p>据估计，约 <strong>25–30% 的比特币</strong>（按价值计）的公钥已暴露，将立即面临量子攻击。<sup id="fnref:7"><a href="#fn:7" class="footnote-ref" role="doc-noteref">7</a></sup></p>
+<p>对以太坊而言，情况更加直接：以太坊使用账户模型，<strong>任何发送过交易的账户，其公钥都已暴露</strong>。</p>
+<h3 id="14-先收割后解密harvest-now-decrypt-later">1.4 &ldquo;先收割，后解密&rdquo;（Harvest Now, Decrypt Later）</h3>
+<p>这是当前<strong>最紧迫的实际量子威胁</strong>，即使大规模量子计算机尚不存在：</p>
+<p>对手（尤其是国家级行为者）今天就记录加密通信和区块链交易数据，等到量子计算机成熟后再解密。美国国家安全局（NSA）在 2015 年宣布向后量子算法迁移，隐含承认了这一威胁。2022 年白宫国家安全备忘录 NSM-10 明确将 HNDL 列为加速后量子迁移的首要动机。</p>
+<p>对区块链来说，每一个暴露在链上的公钥都被永久记录。<strong>区块链的不可篡改性——本是优势——在量子威胁下反而成了负担。</strong></p>
+<hr>
+<h2 id="二商用量子计算硬件到哪了">二、商用量子计算：硬件到哪了？</h2>
+<p>理解了威胁原理之后，关键问题是：我们离&quot;密码学相关量子计算机&quot;（Cryptographically Relevant Quantum Computer, CRQC）还有多远？</p>
+<h3 id="21-当前硬件能力一览2026-年初">2.1 当前硬件能力一览（2026 年初）</h3>
+<table>
+<thead>
+<tr>
+<th>指标</th>
+<th>最佳记录</th>
+<th>来源</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>单芯片物理比特数</td>
+<td>1,121</td>
+<td>IBM Condor</td>
+</tr>
+<tr>
+<td>阵列物理比特数</td>
+<td>~3,000</td>
+<td>QuEra 中性原子</td>
+</tr>
+<tr>
+<td>逻辑量子比特</td>
+<td>~96</td>
+<td>QuEra（低于阈值错误率）</td>
+</tr>
+<tr>
+<td>两比特门保真度</td>
+<td>99.99%</td>
+<td>IonQ</td>
+</tr>
+<tr>
+<td>纠错低于阈值</td>
+<td>已实现</td>
+<td>Google、中科大、QuEra</td>
+</tr>
+</tbody>
+</table>
+<p>让我们逐个看主要玩家。</p>
+<h3 id="22-googlewillow-芯片与纠错里程碑">2.2 Google：Willow 芯片与纠错里程碑</h3>
+<p>2024 年 12 月，Google 发布了 <strong>Willow</strong> 量子处理器（105 物理比特），登上了 <em>Nature</em> 封面。<sup id="fnref:8"><a href="#fn:8" class="footnote-ref" role="doc-noteref">8</a></sup> 其核心突破是：</p>
+<ul>
+<li><strong>首次在表面码上实现低于阈值的量子纠错。</strong> 在 distance-3、distance-5、distance-7 的表面码实验中，每增加一级码距，错误率减半。这是 1995 年 Shor 提出量子纠错理论以来，研究者追求了近 30 年的工程里程碑。</li>
+<li>Distance-7 码（101 比特）的逻辑比特寿命超过了其最好的物理比特 <strong>2.4 倍</strong>——越过了 &ldquo;盈亏平衡点&rdquo;。</li>
+<li>逻辑错误率在码距增加 2 时被抑制了 <strong>2.14 ± 0.02</strong> 倍。</li>
+</ul>
+<p><strong>意义：</strong> 这证明了纠错的指数级抑制是可行的——你加入更多比特来做纠错，得到的逻辑比特确实更好而非更差。这是通往容错量子计算的先决条件。但 105 个物理比特距离破解密码学所需的数百万物理比特，仍有<strong>四到五个数量级</strong>的差距。</p>
+<h3 id="23-ibm从-heron-到-blue-jay-的路线图">2.3 IBM：从 Heron 到 Blue Jay 的路线图</h3>
+<p>IBM 的量子路线图是业界最详细的：</p>
+<ul>
+<li><strong>当前</strong>：Heron 处理器（133–156 比特），使用可调耦合器，系统架构为 System Two。</li>
+<li><strong>2025–2026</strong>：<strong>Nighthawk</strong>（120 比特），新一代可调耦合器，预计到 2027 年达到 10,000 门操作。<strong>Kookaburra</strong>（2026）：三芯片互联组成 4,158 比特系统。</li>
+<li><strong>2028–2029</strong>：<strong>Starling</strong>——~200 个逻辑比特（~10,000 物理比特），能执行 1 亿门量级的电路。这将是 IBM 首台大规模容错量子计算机。</li>
+<li><strong>2033</strong>：<strong>Blue Jay</strong>——~2,000 个逻辑比特（~100,000+ 物理比特），执行十亿门量级的程序。</li>
+</ul>
+<p>IBM 的一个关键技术突破是 <strong>qLDPC（双变量自行车码）</strong>，每个逻辑比特只需约 50 个物理比特——比标准表面码的开销低 10–14 倍。<sup id="fnref:9"><a href="#fn:9" class="footnote-ref" role="doc-noteref">9</a></sup></p>
+<h3 id="24-微软拓扑量子比特的赌注">2.4 微软：拓扑量子比特的赌注</h3>
+<p>2025 年 2 月，微软发布了 <strong>Majorana 1</strong>——世界上第一个基于拓扑核心的量子处理单元。<sup id="fnref:10"><a href="#fn:10" class="footnote-ref" role="doc-noteref">10</a></sup> 其路线截然不同：</p>
+<ul>
+<li>使用砷化铟/铝纳米线中的<strong>马约拉纳零模</strong>（Majorana Zero Modes），将量子信息编码在拓扑状态中，从物理层面天然抗噪。</li>
+<li>当前仅 8 个拓扑比特，但设计目标是<strong>单芯片百万比特</strong>。</li>
+<li>数字控制（非模拟），参与了 DARPA 的 US2QC 计划。</li>
+</ul>
+<p>但 <em>Physics World</em> 报道称，<strong>专家对微软拓扑比特的有效性仍有争议</strong>。这仍然是一个高风险、高回报的技术路线。</p>
+<h3 id="25-其他玩家">2.5 其他玩家</h3>
+<ul>
+<li><strong>IonQ</strong>（离子阱）：达到 99.99% 两比特门保真度。路线图：2028 年 ~20,000 物理比特（~1,600 逻辑比特），2030 年 ~200 万物理比特。</li>
+<li><strong>Quantinuum</strong>（离子阱）：H2 处理器 56 全连接比特，Quantum Volume 达 $2^{25}$（3350 万），用 30 个物理比特产生了错误率降低 <strong>800 倍</strong>的逻辑比特。</li>
+<li><strong>QuEra</strong>（中性原子）：演示了 96 个低于阈值错误率的逻辑比特，构建了运行超过 2 小时的 3,000 物理比特阵列。获得 Google Quantum AI、软银、NVIDIA 超过 2.3 亿美元投资。</li>
+<li><strong>PsiQuantum</strong>（光量子）：投入 10 亿美元在芝加哥和布里斯班同时建设，目标 2027–2028 年达到百万物理比特。</li>
+<li><strong>中科大</strong>：祖冲之 3.0（105 超导比特，声称比最快超算快 $10^{15}$ 倍）；祖冲之 3.2（107 比特，实现低于阈值纠错——非美国团队首次达成此里程碑）；九章 3.0（光量子）；天衍平台（2025 年 7 月，880 比特超导量子计算集群开放商用云接入）。</li>
+</ul>
+<h3 id="26-离-crqc-还有多远">2.6 离 CRQC 还有多远？</h3>
+<p>把数字放在一起看：</p>
+<table>
+<thead>
+<tr>
+<th>目标</th>
+<th>所需逻辑比特</th>
+<th>所需物理比特（估计）</th>
+<th>当前最佳</th>
+<th>差距</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>RSA-2048</td>
+<td>~4,000</td>
+<td>~2000 万</td>
+<td>~96 逻辑 / ~3,000 物理</td>
+<td>~40 倍逻辑 / ~6,600 倍物理</td>
+</tr>
+<tr>
+<td>ECC-256</td>
+<td>~2,330</td>
+<td>~1300 万</td>
+<td>同上</td>
+<td>~24 倍逻辑 / ~4,300 倍物理</td>
+</tr>
+</tbody>
+</table>
+<p><strong>专家预测：</strong></p>
+<p><strong>全球风险研究所 2024 年调查</strong>（32 位专家）：CRQC 在 5 年内出现的概率 5–14%；10 年内 19–34%；到 2044 年约 79%。这些概率比 2023 年的调查有所<strong>上升</strong>。<sup id="fnref:11"><a href="#fn:11" class="footnote-ref" role="doc-noteref">11</a></sup></p>
+<p><strong>Michele Mosca 定理</strong>（滑铁卢大学 / evolutionQ）：如果 $X + Y &gt; Z$（$X$ = 数据需要保密的年限，$Y$ = 迁移所需时间，$Z$ = CRQC 出现的时间），你必须<strong>现在就行动</strong>。<sup id="fnref:12"><a href="#fn:12" class="footnote-ref" role="doc-noteref">12</a></sup> 他在 2015 年估计：到 2026 年基础密码学被破解的概率为 1/7，到 2031 年为 1/2。</p>
+<p><strong>Scott Aaronson</strong>（UT Austin）：认为实用量子攻击即使在乐观估计下也是 <strong>5–10 年之后</strong>的事。但他强调，<strong>迁移本身才是瓶颈</strong>——&ldquo;从现在开始迁移&quot;是正确的时间。<sup id="fnref:13"><a href="#fn:13" class="footnote-ref" role="doc-noteref">13</a></sup></p>
+<p><strong>John Preskill</strong>（加州理工）：提出从 NISQ（嘈杂中等规模量子）到 FASQ（容错应用规模量子）的跨越**&ldquo;可能需要数十年&rdquo;**。他与 Eisert 合著的 2025 年研究发现，&ldquo;达到容错应用规模系统所需的时间将远超预期，且需要解决重大工程和概念性差距。&rdquo;<sup id="fnref:14"><a href="#fn:14" class="footnote-ref" role="doc-noteref">14</a></sup></p>
+<h3 id="27-2023-年中国团队量子破解-rsa事件">2.7 2023 年中国团队&quot;量子破解 RSA&quot;事件</h3>
+<p>2022 年底/2023 年初，以郭光灿团队为代表的中国研究者发表了一篇论文，声称使用 D-Wave 量子退火机和 10 比特超导量子处理器的混合方法分解了一个 48 位 RSA 整数，并推测该方法可扩展至 RSA-2048。</p>
+<p><strong>社区的回应：</strong></p>
+<ul>
+<li>48 位数可以被任何经典计算机瞬间分解。</li>
+<li>该方法依赖于 Schnorr 的经典格基分解方案——Schnorr 在 2021 年声称其方法可以经典地分解 RSA-2048，但从未被证实且被广泛质疑。</li>
+<li>Scott Aaronson 等多位专家指出，<strong>没有证据表明该技术可以扩展</strong>。量子部分贡献的优势可以忽略不计。</li>
+</ul>
+<p><strong>共识：这篇论文不构成对 RSA 的有意义威胁。</strong></p>
+<hr>
+<h2 id="三区块链的量子防御策略">三、区块链的量子防御策略</h2>
+<p>威胁是真实的，但不是即时的。关键在于：<strong>在量子计算机到来之前完成迁移。</strong> 各方正在从不同角度推进。</p>
+<h3 id="31-nist-后量子密码标准">3.1 NIST 后量子密码标准</h3>
+<p>2024 年 8 月 13 日，NIST 发布了首批后量子密码学最终标准<sup id="fnref:15"><a href="#fn:15" class="footnote-ref" role="doc-noteref">15</a></sup>：</p>
+<table>
+<thead>
+<tr>
+<th>标准</th>
+<th>算法</th>
+<th>基础</th>
+<th>类型</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FIPS 203</td>
+<td><strong>ML-KEM</strong> (原 CRYSTALS-Kyber)</td>
+<td>模格</td>
+<td>密钥封装</td>
+</tr>
+<tr>
+<td>FIPS 204</td>
+<td><strong>ML-DSA</strong> (原 CRYSTALS-Dilithium)</td>
+<td>模格</td>
+<td>数字签名</td>
+</tr>
+<tr>
+<td>FIPS 205</td>
+<td><strong>SLH-DSA</strong> (原 SPHINCS+)</td>
+<td>哈希</td>
+<td>数字签名（备份）</td>
+</tr>
+</tbody>
+</table>
+<p>FIPS 206（<strong>FN-DSA</strong>，原 FALCON）草案于 2025 年 8 月提交审批，预计 2026 年底或 2027 年初最终发布。</p>
+<p><strong>格基 vs 哈希基的区别至关重要：</strong></p>
+<ul>
+<li><strong>格基方案</strong>（ML-DSA、FN-DSA）：签名更小、速度更快，但安全性依赖格问题的困难性——一个相对较新的假设。如果格数学被攻破，两者同时失效。</li>
+<li><strong>哈希基方案</strong>（SLH-DSA）：签名大得多（8–49 KB），速度也慢，但安全性仅依赖哈希函数——密码学中最保守、研究最充分的假设。这就是 NIST 将其作为&quot;备份&quot;的原因。</li>
+</ul>
+<p><strong>签名大小对比——这是区块链面临的核心难题：</strong></p>
+<table>
+<thead>
+<tr>
+<th>方案</th>
+<th>签名大小</th>
+<th>相比 ECDSA 的倍数</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ECDSA (secp256k1)</td>
+<td>~64 字节</td>
+<td>1x</td>
+</tr>
+<tr>
+<td>Falcon-512</td>
+<td>~666 字节</td>
+<td>~10x</td>
+</tr>
+<tr>
+<td>ML-DSA (Dilithium2)</td>
+<td>~2,420 字节</td>
+<td>~38x</td>
+</tr>
+<tr>
+<td>SPHINCS+-128f</td>
+<td>~17,088 字节</td>
+<td>~267x</td>
+</tr>
+</tbody>
+</table>
+<p>签名膨胀直接意味着：<strong>区块更大、吞吐量更低、存储和带宽成本更高。</strong> 研究表明，签名大小增加十倍可将比特币的分叉概率从 1.9% 提升到 17.6%。</p>
+<h3 id="32-比特币bip-360-p2mr">3.2 比特币：BIP-360 (P2MR)</h3>
+<p><strong>BIP-360</strong> 是比特币首个正式提出量子抗性的提案，由 Hunter Beast、Ethan Heilman 和 Isabel Foxen Duke 撰写。<sup id="fnref:16"><a href="#fn:16" class="footnote-ref" role="doc-noteref">16</a></sup></p>
+<p><strong>核心设计：</strong></p>
+<ul>
+<li>引入新的输出类型 <strong>P2MR（Pay-to-Merkle-Root）</strong>，使用 SegWit v2，地址编码为 <code>bc1z</code>（bech32m）。</li>
+<li>模仿 Taproot (P2TR) 的结构，但<strong>完全移除 key-path 花费路径</strong>。所有花费路由都通过脚本树的 Merkle 根进行哈希承诺——消除了量子脆弱的 ECDSA/Schnorr 密钥路径。</li>
+<li>属于<strong>软分叉</strong>，利用现有 SegWit 机制，不需要共识层面的破坏性变更。</li>
+<li>BIP-360 本身<strong>不引入</strong>新签名算法，而是为未来软分叉添加 PQC 签名验证（ML-DSA、SLH-DSA）创建框架。</li>
+</ul>
+<p><strong>实现进展：</strong> 2026 年 3 月，BTQ Technologies 在 Bitcoin Quantum Testnet v0.3.0 上部署了首个可工作的 BIP-360 实现，包含完整的 P2MR 共识、五个 Dilithium 后量子签名操作码和端到端 CLI 钱包工具。<sup id="fnref:17"><a href="#fn:17" class="footnote-ref" role="doc-noteref">17</a></sup></p>
+<p><strong>中本聪的币怎么办？</strong></p>
+<p>这是比特币社区最棘手的治理问题：</p>
+<ul>
+<li>约 <strong>700 万 BTC</strong> 处于 P2PK 地址中（公钥直接暴露），包括中本聪的约 110 万 BTC。</li>
+<li>BIP-360 仅保护新输出，对存量 P2PK 无能为力。</li>
+<li>社区严重分裂：部分人（如 Charles Edwards）主张对不迁移的币设定惩罚期限；另一些人（如 Adam Back、Samson Mow）认为威胁不紧迫，反对任何强制措施。</li>
+<li>BIP-360 联合作者估计，比特币完全升级到后量子密码<strong>可能需要 7 年</strong>。<sup id="fnref:18"><a href="#fn:18" class="footnote-ref" role="doc-noteref">18</a></sup></li>
+</ul>
+<h3 id="33-以太坊vitalik-的四管齐下方案">3.3 以太坊：Vitalik 的四管齐下方案</h3>
+<p>2026 年 2 月，Vitalik Buterin 发布了全面的量子抗性路线图，识别了四个脆弱领域：<sup id="fnref:19"><a href="#fn:19" class="footnote-ref" role="doc-noteref">19</a></sup></p>
+<p><strong>1. 共识层签名。</strong> 当前使用 BLS（Boneh-Lynn-Shacham）签名，可被量子算法攻破。方案：用**哈希基签名（Winternitz 变体）**替换，在&quot;精简&quot;共识设计下通过 <strong>STARKs</strong> 聚合以提升效率。STARKs 本身基于哈希函数，天然抗量子。</p>
+<p><strong>2. 用户账户（EOA）。</strong> 核心是 <strong>EIP-8141（Frame Transactions）</strong>，允许账户从硬编码的 ECDSA 切换到可编程的签名类型——包括后量子方案。Vitalik 确认 EIP-8141 预计在一年内随 <strong>Hegota 硬分叉</strong>（2026 下半年）发布。<sup id="fnref:20"><a href="#fn:20" class="footnote-ref" role="doc-noteref">20</a></sup></p>
+<p><strong>3. 数据可用性。</strong> 当前依赖 KZG 承诺（基于椭圆曲线配对），量子脆弱。需要用量子安全的替代方案（如基于哈希的承诺）替换。</p>
+<p><strong>4. 零知识证明。</strong> Layer-2 和应用层的 ZK 系统需要量子安全替代品。量子抗性的 STARK 证明可能消耗约 <strong>1000 万 gas</strong>。</p>
+<p>Vitalik 概述了一个<strong>四年 L1 升级计划</strong>，以太坊基金会的后量子团队计划在 <strong>2029 年前</strong>在协议层面实现量子抗性方案。</p>
+<p><strong>以太坊 vs 比特币的迁移路径对比：</strong> 以太坊的账户抽象（EIP-8141）创造了更平滑的迁移路径——用户可以逐个账户升级到 PQC 签名，不需要协议级的硬切换。比特币则没有协调计划、没有资金结构、没有统一时间表。</p>
+<h3 id="34-其他先行者">3.4 其他先行者</h3>
+<p><strong>QRL（Quantum Resistant Ledger）</strong>——<strong>第一个从零开始构建量子抗性的区块链</strong>，使用 XMSS（扩展 Merkle 签名方案），这是 IETF 指定、NIST 批准的哈希基签名方案。QRL 2.0 测试网计划 2026 Q1 上线，提供量子安全的 EVM 兼容迁移路径。<sup id="fnref:21"><a href="#fn:21" class="footnote-ref" role="doc-noteref">21</a></sup></p>
+<p><strong>Algorand</strong>——2025 年 11 月 3 日，在公共区块链上执行了<strong>首笔后量子交易</strong>，使用 NIST 选定的 Falcon-1024 签名。2026 路线图包含将 Falcon 验证原生集成到共识模块中。<sup id="fnref:22"><a href="#fn:22" class="footnote-ref" role="doc-noteref">22</a></sup></p>
+<p><strong>IOTA</strong>——原始主网（2016）天然使用 Winternitz 一次性签名（量子安全），但 Chrysalis 升级（2021）切换到 Ed25519 后重新引入了量子脆弱性。2025 年 12 月引入了 &ldquo;Winternitz Vault&rdquo; 概念——基于哈希一次性签名的智能合约保险库。</p>
+<h3 id="35-哈希基签名近期最佳方案">3.5 哈希基签名：近期最佳方案？</h3>
+<p>哈希基签名是区块链量子迁移的热门选项，因为它们的安全假设最为保守——只需要哈希函数安全。但它们也有严重的实用性问题：</p>
+<table>
+<thead>
+<tr>
+<th>方案</th>
+<th>签名大小</th>
+<th>有状态？</th>
+<th>标准状态</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>XMSS</td>
+<td>~2.5 KB</td>
+<td>是</td>
+<td>NIST SP 800-208 (2020)</td>
+</tr>
+<tr>
+<td>LMS</td>
+<td>~4–8 KB</td>
+<td>是</td>
+<td>NIST SP 800-208 (2020)</td>
+</tr>
+<tr>
+<td>SPHINCS+ / SLH-DSA</td>
+<td>8–49 KB</td>
+<td>否</td>
+<td>FIPS 205 (2024)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>优势：</strong> 最保守的安全假设；不受 Shor 算法威胁；SPHINCS+ 无状态，适合分布式节点。</p>
+<p><strong>劣势：</strong> 签名膨胀 100–700 倍；SPHINCS+ 签名速度慢；有状态方案（XMSS/LMS）在分布式系统中极其危险——重用一次性密钥会完全破坏安全性。NIST 自己也警告：&ldquo;有状态哈希基方案不适合通用使用，因为其安全性依赖于小心的状态管理。&rdquo;</p>
+<h3 id="36-可行的迁移策略">3.6 可行的迁移策略</h3>
+<p>综合来看，以下是社区正在探索的五条路径：</p>
+<ol>
+<li>
+<p><strong>混合签名</strong>：在过渡期同时使用经典 + PQC 签名。只要其中一个安全，方案就安全。代价是签名更大。</p>
+</li>
+<li>
+<p><strong>签名聚合</strong>：通过 Merkle 树或批量验证压缩多个 PQC 签名，降低每笔交易的开销。</p>
+</li>
+<li>
+<p><strong>STARK 聚合</strong>：以太坊的方案——用 STARKs（天然量子安全）聚合大量哈希基共识签名。</p>
+</li>
+<li>
+<p><strong>密码敏捷性（Crypto-agility）</strong>：设计可以灵活切换签名方案的系统（如以太坊的 EIP-8141），避免每次升级都需要协议大改。</p>
+</li>
+<li>
+<p><strong>设定迁移窗口</strong>：为未迁移的资金设置宽限期和截止日期。这在比特币社区极具争议。</p>
+</li>
+</ol>
+<hr>
+<h2 id="四时间线总结与行动建议">四、时间线总结与行动建议</h2>
+<p>把所有信息放在一起：</p>
+<pre tabindex="0"><code>现在 (2026)                     2029        2033        2040+
+  |                              |           |            |
+  |-- NIST PQC 标准已发布          |           |            |
+  |-- BIP-360 测试网运行中         |           |            |
+  |-- EIP-8141 预计 2026H2 发布   |           |            |
+  |                              |-- Google 后量子迁移目标  |
+  |                              |-- IBM Starling ~200 逻辑比特
+  |                              |           |-- IBM Blue Jay ~2000 逻辑比特
+  |                              |           |            |-- CRQC 最可能区间
+  |                              |           |            |   (专家共识 2035-2045)
+  |                              |           |            |
+  ▼                              ▼           ▼            ▼
+  开始迁移的窗口正在关闭          紧迫度上升   迁移应基本完成  量子攻击可能成为现实
+</code></pre><p><strong>Mosca 定理的启示：</strong> 如果区块链的迁移需要 7 年（BIP-360 作者的估计），而 CRQC 可能在 2035 年出现（专家中位数），那么迁移窗口的起点是 <strong>2028 年</strong>。我们还有两年的缓冲——但考虑到区块链治理的复杂性和社区共识的形成速度，<strong>现在就应该认真对待这件事了。</strong></p>
+<p><strong>如果你是普通用户，现在可以做什么？</strong></p>
+<ul>
+<li><strong>比特币</strong>：不要复用地址；将资金从 P2PK 格式迁移到 P2WPKH/P2WSH；关注 BIP-360 的进展。</li>
+<li><strong>以太坊</strong>：关注 EIP-8141 的发布；准备在账户抽象可用时迁移到 PQC 签名方案。</li>
+<li><strong>通用</strong>：对长期持有的加密资产，优先使用支持后量子升级路径的钱包和链。</li>
+</ul>
+<p>量子计算对密码学的威胁不是&quot;是否&quot;的问题，而是&quot;何时&rdquo;。好消息是，密码学社区没有坐以待毙——从 NIST 标准到 BIP-360 到 Vitalik 的路线图，防御工作已经在进行中。坏消息是，<strong>迁移的速度必须快于量子硬件的进步。</strong> 这是一场我们不能输的竞赛。</p>
+<div class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1">
+<p>Shor, P.W. (1994). &ldquo;Algorithms for quantum computation: discrete logarithms and factoring.&rdquo; <em>Proceedings 35th Annual Symposium on Foundations of Computer Science</em>.&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2">
+<p>Gidney, C. &amp; Ekerå, M. (2021). &ldquo;How to factor 2048 bit RSA integers in 8 hours using 20 million noisy qubits.&rdquo; <em>Quantum</em>, 5, 433.&#160;<a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:3">
+<p>Roetteler, M., Naehrig, M., Svore, K.M. &amp; Lauter, K. (2017). &ldquo;Quantum resource estimates for computing elliptic curve discrete logarithms.&rdquo; <em>ASIACRYPT 2017</em>.&#160;<a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:4">
+<p>Webber, M., Elfving, V., Granade, C., et al. (2022). &ldquo;The impact of hardware specifications on reaching quantum advantage in the fault tolerant regime.&rdquo; <em>AVS Quantum Science</em>, 4(1).&#160;<a href="#fnref:4" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:5">
+<p>Jaques, S., Naehrig, M., Roetteler, M. &amp; Virdia, F. (2020). &ldquo;Implementing Grover oracles for quantum key search on AES and LowMC.&rdquo; <em>EUROCRYPT 2020</em>.&#160;<a href="#fnref:5" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:6">
+<p>NIST (2024). Post-Quantum Cryptography: FIPS 203, 204, 205.&#160;<a href="#fnref:6" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:7">
+<p>CoinDesk (2026). &ldquo;To Freeze or Not to Freeze: Satoshi and the $440 Billion in Bitcoin Threatened by Quantum Computing.&rdquo;&#160;<a href="#fnref:7" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:8">
+<p>Google Quantum AI (2024). &ldquo;Quantum error correction below the surface code threshold.&rdquo; <em>Nature</em>.&#160;<a href="#fnref:8" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:9">
+<p>IBM (2025). &ldquo;IBM Quantum Roadmap 2025.&rdquo; ibm.com/quantum.&#160;<a href="#fnref:9" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:10">
+<p>Microsoft (2025). &ldquo;Microsoft unveils Majorana 1, the world&rsquo;s first quantum processor powered by topological qubits.&rdquo; Azure Blog.&#160;<a href="#fnref:10" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:11">
+<p>Global Risk Institute (2024). &ldquo;2024 Quantum Threat Timeline Report.&rdquo;&#160;<a href="#fnref:11" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:12">
+<p>Mosca, M. (2018). &ldquo;Cybersecurity in an era with quantum computers: will we be ready?&rdquo; <em>IEEE Security &amp; Privacy</em>.&#160;<a href="#fnref:12" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:13">
+<p>Aaronson, S. (2025). &ldquo;More on whether useful quantum computing is imminent.&rdquo; scottaaronson.blog.&#160;<a href="#fnref:13" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:14">
+<p>Preskill, J. &amp; Eisert, J. (2025). &ldquo;Beyond NISQ: The Megaquop Machine.&rdquo;&#160;<a href="#fnref:14" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:15">
+<p>NIST (2024). &ldquo;NIST Releases First 3 Finalized Post-Quantum Encryption Standards.&rdquo;&#160;<a href="#fnref:15" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:16">
+<p>BIP 360: Pay-to-Merkle-Root (P2MR). bip360.org.&#160;<a href="#fnref:16" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:17">
+<p>BTQ Technologies (2026). &ldquo;BTQ Technologies Implements BIP 360 Quantum-Resistant Bitcoin Transactions on Testnet.&rdquo; The Quantum Insider.&#160;<a href="#fnref:17" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:18">
+<p>Cointelegraph (2026). &ldquo;Bitcoin May Take 7 Years to Upgrade to Post-Quantum: BIP-360 Co-Author.&rdquo;&#160;<a href="#fnref:18" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:19">
+<p>CoinDesk (2026). &ldquo;Vitalik Buterin Unveils Ethereum Roadmap to Counter Quantum Computing Threat.&rdquo;&#160;<a href="#fnref:19" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:20">
+<p>CryptoTimes (2026). &ldquo;Ethereum&rsquo;s Quantum Defense: Vitalik Buterin Backs EIP-8141 Upgrade.&rdquo;&#160;<a href="#fnref:20" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:21">
+<p>QRL. &ldquo;The Quantum Resistant Ledger.&rdquo; theqrl.org.&#160;<a href="#fnref:21" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:22">
+<p>Algorand (2025). &ldquo;Post-Quantum Blockchain Technology.&rdquo; algorand.co.&#160;<a href="#fnref:22" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</div>
+
+
+
+      
+        <div class="blog-tags">
+          
+            <a href="//tags/quantum-computing/">quantum-computing</a>&nbsp;
+          
+            <a href="//tags/cryptography/">cryptography</a>&nbsp;
+          
+            <a href="//tags/blockchain/">blockchain</a>&nbsp;
+          
+            <a href="//tags/post-quantum/">post-quantum</a>&nbsp;
+          
+        </div>
+      
+      
+      <div class="post-comment">
+        
+<div id="gitalk-container"></div>
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+<script>
+  const gitalk = new Gitalk({
+    clientID: '28369b07e2360baae2e7',
+    clientSecret: '4c94169b822196a74a4c07354c0c2a9acee5779b',
+    repo: 'zlog-in.github.io',
+    owner: 'zlog-in',
+    admin: ['zlog-in'],
+    id: location.pathname, 
+    distractionFreeMode: false 
+  });
+  (function() {
+    if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+      document.getElementById('gitalk-container').innerHTML = 'Gitalk comments not available by default when the website is previewed locally.';
+      return;
+    }
+    gitalk.render('gitalk-container');
+  })();
+</script>
+
+
+
+      </div>
+     
+    
+    </article>
+    
+  </div>
+
+        </div><footer>
+  <div class="container">
+    <p class="credits copyright">
+      <p class="credits theme-by">
+        <br>
+        <a href="/about">Zhān</a>
+        &copy;
+        <a href="/">2026 </a>
+       
+        <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" ><img alt="Creative Commons Licence" style="margin: auto;" src="https://i.creativecommons.org/l/by-nc/4.0/88x31.png" /></a>
+
+      </p>
+  </div>
+</footer><script>
+        (function() {
+          function fitHeadings() {
+            var headings = document.querySelectorAll('h1, h2, h3, h4, h5, h6');
+            for (var i = 0; i < headings.length; i++) {
+              var el = headings[i];
+              el.style.fontSize = '';
+              el.style.whiteSpace = 'nowrap';
+              var parentWidth = el.parentElement.getBoundingClientRect().width;
+              if (el.scrollWidth > parentWidth) {
+                var currentSize = parseFloat(window.getComputedStyle(el).fontSize);
+                el.style.fontSize = (currentSize * parentWidth / el.scrollWidth) + 'px';
+              }
+              el.style.whiteSpace = '';
+            }
+          }
+          fitHeadings();
+          window.addEventListener('resize', fitHeadings);
+        })();
+        </script>
+    </body>
+</html>
