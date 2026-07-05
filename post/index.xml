@@ -6,8 +6,15 @@
     <description>Recent content in Posts on Zlog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 04 Jul 2026 17:33:06 +0200</lastBuildDate>
+    <lastBuildDate>Sun, 05 Jul 2026 14:40:41 +0200</lastBuildDate>
     <atom:link href="/post/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>如何自处？</title>
+      <link>/post/self-me/</link>
+      <pubDate>Sun, 05 Jul 2026 14:40:41 +0200</pubDate>
+      <guid>/post/self-me/</guid>
+      <description></description>
+    </item>
     <item>
       <title>Passkey</title>
       <link>/post/passkey/</link>
